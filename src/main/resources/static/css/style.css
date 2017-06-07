@@ -36,3 +36,45 @@ nav ul li:hover {
     text-align: center;
     padding-top: 150px;
 }
+
+.dropdown-container {
+    margin-top: 30px;
+    margin-left: 40px;
+}
+
+.schema-button {
+    padding-left: 15px;
+    margin-left: 15px;
+}
+
+.schema-button-margin {
+    margin-bottom: 15px;
+}
+
+.schema-details {
+    margin-top: 20px;
+}
+
+.humidity-icon {
+    background: url("../img/humidity.png") no-repeat;
+    margin-top: 6px;
+    margin-left: 7px;
+    width: 24px;
+    height: 24px;
+}
+
+.temp-icon {
+    background: url("../img/temp.png") no-repeat;
+    margin-top: 6px;
+    margin-left: 6px;
+    width: 24px;
+    height: 24px;
+}
+
+.mixed-icon {
+    background: url("../img/mixed.png") no-repeat;
+    margin-top: 7px;
+    margin-left: 7px;
+    width: 24px;
+    height: 24px;
+}
