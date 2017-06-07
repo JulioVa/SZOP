@@ -22,11 +22,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="SZOP" />
+        <module name="szop" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="SZOP" target="1.8" />
+      <module name="szop" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
