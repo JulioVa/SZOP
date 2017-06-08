@@ -15,11 +15,11 @@ body {
 }
 
 .selected {
-    background-color: #bf360c;
+    background-color: #f57C00;
 }
 
 nav ul li:hover {
-    background-color: #bf360c;
+    background-color: #f57C00;
 }
 
 .diagrams-button {
@@ -103,4 +103,13 @@ nav ul li:hover {
 
 .first-column {
     padding-left: 30px;
+}
+
+.switch label input[type=checkbox]:checked + .lever {
+    background-color: #f57C00;
+}
+
+.switch label input[type=checkbox]:checked + .lever:after {
+    background-color: #ff9800;
+    left: 24px;
 }
