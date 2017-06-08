@@ -3,7 +3,7 @@ body {
 }
 
 .nav-menu-logo {
-    margin-left: 20px;
+    left: 20px;
 }
 
 .nav-menu-left {
@@ -77,4 +77,30 @@ nav ul li:hover {
     margin-left: 7px;
     width: 24px;
     height: 24px;
+}
+
+.checkbox-orange[type="checkbox"].filled-in:checked + label:after{
+    border: 2px solid #ff9800;
+    background-color: #ff9800;
+    text-align: center;
+}
+
+.table-margin {
+    margin-top: 30px;
+}
+
+.table-head-color {
+    background-color: #212121;
+}
+
+.table-body-color {
+    background-color: #9e9e9e;
+}
+
+.striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+    background-color: #bdbdbd;
+}
+
+.first-column {
+    padding-left: 30px;
 }
