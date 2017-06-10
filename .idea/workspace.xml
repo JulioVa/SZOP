@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a961fe75-e35c-416b-8416-17e50ed75f5f" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/raspberry/ds18b20.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SZOP.iml" afterPath="$PROJECT_DIR$/SZOP.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/raspberry/ds18b20.py" afterPath="$PROJECT_DIR$/raspberry/ds18b20.py" />
     </list>
     <ignored path="SZOP.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -42,8 +40,8 @@
       <file leaf-file-name="ds18b20.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/raspberry/ds18b20.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" column="16" lean-forward="false" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
+            <state relative-caret-position="493">
+              <caret line="29" column="30" lean-forward="true" selection-start-line="29" selection-start-column="30" selection-end-line="29" selection-end-column="30" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -86,6 +84,7 @@
         <option value="$PROJECT_DIR$/src/main/java/com/Configuration.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/SzopConf.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/raspberry/ds18b20.py" />
       </list>
     </option>
   </component>
@@ -479,7 +478,14 @@
       <option name="project" value="LOCAL" />
       <updated>1497103719419</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="reading DS18B20 sensor temperature">
+      <created>1497103913499</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1497103913499</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -539,7 +545,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initialize raspberry pi branch" />
-    <option name="LAST_COMMIT_MESSAGE" value="initialize raspberry pi branch" />
+    <MESSAGE value="reading DS18B20 sensor temperature" />
+    <option name="LAST_COMMIT_MESSAGE" value="reading DS18B20 sensor temperature" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -670,8 +677,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/raspberry/ds18b20.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="16" lean-forward="false" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
+        <state relative-caret-position="493">
+          <caret line="29" column="30" lean-forward="true" selection-start-line="29" selection-start-column="30" selection-end-line="29" selection-end-column="30" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
