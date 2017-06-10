@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/data")
 public class DataRestController {
 
-    private Temperature temperature;
+    private Temperature temperature = new Temperature();
 
     @RequestMapping(method = RequestMethod.POST)
     ResponseEntity<?> add(@RequestBody Float temp) {
@@ -20,4 +20,7 @@ public class DataRestController {
         return  ResponseEntity.noContent().build();
     }
 
+    public String getTemperature() {
+        return temperature.toString();
+    }
 }

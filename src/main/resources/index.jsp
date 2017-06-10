@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<jsp:useBean id="obj" class="com.controller.DataRestController"/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,9 +10,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <script src="js/script.js" type="text/javascript"></script>
-    <script src="js/diagrams.js" type="text/javascript"></script>
-    <link href="css/style.css" type="text/css" rel="stylesheet">
+    <script src="static/js/script.js" type="text/javascript"></script>
+    <script src="static/js/diagrams.js" type="text/javascript"></script>
+    <link href="static/css/style.css" type="text/css" rel="stylesheet">
 </head>
 <body>
 <header>
@@ -21,26 +23,31 @@
                 <a href="#" data-activates="mobile-demo" class="button-collapse"><i
                         class="material-icons">menu</i></a>
                 <ul class="left hide-on-med-and-down nav-menu-left">
-                    <li><a href="schema.html">Schema</a></li>
-                    <li><a href="diagrams.html">Diagrams</a></li>
-                    <li><a href="sensors.html">Sensors</a></li>
-                    <li><a href="alerts.html">Alerts</a></li>
+                    <li><a href="static/schema.html">Schema</a></li>
+                    <li><a href="static/diagrams.html">Diagrams</a></li>
+                    <li><a href="static/sensors.html">Sensors</a></li>
+                    <li><a href="static/alerts.html">Alerts</a></li>
                 </ul>
                 <ul class="right hide-on-med-and-down nav-menu-right">
                     <li><a href="profile.html">Profile</a></li>
                     <li><a href="#">Logout</a></li>
                 </ul>
                 <ul class="side-nav" id="mobile-demo">
-                    <li><a href="schema.html">Schema</a></li>
-                    <li><a href="diagrams.html">Diagrams</a></li>
-                    <li><a href="sensors.html">Sensors</a></li>
-                    <li><a href="alerts.html">Alerts</a></li>
+                    <li><a href="static/schema.html">Schema</a></li>
+                    <li><a href="static/diagrams.html">Diagrams</a></li>
+                    <li><a href="static/sensors.html">Sensors</a></li>
+                    <li><a href="static/alerts.html">Alerts</a></li>
                     <li><a href="profile.html">Profile</a></li>
                     <li><a href="#">Logout</a></li>
                 </ul>
             </div>
         </nav>
     </div>
+    <main>
+        <div class="container">
+            <p><% String t = obj.getTemperature(); %></p>
+        </div>
+    </main>
 </header>
 </body>
 </html>

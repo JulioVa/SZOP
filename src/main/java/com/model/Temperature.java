@@ -17,4 +17,9 @@ public class Temperature {
     public float getTemperature(){
         return temperature;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(temperature);
+    }
 }
