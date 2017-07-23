@@ -1,37 +1,45 @@
 package com;
 
 import com.model.Temperature;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@SpringBootApplication
 @RestController
 public class SzopRestController {
 
     private Temperature temperature = new Temperature();
 
-    @RequestMapping(value="/temp")
-    public Map<String,Object> temp() {
-        Map<String,Object> temp = new HashMap<>();
+    @RequestMapping(value = "/sensors", method = RequestMethod.POST)
+    ResponseEntity<?> sendSensorsData(@RequestBody Map<String, Object> sensorsData) {
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/sensors/{system_id}", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> getSensorsBySystemId(@PathVariable int systemId) {
+        Map<String, Object> data = new HashMap<>();
+        return data;
+    }
+
+    // TODO remove below methods, they were used for testing connection with raspberry pi
+    @RequestMapping(value = "/temp")
+    public Map<String, Object> temp() {
+        Map<String, Object> temp = new HashMap<>();
         temp.put("id", UUID.randomUUID().toString());
         temp.put("content", temperature.getTemperature());
         return temp;
     }
 
-    @RequestMapping(value="/data", method = RequestMethod.POST)
-    ResponseEntity<?> add(@RequestBody Float temp) {
-        if(temp != null){
-            temperature.setTemperature(temp);
+    @RequestMapping(value = "/data", method = RequestMethod.POST)
+    ResponseEntity<?> add(@RequestBody Map<String, Float> temp) {
+        if (temp != null) {
+            temperature.setTemperature(temp.get("temp"));
             return ResponseEntity.ok().build();
         }
-        return  ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build();
     }
 }
