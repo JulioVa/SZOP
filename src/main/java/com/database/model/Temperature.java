@@ -1,4 +1,4 @@
-package com.model;
+package com.database.model;
 
 /**
  * Created by damia_000 on 2017-06-10.

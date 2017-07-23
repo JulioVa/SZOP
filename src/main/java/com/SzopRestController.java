@@ -1,6 +1,6 @@
 package com;
 
-import com.model.Temperature;
+import com.database.model.Temperature;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
