@@ -1,18 +1,43 @@
 package com.database.model;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "sensor")
 public class Sensor {
 
+    @Id
+    @GeneratedValue
+    @Column(name ="id")
     private int id;
+
+    @Column(name = "sensor_id")
     private int sensorId;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "type")
     private int type;
+
+    @Column(name = "last_update")
     private LocalDateTime lastUpdate;
+
+    @Column(name = "is_active")
     private boolean isActive;
+
+    @Column(name = "raspberry_id")
     private int raspberryId;
-    private int schemaId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "schema_id")
+    private Schema schema;
+
+    @Column(name = "schema_x")
     private int schemaX;
+
+    @Column(name = "schema_y")
     private int schemaY;
 
     public Sensor() {
@@ -74,12 +99,12 @@ public class Sensor {
         this.raspberryId = raspberryId;
     }
 
-    public int getSchemaId() {
-        return schemaId;
+    public Schema getSchema() {
+        return schema;
     }
 
-    public void setSchemaId(int schemaId) {
-        this.schemaId = schemaId;
+    public void setSchema(Schema schemaId) {
+        this.schema = schema;
     }
 
     public int getSchemaX() {

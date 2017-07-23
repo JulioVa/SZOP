@@ -1,11 +1,28 @@
 package com.database.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "alert")
 public class Alert {
 
+    @Id
+    @GeneratedValue
+    @Column(name ="id")
     private int id;
-    private int userId;
-    private int sensorId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "sensor_id")
+    private Sensor sensor;
+
+    @Column(name = "greater_lower")
     private String greaterLower;
+
+    @Column(name = "value")
     private double value;
 
     public Alert() {
@@ -19,20 +36,20 @@ public class Alert {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public int getSensorId() {
-        return sensorId;
+    public Sensor getSensor() {
+        return sensor;
     }
 
-    public void setSensorId(int sensorId) {
-        this.sensorId = sensorId;
+    public void setSensor(Sensor sensor) {
+        this.sensor = sensor;
     }
 
     public String getGreaterLower() {

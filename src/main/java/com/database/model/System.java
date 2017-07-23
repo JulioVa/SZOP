@@ -1,9 +1,22 @@
 package com.database.model;
 
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "system")
 public class System {
 
+    @Id
+    @GeneratedValue
+    @Column(name ="id")
     private int id;
-    private int userId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(name = "name")
     private String name;
 
     public System() {
@@ -17,12 +30,12 @@ public class System {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUserId() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserId(User user) {
+        this.user = user;
     }
 
     public String getName() {

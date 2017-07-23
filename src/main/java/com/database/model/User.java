@@ -1,10 +1,23 @@
 package com.database.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "user")
 public class User {
 
+    @Id
+    @GeneratedValue
+    @Column(name ="id")
     private int id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "mail")
     private String mail;
 
     public User() {
