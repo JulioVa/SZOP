@@ -22,7 +22,7 @@ public class SystemService {
     public static List<System> findAllByUser(int userId){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
-        return session.createQuery("SELECT s FROM System s WHERE s.user.id = :userId").setParameter("userId",userId).getResultList();
+        return session.createQuery("SELECT s FROM System s WHERE s.user.id = :userId", System.class).setParameter("userId",userId).getResultList();
     }
 
     public static void save(System system) {

@@ -22,13 +22,13 @@ public class SensorService {
     public static List<Sensor> findAllBySchema(int schemaId){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
-        return session.createQuery("SELECT s FROM Sensor s WHERE s.schema.id = :schemaId").setParameter("schemaId",schemaId).getResultList();
+        return session.createQuery("SELECT s FROM Sensor s WHERE s.schema.id = :schemaId", Sensor.class).setParameter("schemaId",schemaId).getResultList();
     }
 
     public static List<Sensor> findAllBySystem(int systemId){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
-        return session.createQuery("SELECT s FROM Sensor s WHERE s.system.id = :systemId").setParameter("systemId",systemId).getResultList();
+        return session.createQuery("SELECT s FROM Sensor s WHERE s.system.id = :systemId", Sensor.class).setParameter("systemId",systemId).getResultList();
     }
 
     public static void save(Sensor sensor) {
