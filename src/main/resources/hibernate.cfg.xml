@@ -20,5 +20,13 @@
         <!-- Drop and re-create the database schema on startup -->
         <property name="hbm2ddl.auto">update</property>
 
+        <mapping class="com.database.model.Alert"/>
+        <mapping class="com.database.model.Schema"/>
+        <mapping class="com.database.model.Sensor"/>
+        <mapping class="com.database.model.System"/>
+        <mapping class="com.database.model.Temperature"/>
+        <mapping class="com.database.model.User"/>
+
+
     </session-factory>
 </hibernate-configuration>
