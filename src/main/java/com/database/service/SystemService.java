@@ -19,6 +19,12 @@ public class SystemService {
         return session.createQuery("FROM System s", System.class).getResultList();
     }
 
+    public static List<System> findAllByUser(int userId){
+        Session session = HibernateUtils.getSession();
+        session.beginTransaction();
+        return session.createQuery("SELECT s FROM System s WHERE s.user.id = :userId").setParameter("userId",userId).getResultList();
+    }
+
     public static void save(System system) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();

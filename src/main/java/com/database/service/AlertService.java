@@ -19,6 +19,12 @@ public class AlertService {
         return session.createQuery("FROM Alert a", Alert.class).getResultList();
     }
 
+    public static List<Alert> findAllForUser(int userId){
+        Session session = HibernateUtils.getSession();
+        session.beginTransaction();
+        return session.createQuery("SELECT a FROM Alert a WHERE a.user.id = :userId",Alert.class).setParameter("userId", userId).getResultList();
+    }
+
     public static void save(Alert alert) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();

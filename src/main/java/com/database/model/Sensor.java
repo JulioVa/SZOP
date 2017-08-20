@@ -34,6 +34,10 @@ public class Sensor {
     @JoinColumn(name = "schema_id")
     private Schema schema;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "system_id")
+    private System system;
+
     @Column(name = "schema_x")
     private int schemaX;
 
@@ -105,6 +109,14 @@ public class Sensor {
 
     public void setSchema(Schema schemaId) {
         this.schema = schema;
+    }
+
+    public System getSystem() {
+        return system;
+    }
+
+    public void setSystem(System system) {
+        this.system = system;
     }
 
     public int getSchemaX() {
