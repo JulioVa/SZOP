@@ -9,7 +9,7 @@ public class Sensor {
 
     @Id
     @GeneratedValue
-    @Column(name ="id")
+    @Column(name = "id")
     private int id;
 
     @Column(name = "sensor_id")
@@ -26,9 +26,6 @@ public class Sensor {
 
     @Column(name = "is_active")
     private boolean isActive;
-
-    @Column(name = "raspberry_id")
-    private int raspberryId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "schema_id")
@@ -93,14 +90,6 @@ public class Sensor {
 
     public void setActive(boolean active) {
         isActive = active;
-    }
-
-    public int getRaspberryId() {
-        return raspberryId;
-    }
-
-    public void setRaspberryId(int raspberryId) {
-        this.raspberryId = raspberryId;
     }
 
     public Schema getSchema() {
