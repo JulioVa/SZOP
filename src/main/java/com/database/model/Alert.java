@@ -8,7 +8,7 @@ public class Alert {
 
     @Id
     @GeneratedValue
-    @Column(name ="id")
+    @Column(name = "id")
     private int id;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -66,5 +66,40 @@ public class Alert {
 
     public void setValue(double value) {
         this.value = value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Alert alert = (Alert) o;
+
+        if (Double.compare(alert.value, value) != 0) return false;
+        if (user != null ? !user.equals(alert.user) : alert.user != null) return false;
+        if (sensor != null ? !sensor.equals(alert.sensor) : alert.sensor != null) return false;
+        return greaterLower != null ? greaterLower.equals(alert.greaterLower) : alert.greaterLower == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = user != null ? user.hashCode() : 0;
+        result = 31 * result + (sensor != null ? sensor.hashCode() : 0);
+        result = 31 * result + (greaterLower != null ? greaterLower.hashCode() : 0);
+        temp = Double.doubleToLongBits(value);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Alert{" +
+                "user=" + user +
+                ", sensor=" + sensor +
+                ", greaterLower='" + greaterLower + '\'' +
+                ", value=" + value +
+                '}';
     }
 }

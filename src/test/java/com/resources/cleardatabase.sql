@@ -1,1 +1,1 @@
-TRUNCATE "user", system, "schema", sensor, alert CASCADE;
+TRUNCATE "user", "system", "schema", "sensor", "alert" CASCADE;

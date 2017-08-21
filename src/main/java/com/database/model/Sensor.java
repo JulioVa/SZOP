@@ -96,7 +96,7 @@ public class Sensor {
         return schema;
     }
 
-    public void setSchema(Schema schemaId) {
+    public void setSchema(Schema schema) {
         this.schema = schema;
     }
 
@@ -122,5 +122,52 @@ public class Sensor {
 
     public void setSchemaY(int schemaY) {
         this.schemaY = schemaY;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Sensor sensor = (Sensor) o;
+
+        if (sensorId != sensor.sensorId) return false;
+        if (type != sensor.type) return false;
+        if (isActive != sensor.isActive) return false;
+        if (schemaX != sensor.schemaX) return false;
+        if (schemaY != sensor.schemaY) return false;
+        if (name != null ? !name.equals(sensor.name) : sensor.name != null) return false;
+        if (lastUpdate != null ? !lastUpdate.equals(sensor.lastUpdate) : sensor.lastUpdate != null) return false;
+        if (schema != null ? !schema.equals(sensor.schema) : sensor.schema != null) return false;
+        return system != null ? system.equals(sensor.system) : sensor.system == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = sensorId;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + type;
+        result = 31 * result + (lastUpdate != null ? lastUpdate.hashCode() : 0);
+        result = 31 * result + (isActive ? 1 : 0);
+        result = 31 * result + (schema != null ? schema.hashCode() : 0);
+        result = 31 * result + (system != null ? system.hashCode() : 0);
+        result = 31 * result + schemaX;
+        result = 31 * result + schemaY;
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Sensor{" +
+                "sensorId=" + sensorId +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", lastUpdate=" + lastUpdate +
+                ", isActive=" + isActive +
+                ", schema=" + schema +
+                ", system=" + system +
+                ", schemaX=" + schemaX +
+                ", schemaY=" + schemaY +
+                '}';
     }
 }

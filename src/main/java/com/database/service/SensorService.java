@@ -31,6 +31,12 @@ public class SensorService {
         return session.createQuery("SELECT s FROM Sensor s WHERE s.system.id = :systemId", Sensor.class).setParameter("systemId",systemId).getResultList();
     }
 
+    public static Sensor findBySensorIdAndSystemId(int sensorId, int systemId){
+        Session session = HibernateUtils.getSession();
+        session.beginTransaction();
+        return session.createQuery("FROM Sensor s WHERE s.sensorId = :sensorId AND s.system.id = :systemId", Sensor.class).setParameter("sensorId", sensorId).setParameter("systemId", systemId).getSingleResult();
+    }
+
     public static void save(Sensor sensor) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();

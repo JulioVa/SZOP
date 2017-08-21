@@ -41,7 +41,7 @@ create table sensor(
   name varchar(50) not null,
   type integer not null,
   last_update TIMESTAMP,
-  is_active integer not null,
+  is_active boolean not null,
   system_id integer not null
     constraint sensor_system_id_fk
     references system
