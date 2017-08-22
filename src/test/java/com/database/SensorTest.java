@@ -7,6 +7,8 @@ import com.database.service.SystemService;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
+
 public class SensorTest extends TestBase {
 
     @Test
@@ -26,13 +28,63 @@ public class SensorTest extends TestBase {
         sensor.setName("new sensor");
         sensor.setType(2);
         sensor.setActive(true);
-        sensor.setSystem(SystemService.findSystemById(1));
-        sensor.setSchema(SchemaService.findSchemaById(1));
+        sensor.setSystem(SystemService.findSystemById(2));
+        sensor.setSchema(SchemaService.findSchemaById(2));
         SensorService.save(sensor);
 
-        Sensor cachedSensor = SensorService.findBySensorIdAndSystemId(3, 1);
+        Sensor cachedSensor = SensorService.findBySensorIdAndSystemId(3, 2);
         Assert.assertEquals(sensor, cachedSensor);
     }
 
+    @Test
+    public void updateSensorTest() {
+        Sensor sensor = new Sensor();
+        sensor.setSensorId(4);
+        sensor.setName("new sensor");
+        sensor.setType(2);
+        sensor.setActive(true);
+        sensor.setSystem(SystemService.findSystemById(2));
+        sensor.setSchema(SchemaService.findSchemaById(2));
+        SensorService.save(sensor);
 
+        sensor.setName("updated sensor");
+        sensor.setType(2);
+        SensorService.update(sensor);
+        Sensor updatedSensor = SensorService.findBySensorIdAndSystemId(4, 2);
+        Assert.assertEquals(sensor, updatedSensor);
+    }
+
+    @Test
+    public void deleteSensorTest() {
+        Sensor sensor = new Sensor();
+        sensor.setSensorId(5);
+        sensor.setName("new sensor");
+        sensor.setType(2);
+        sensor.setActive(true);
+        sensor.setSystem(SystemService.findSystemById(2));
+        sensor.setSchema(SchemaService.findSchemaById(2));
+        SensorService.save(sensor);
+        SensorService.delete(sensor);
+
+        Sensor deletedSensor = SensorService.findBySensorIdAndSystemId(5, 2);
+        Assert.assertNull(deletedSensor);
+    }
+
+    @Test
+    public void findSensorsBySchemaTest() {
+        List<Sensor> sensors = SensorService.findAllBySchema(1);
+        Assert.assertEquals(2, sensors.size());
+    }
+
+    @Test
+    public void findSensorsBySystemTest() {
+        List<Sensor> sensors = SensorService.findAllBySystem(1);
+        Assert.assertEquals(2, sensors.size());
+    }
+
+    @Test
+    public void findAllSensorsTest() {
+        List<Sensor> sensors = SensorService.findAll();
+        Assert.assertFalse(sensors.isEmpty());
+    }
 }

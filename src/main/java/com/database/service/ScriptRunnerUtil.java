@@ -20,5 +20,7 @@ public class ScriptRunnerUtil {
         ScriptRunner sr = new ScriptRunner(con, false, false);
         Reader reader = new BufferedReader(new FileReader(path));
         sr.runScript(reader);
+        reader.close();
+        con.close();
     }
 }
