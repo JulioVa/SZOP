@@ -17,7 +17,7 @@ public class SensorTest extends TestBase {
         Assert.assertNotNull(sensor);
         Assert.assertEquals(1, sensor.getId());
         Assert.assertEquals("sensor1", sensor.getName());
-        Assert.assertEquals(1, sensor.getType());
+        Assert.assertEquals(SensorTypeEnum.TEMPERATURE.getId(), sensor.getType());
         Assert.assertTrue(sensor.isActive());
     }
 
@@ -26,7 +26,7 @@ public class SensorTest extends TestBase {
         Sensor sensor = new Sensor();
         sensor.setSensorId(3);
         sensor.setName("new sensor");
-        sensor.setType(2);
+        sensor.setType(SensorTypeEnum.HUMIDITY.getId());
         sensor.setActive(true);
         sensor.setSystem(SystemService.findSystemById(2));
         sensor.setSchema(SchemaService.findSchemaById(2));
@@ -41,7 +41,7 @@ public class SensorTest extends TestBase {
         Sensor sensor = new Sensor();
         sensor.setSensorId(4);
         sensor.setName("new sensor");
-        sensor.setType(2);
+        sensor.setType(SensorTypeEnum.HUMIDITY.getId());
         sensor.setActive(true);
         sensor.setSystem(SystemService.findSystemById(2));
         sensor.setSchema(SchemaService.findSchemaById(2));
@@ -59,7 +59,7 @@ public class SensorTest extends TestBase {
         Sensor sensor = new Sensor();
         sensor.setSensorId(5);
         sensor.setName("new sensor");
-        sensor.setType(2);
+        sensor.setType(SensorTypeEnum.HUMIDITY.getId());
         sensor.setActive(true);
         sensor.setSystem(SystemService.findSystemById(2));
         sensor.setSchema(SchemaService.findSchemaById(2));
