@@ -1,14 +1,18 @@
 package com;
 
+import com.database.dto.AlertDto;
 import com.database.dto.SchemaDto;
 import com.database.dto.SensorDto;
-import com.database.model.Schema;
-import com.database.model.Sensor;
-import com.database.model.Temperature;
+import com.database.dto.UserDto;
+import com.database.model.*;
+import com.database.service.AlertService;
 import com.database.service.SchemaService;
 import com.database.service.SensorService;
+import com.database.service.UserService;
+import com.database.util.AlertUtil;
 import com.database.util.SchemaUtil;
 import com.database.util.SensorUtil;
+import com.database.util.UserUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -81,7 +85,7 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/schema/{schemaId}", method = RequestMethod.PUT)
-    public ResponseEntity<SensorDto> updateSchema(@PathVariable int schemaId, @RequestBody SchemaDto schemaDto) {
+    public ResponseEntity<SchemaDto> updateSchema(@PathVariable int schemaId, @RequestBody SchemaDto schemaDto) {
         Schema schema = SchemaService.findSchemaById(schemaId);
         if (schema == null) {
             return ResponseEntity.notFound().build();
@@ -93,12 +97,94 @@ public class SzopRestController {
 
 
     @RequestMapping(value = "/schema/{schemaId}", method = RequestMethod.DELETE)
-    public ResponseEntity<SensorDto> deleteSchema(@PathVariable int schemaId) {
+    public ResponseEntity<SchemaDto> deleteSchema(@PathVariable int schemaId) {
         Schema schema = SchemaService.findSchemaById(schemaId);
         if (schema == null) {
             return ResponseEntity.notFound().build();
         }
         SchemaService.delete(schema);
+        return ResponseEntity.ok().build();
+    }
+
+    // user
+    @RequestMapping(value = "/user", method = RequestMethod.POST)
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+        User user = UserUtil.addUser(userDto);
+        UserService.save(user);
+        return ResponseEntity.ok().body(userDto);
+    }
+
+    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<User> getUserById(@PathVariable int userId) {
+        User user = UserService.findUserById(userId);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(user);
+    }
+
+    @RequestMapping(value = "/user/{userId}", method = RequestMethod.PUT)
+    public ResponseEntity<UserDto> updateUser(@PathVariable int userId, @RequestBody UserDto userDto) {
+        User user = UserService.findUserById(userId);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        user = UserUtil.updateUser(user, userDto);
+        UserService.update(user);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @RequestMapping(value = "/user/{userId}", method = RequestMethod.DELETE)
+    public ResponseEntity<UserDto> deleteUser(@PathVariable int userId) {
+        User user = UserService.findUserById(userId);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        UserService.delete(user);
+        return ResponseEntity.ok().build();
+    }
+
+    // alert
+    @RequestMapping(value = "/alert", method = RequestMethod.POST)
+    public ResponseEntity<AlertDto> createAlert(@RequestBody AlertDto alertDto) {
+        Alert alert = AlertUtil.addAlert(alertDto);
+        if (alert != null) {
+            AlertService.save(alert);
+            return ResponseEntity.ok().body(alertDto);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @RequestMapping(value = "/alert/{alertId}", method = RequestMethod.GET)
+    public ResponseEntity<Alert> getAlertById(@PathVariable int alertId) {
+        Alert alert = AlertService.findAlertById(alertId);
+        if (alert == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(alert);
+    }
+
+    @RequestMapping(value = "/alert/{alertId}", method = RequestMethod.PUT)
+    public ResponseEntity<AlertDto> updateAlert(@PathVariable int alertId, @RequestBody AlertDto alertDto) {
+        Alert alert = AlertService.findAlertById(alertId);
+        if (alert == null) {
+            return ResponseEntity.notFound().build();
+        }
+        alert = AlertUtil.updateAlert(alert, alertDto);
+        AlertService.update(alert);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @RequestMapping(value = "/alert/{alertId}", method = RequestMethod.DELETE)
+    public ResponseEntity<AlertDto> deleteAlert(@PathVariable int alertId) {
+        Alert alert = AlertService.findAlertById(alertId);
+        if (alert == null) {
+            return ResponseEntity.notFound().build();
+        }
+        AlertService.delete(alert);
         return ResponseEntity.ok().build();
     }
 
