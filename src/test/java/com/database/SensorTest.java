@@ -15,9 +15,9 @@ public class SensorTest extends TestBase {
     public void findSensorByIdTest() {
         Sensor sensor = SensorService.findSensorById(1);
         Assert.assertNotNull(sensor);
-        Assert.assertEquals(1, sensor.getId());
+        Assert.assertEquals(new Integer(1), sensor.getId());
         Assert.assertEquals("sensor1", sensor.getName());
-        Assert.assertEquals(SensorTypeEnum.TEMPERATURE.getId(), sensor.getType());
+        Assert.assertEquals(new Integer(SensorTypeEnum.TEMPERATURE.getId()), sensor.getType());
         Assert.assertTrue(sensor.isActive());
     }
 

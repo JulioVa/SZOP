@@ -1,31 +1,32 @@
 package com.database.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "sensor")
-public class Sensor {
+public class Sensor implements Serializable {
 
     @Id
     @GeneratedValue
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
     @Column(name = "sensor_id")
-    private int sensorId;
+    private Integer sensorId;
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "type")
-    private int type;
+    private Integer type;
 
     @Column(name = "last_update")
     private LocalDateTime lastUpdate;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private Boolean isActive;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "schema_id")
@@ -36,15 +37,15 @@ public class Sensor {
     private System system;
 
     @Column(name = "schema_x")
-    private int schemaX;
+    private Integer schemaX;
 
     @Column(name = "schema_y")
-    private int schemaY;
+    private Integer schemaY;
 
     public Sensor() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -52,11 +53,11 @@ public class Sensor {
         this.id = id;
     }
 
-    public int getSensorId() {
+    public Integer getSensorId() {
         return sensorId;
     }
 
-    public void setSensorId(int sensorId) {
+    public void setSensorId(Integer sensorId) {
         this.sensorId = sensorId;
     }
 
@@ -68,11 +69,11 @@ public class Sensor {
         this.name = name;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
@@ -84,11 +85,11 @@ public class Sensor {
         this.lastUpdate = lastUpdate;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         isActive = active;
     }
 
@@ -108,19 +109,19 @@ public class Sensor {
         this.system = system;
     }
 
-    public int getSchemaX() {
+    public Integer getSchemaX() {
         return schemaX;
     }
 
-    public void setSchemaX(int schemaX) {
+    public void setSchemaX(Integer schemaX) {
         this.schemaX = schemaX;
     }
 
-    public int getSchemaY() {
+    public Integer getSchemaY() {
         return schemaY;
     }
 
-    public void setSchemaY(int schemaY) {
+    public void setSchemaY(Integer schemaY) {
         this.schemaY = schemaY;
     }
 

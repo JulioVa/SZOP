@@ -1,14 +1,18 @@
 package com.database.service;
 
 import com.database.model.Sensor;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
 import javax.persistence.NoResultException;
 import java.util.List;
 
 public class SensorService {
+    private static final Logger LOGGER = LogManager.getLogger("SensorService");
 
     public static Sensor findSensorById(int id){
+        LOGGER.error("xxx" + id);
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
         Sensor sensor = session.createQuery("FROM Sensor s WHERE s.id = :id", Sensor.class).setParameter("id", id).getSingleResult();
@@ -62,7 +66,7 @@ public class SensorService {
     public static void update(Sensor sensor) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
-        session.saveOrUpdate(sensor);
+        session.update(sensor);
         session.getTransaction().commit();
     }
 
