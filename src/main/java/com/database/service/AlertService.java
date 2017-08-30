@@ -25,11 +25,12 @@ public class AlertService {
         return session.createQuery("SELECT a FROM Alert a WHERE a.user.id = :userId",Alert.class).setParameter("userId", userId).getResultList();
     }
 
-    public static void save(Alert alert) {
+    public static int save(Alert alert) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
-        session.save(alert);
+        int id = (int) session.save(alert);
         session.getTransaction().commit();
+        return id;
     }
 
     public static void update(Alert alert) {
