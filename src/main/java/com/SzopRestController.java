@@ -1,18 +1,10 @@
 package com;
 
-import com.database.dto.AlertDto;
-import com.database.dto.SchemaDto;
-import com.database.dto.SensorDto;
-import com.database.dto.UserDto;
+import com.database.dto.*;
 import com.database.model.*;
-import com.database.service.AlertService;
-import com.database.service.SchemaService;
-import com.database.service.SensorService;
-import com.database.service.UserService;
-import com.database.util.AlertUtil;
-import com.database.util.SchemaUtil;
-import com.database.util.SensorUtil;
-import com.database.util.UserUtil;
+import com.database.model.System;
+import com.database.service.*;
+import com.database.util.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -134,7 +126,6 @@ public class SzopRestController {
         return ResponseEntity.ok().build();
     }
 
-
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.DELETE)
     public ResponseEntity<UserDto> deleteUser(@PathVariable int userId) {
         User user = UserService.findUserById(userId);
@@ -177,7 +168,6 @@ public class SzopRestController {
         return ResponseEntity.ok().build();
     }
 
-
     @RequestMapping(value = "/alert/{alertId}", method = RequestMethod.DELETE)
     public ResponseEntity<AlertDto> deleteAlert(@PathVariable int alertId) {
         Alert alert = AlertService.findAlertById(alertId);
@@ -185,6 +175,57 @@ public class SzopRestController {
             return ResponseEntity.notFound().build();
         }
         AlertService.delete(alert);
+        return ResponseEntity.ok().build();
+    }
+
+    // system
+    @RequestMapping(value = "/system", method = RequestMethod.POST)
+    public ResponseEntity<SystemDto> createSystem(@RequestBody SystemDto systemDto) {
+        System system = SystemUtil.addSystem(systemDto);
+        if (system != null) {
+            SystemService.save(system);
+            return ResponseEntity.ok().body(systemDto);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @RequestMapping(value = "/system/{systemId}", method = RequestMethod.GET)
+    public ResponseEntity<System> getSystemById(@PathVariable int systemId) {
+        System system = SystemService.findSystemById(systemId);
+        if (system == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(system);
+    }
+
+    @RequestMapping(value = "/system/user/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<List<System>> getSystemsByUserId(@PathVariable int userId) {
+        List<System> systems = SystemService.findAllByUser(userId);
+        if (systems.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(systems);
+    }
+
+    @RequestMapping(value = "/system/{systemId}", method = RequestMethod.PUT)
+    public ResponseEntity<SystemDto> updateSystem(@PathVariable int systemId, @RequestBody SystemDto systemDto) {
+        System system = SystemService.findSystemById(systemId);
+        if (system == null) {
+            return ResponseEntity.notFound().build();
+        }
+        system = SystemUtil.updateSystem(system, systemDto);
+        SystemService.update(system);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/system/{systemId}", method = RequestMethod.DELETE)
+    public ResponseEntity<SystemDto> deleteSystem(@PathVariable int systemId) {
+        System system = SystemService.findSystemById(systemId);
+        if (system == null) {
+            return ResponseEntity.notFound().build();
+        }
+        SystemService.delete(system);
         return ResponseEntity.ok().build();
     }
 
