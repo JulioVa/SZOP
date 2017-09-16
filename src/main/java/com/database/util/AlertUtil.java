@@ -29,4 +29,13 @@ public class AlertUtil {
         alert.setValue(NotNullUtil.setNotNull(alert.getValue(), alertUpdate.getValue()));
         return alert;
     }
+
+    public static AlertDto convertToDto(Alert alert) {
+        AlertDto alertDto = new AlertDto();
+        alertDto.setValue(alert.getValue());
+        alertDto.setGreaterLower(alert.getGreaterLower());
+        alertDto.setSensorId(alert.getSensor().getSensorId());
+        alertDto.setUserId(alert.getUser().getId());
+        return alertDto;
+    }
 }

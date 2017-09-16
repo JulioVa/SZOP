@@ -17,4 +17,11 @@ public class SchemaUtil {
         schema.setImg(NotNullUtil.setNotNull(schema.getImg(), schemaUpdate.getImg()));
         return schema;
     }
+
+    public static SchemaDto convertToDto(Schema schema) {
+        SchemaDto schemaDto = new SchemaDto();
+        schemaDto.setName(schema.getName());
+        schemaDto.setImg(schema.getImg());
+        return schemaDto;
+    }
 }

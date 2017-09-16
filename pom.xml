@@ -71,6 +71,17 @@
 			<version>1.2.17</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.5</version>
+		</dependency>
 
 	</dependencies>
 
@@ -81,6 +92,12 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+
+		<testResources>
+			<testResource>
+				<directory>${project.basedir}/src/test/java/com/resources</directory>
+			</testResource>
+		</testResources>
 	</build>
 
 

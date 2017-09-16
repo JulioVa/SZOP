@@ -19,4 +19,12 @@ public class UserUtil {
         user.setMail(NotNullUtil.setNotNull(user.getMail(), userUpdate.getMail()));
         return user;
     }
+
+    public static UserDto convertToDto(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setName(user.getName());
+        userDto.setMail(user.getMail());
+        userDto.setPassword(user.getPassword());
+        return userDto;
+    }
 }

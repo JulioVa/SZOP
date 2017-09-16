@@ -31,21 +31,23 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/system/{systemId}/sensors", method = RequestMethod.GET)
-    public ResponseEntity<List<Sensor>> getSensorsBySystemId(@PathVariable int systemId) {
+    public ResponseEntity<List<SensorDto>> getSensorsBySystemId(@PathVariable int systemId) {
         List<Sensor> sensors = SensorService.findAllBySystem(systemId);
+        List<SensorDto> sensorDtos = SensorUtil.convertToDtos(sensors);
         if (sensors.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().body(sensors);
+        return ResponseEntity.ok().body(sensorDtos);
     }
 
     @RequestMapping(value = "/schema/{schemaId}/sensors", method = RequestMethod.GET)
-    public ResponseEntity<List<Sensor>> getSensorsBySchemaId(@PathVariable int schemaId) {
+    public ResponseEntity<List<SensorDto>> getSensorsBySchemaId(@PathVariable int schemaId) {
         List<Sensor> sensors = SensorService.findAllBySchema(schemaId);
+        List<SensorDto> sensorDtos = SensorUtil.convertToDtos(sensors);
         if (sensors.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().body(sensors);
+        return ResponseEntity.ok().body(sensorDtos);
     }
 
     @RequestMapping(value = "/system/{systemId}/sensors/{sensorId}", method = RequestMethod.PUT)
@@ -68,12 +70,12 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/schema/{schemaId}", method = RequestMethod.GET)
-    public ResponseEntity<Schema> getSchemaById(@PathVariable int schemaId) {
+    public ResponseEntity<SchemaDto> getSchemaById(@PathVariable int schemaId) {
         Schema schema = SchemaService.findSchemaById(schemaId);
         if (schema == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().body(schema);
+        return ResponseEntity.ok().body(SchemaUtil.convertToDto(schema));
     }
 
     @RequestMapping(value = "/schema/{schemaId}", method = RequestMethod.PUT)
@@ -86,7 +88,6 @@ public class SzopRestController {
         SchemaService.update(schema);
         return ResponseEntity.ok().build();
     }
-
 
     @RequestMapping(value = "/schema/{schemaId}", method = RequestMethod.DELETE)
     public ResponseEntity<SchemaDto> deleteSchema(@PathVariable int schemaId) {
@@ -107,12 +108,12 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
-    public ResponseEntity<User> getUserById(@PathVariable int userId) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable int userId) {
         User user = UserService.findUserById(userId);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(UserUtil.convertToDto(user));
     }
 
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.PUT)
@@ -149,12 +150,12 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/alert/{alertId}", method = RequestMethod.GET)
-    public ResponseEntity<Alert> getAlertById(@PathVariable int alertId) {
+    public ResponseEntity<AlertDto> getAlertById(@PathVariable int alertId) {
         Alert alert = AlertService.findAlertById(alertId);
         if (alert == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().body(alert);
+        return ResponseEntity.ok().body(AlertUtil.convertToDto(alert));
     }
 
     @RequestMapping(value = "/alert/{alertId}", method = RequestMethod.PUT)
@@ -191,21 +192,22 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/system/{systemId}", method = RequestMethod.GET)
-    public ResponseEntity<System> getSystemById(@PathVariable int systemId) {
+    public ResponseEntity<SystemDto> getSystemById(@PathVariable int systemId) {
         System system = SystemService.findSystemById(systemId);
         if (system == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().body(system);
+        return ResponseEntity.ok().body(SystemUtil.convertToDto(system));
     }
 
     @RequestMapping(value = "/system/user/{userId}", method = RequestMethod.GET)
-    public ResponseEntity<List<System>> getSystemsByUserId(@PathVariable int userId) {
+    public ResponseEntity<List<SystemDto>> getSystemsByUserId(@PathVariable int userId) {
         List<System> systems = SystemService.findAllByUser(userId);
+        List<SystemDto> systemDtos = SystemUtil.convertToDtos(systems);
         if (systems.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().body(systems);
+        return ResponseEntity.ok().body(systemDtos);
     }
 
     @RequestMapping(value = "/system/{systemId}", method = RequestMethod.PUT)
