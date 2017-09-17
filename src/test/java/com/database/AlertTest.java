@@ -10,6 +10,7 @@ import org.junit.Test;
 import javax.persistence.NoResultException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 public class AlertTest extends TestBase {
@@ -45,11 +46,13 @@ public class AlertTest extends TestBase {
         sensor.setName("sensor1");
         sensor.setType(1);
 
-        String str = "2017-08-01 10:23:54";
+        /*String str = "2017-08-01 10:23:54";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
+        Date date = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());*/
+        Date date = new Date(1501575834000L);
 
-        sensor.setLastUpdate(dateTime);
+        sensor.setLastUpdate(date);
         sensor.setActive(true);
         sensor.setSystem(system);
         sensor.setSchema(schema);

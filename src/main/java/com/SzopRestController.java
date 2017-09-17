@@ -158,6 +158,16 @@ public class SzopRestController {
         return ResponseEntity.ok().body(AlertUtil.convertToDto(alert));
     }
 
+    @RequestMapping(value = "/user/{userId}/alerts", method = RequestMethod.GET)
+    public ResponseEntity<List<AlertDto>> getAlertsByUserId(@PathVariable int userId) {
+        List<Alert> alerts = AlertService.findAllForUser(userId);
+        List<AlertDto> alertDtos = AlertUtil.convertToDtos(alerts);
+        if (alerts.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(alertDtos);
+    }
+
     @RequestMapping(value = "/alert/{alertId}", method = RequestMethod.PUT)
     public ResponseEntity<AlertDto> updateAlert(@PathVariable int alertId, @RequestBody AlertDto alertDto) {
         Alert alert = AlertService.findAlertById(alertId);

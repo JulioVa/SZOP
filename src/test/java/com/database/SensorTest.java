@@ -73,13 +73,13 @@ public class SensorTest extends TestBase {
     @Test
     public void findSensorsBySchemaTest() {
         List<Sensor> sensors = SensorService.findAllBySchema(1);
-        Assert.assertEquals(2, sensors.size());
+        Assert.assertEquals(3, sensors.size());
     }
 
     @Test
     public void findSensorsBySystemTest() {
         List<Sensor> sensors = SensorService.findAllBySystem(1);
-        Assert.assertEquals(2, sensors.size());
+        Assert.assertEquals(3, sensors.size());
     }
 
     @Test

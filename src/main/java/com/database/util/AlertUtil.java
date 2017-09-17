@@ -7,6 +7,9 @@ import com.database.model.User;
 import com.database.service.SensorService;
 import com.database.service.UserService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AlertUtil {
 
     public static Alert addAlert(AlertDto alertDto) {
@@ -37,5 +40,13 @@ public class AlertUtil {
         alertDto.setSensorId(alert.getSensor().getSensorId());
         alertDto.setUserId(alert.getUser().getId());
         return alertDto;
+    }
+
+    public static List<AlertDto> convertToDtos(List<Alert> alerts) {
+        List<AlertDto> alertDtos = new ArrayList<>();
+        for (Alert alert : alerts) {
+            alertDtos.add(convertToDto(alert));
+        }
+        return alertDtos;
     }
 }

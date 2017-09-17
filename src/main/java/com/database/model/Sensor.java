@@ -3,6 +3,7 @@ package com.database.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "sensor")
@@ -23,7 +24,7 @@ public class Sensor implements Serializable {
     private Integer type;
 
     @Column(name = "last_update")
-    private LocalDateTime lastUpdate;
+    private Date lastUpdate;
 
     @Column(name = "is_active")
     private Boolean isActive;
@@ -77,11 +78,11 @@ public class Sensor implements Serializable {
         this.type = type;
     }
 
-    public LocalDateTime getLastUpdate() {
+    public Date getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setLastUpdate(LocalDateTime lastUpdate) {
+    public void setLastUpdate(Date lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 

@@ -2,13 +2,14 @@ package com.database.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class SensorDto implements Serializable {
 
     private Integer sensorId;
     private String name;
     private Integer type;
-    private LocalDateTime lastUpdate;
+    private Date lastUpdate;
     private Boolean isActive;
     private Integer schemaId;
     private Integer systemId;
@@ -17,7 +18,7 @@ public class SensorDto implements Serializable {
 
     public SensorDto() {}
 
-    public SensorDto(Integer sensorId, String name, int type, LocalDateTime lastUpdate, boolean isActive, int schemaId, int systemId, int schemaX, int schemaY) {
+    public SensorDto(Integer sensorId, String name, int type, Date lastUpdate, boolean isActive, int schemaId, int systemId, int schemaX, int schemaY) {
         this.sensorId = sensorId;
         this.name = name;
         this.type = type;
@@ -53,11 +54,11 @@ public class SensorDto implements Serializable {
         this.type = type;
     }
 
-    public LocalDateTime getLastUpdate() {
+    public Date getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setLastUpdate(LocalDateTime lastUpdate) {
+    public void setLastUpdate(Date lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 
