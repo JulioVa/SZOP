@@ -25,11 +25,12 @@ public class SystemService {
         return session.createQuery("SELECT s FROM System s WHERE s.user.id = :userId", System.class).setParameter("userId",userId).getResultList();
     }
 
-    public static void save(System system) {
+    public static int save(System system) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
-        session.save(system);
+        int id = (int) session.save(system);
         session.getTransaction().commit();
+        return id;
     }
 
     public static void update(System system) {

@@ -18,11 +18,12 @@ public class UserService {
         return session.createQuery("FROM User u", User.class).getResultList();
     }
 
-    public static void save(User user) {
+    public static int save(User user) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
-        session.save(user);
+        int id = (int) session.save(user);
         session.getTransaction().commit();
+        return id;
     }
 
     public static void update(User user) {

@@ -18,11 +18,12 @@ public class SchemaService {
         return session.createQuery("FROM Schema s", Schema.class).getResultList();
     }
 
-    public static void save(Schema schema) {
+    public static int save(Schema schema) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
-        session.save(schema);
+        int id = (int) session.save(schema);
         session.getTransaction().commit();
+        return id;
     }
 
     public static void update(Schema schema) {
