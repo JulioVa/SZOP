@@ -5,11 +5,12 @@ import com.database.model.System;
 import com.database.service.AlertService;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.persistence.NoResultException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,8 @@ public class AlertTest extends TestBase {
     private Schema schema;
     private Sensor sensor;
     private Alert alert;
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 
     private int id;
     @Before
@@ -46,11 +49,13 @@ public class AlertTest extends TestBase {
         sensor.setName("sensor1");
         sensor.setType(1);
 
-        /*String str = "2017-08-01 10:23:54";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
-        Date date = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());*/
-        Date date = new Date(1501575834000L);
+        String str = "2017-08-01 10:23:54";
+        Date date = null;
+        try {
+            date = formatter.parse(str);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         sensor.setLastUpdate(date);
         sensor.setActive(true);
@@ -113,6 +118,7 @@ public class AlertTest extends TestBase {
 
     }
 
+    @Ignore
     @Test
     public void updateAlertTest(){
         Alert alertTest = new Alert();
