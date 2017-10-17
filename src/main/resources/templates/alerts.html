@@ -45,35 +45,22 @@
     </div>
 </header>
 <main ng-controller="alerts">
-    <div class="container">
+    <div class="container" style="margin-top: 50px;">
         <div class="row">
-            <table class="table-margin striped">
-                <thead class="table-head-color orange-text">
-                <tr>
-                    <th class="first-column">#</th>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Condition</th>
-                    <th>On/Off</th>
-                </tr>
-                </thead>
-                <tbody class="table-body-color">
-                <tr ng-repeat="alert in alertsList">
-                    <td class="first-column">{{alert.alertId}}</td>
-                    <td>Alert1</td>
-                    <td>{{alert.type}}</td>
-                    <td>{{alert.greaterLower}}</td>
-                    <td>
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox"></input>
-                                <span class="lever"></span>
-                            </label>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <ul class="collection">
+                <li class="collection-item avatar" ng-repeat="alert in alertsList">
+                    <i class="material-icons circle red">notifications</i>
+                    <span class="title">Alert1</span>
+                    <p style="display: block">{{alert.type}}</p>
+                    <p style="display: block">{{alert.greaterLower}}</p>
+                    <a href="#!" class="secondary-content"><div class="switch">
+                        <label>
+                            <input type="checkbox"></input>
+                            <span class="lever"></span>
+                        </label>
+                    </div></a>
+                </li>
+            </ul>
         </div>
     </div>
 </main>

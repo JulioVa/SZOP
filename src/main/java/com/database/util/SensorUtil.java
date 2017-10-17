@@ -41,7 +41,7 @@ public class SensorUtil {
         return sensor;
     }
 
-    private static SensorDto convertToDto(Sensor sensor) {
+    public static SensorDto convertToDto(Sensor sensor) {
         SensorDto sensorDto = new SensorDto();
         sensorDto.setSensorId(sensor.getSensorId());
         sensorDto.setName(sensor.getName());

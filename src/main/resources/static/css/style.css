@@ -1,5 +1,5 @@
 body {
-    background-color: #616161;
+    background-color: #F4F4F4;
 }
 
 .nav-menu-logo {
@@ -14,12 +14,16 @@ body {
     padding-right: 20px;
 }
 
+.nav-wrapper {
+    background-color: #2A2C39;
+}
+
 .selected {
-    background-color: #f57C00;
+    background-color: #1F2027;
 }
 
 nav ul li:hover {
-    background-color: #f57C00;
+    background-color: #1F2027;
 }
 
 .diagrams-button {
@@ -75,6 +79,22 @@ nav ul li:hover {
     background: url("../img/mixed.png") no-repeat;
     margin-top: 7px;
     margin-left: 7px;
+    width: 24px;
+    height: 24px;
+}
+
+.sensors-temp-icon {
+    background: url("../img/temp.png") no-repeat;
+    margin-top: 8px;
+    margin-left: 8px;
+    width: 24px;
+    height: 24px;
+}
+
+.sensors-humidity-icon {
+    background: url("../img/humidity.png") no-repeat;
+    margin-top: 8px;
+    margin-left: 8px;
     width: 24px;
     height: 24px;
 }

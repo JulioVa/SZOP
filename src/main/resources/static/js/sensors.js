@@ -8,12 +8,19 @@ angular.module('szop', []).controller('sensors', ['$scope', '$http', '$window', 
         var type;
         var lastUpdate;
         var formattedSensorsList = [];
+        var selected = [];
         var counter = 1;
+        var sensorIcon;
+        var iconColor;
         sensorsList.forEach(function(entry) {
             if (entry.type == 1) {
-                type = "Temperature"
+                type = "Temperature";
+                sensorIcon = "sensors-temp-icon";
+                iconColor = "red";
             } else {
                 type = "Humidity";
+                sensorIcon = "sensors-humidity-icon";
+                iconColor = "blue";
             }
             var date = new Date(entry.lastUpdate);
             var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -30,7 +37,10 @@ angular.module('szop', []).controller('sensors', ['$scope', '$http', '$window', 
                 name: entry.name,
                 type: type,
                 lastUpdate: lastUpdate,
-                isActive: entry.isActive
+                active: entry.active,
+                checkboxId: entry.sensorId,
+                icon: sensorIcon,
+                iconColor: iconColor
             };
 
             counter++;

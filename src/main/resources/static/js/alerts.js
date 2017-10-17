@@ -9,22 +9,25 @@ angular.module('szop', []).controller('alerts', ['$scope', '$http', '$window', f
         var formattedAlertsList = [];
         var counter = 1;
         alertsList.forEach(function(entry) {
-            if (entry.type == 1) {
-                type = "Temperature"
-            } else {
-                type = "Humidity";
-            }
+            $http.get('/sensor/' + entry.sensorId).
+            then(function (sensorResponse) {
+                console.log(sensorResponse);
+                if (sensorResponse.data.type == 1) {
+                    type = "Temperature";
+                } else {
+                    type = "Humidity";
+                }
+                var formattedAlert = {
+                    alertId: counter,
+                    //name: entry.name,
+                    type: type,
+                    greaterLower: entry.greaterLower + " than " + entry.value
+                };
 
-            var formattedAlert = {
-                alertId: counter,
-                //name: entry.name,
-                type: type,
-                greaterLower: entry.greaterLower + " than " + entry.value
-            };
+                console.log(formattedAlert);
 
-            console.log(formattedAlert);
-
-            formattedAlertsList.push(formattedAlert);
+                formattedAlertsList.push(formattedAlert);
+            });
             counter++;
         });
 
