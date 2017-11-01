@@ -88,6 +88,16 @@ public class SzopRestController {
         return ResponseEntity.ok().body(SchemaUtil.convertToDto(schema));
     }
 
+    @RequestMapping(value = "/schemas", method = RequestMethod.GET)
+    public ResponseEntity<List<SchemaDto>> getSchemas() {
+        List<Schema> schemas = SchemaService.findAll();
+        List<SchemaDto> schemaDtos = SchemaUtil.convertToDtos(schemas);
+        if (schemas.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(schemaDtos);
+    }
+
     @RequestMapping(value = "/schema/{schemaId}", method = RequestMethod.PUT)
     public ResponseEntity<SchemaDto> updateSchema(@PathVariable int schemaId, @RequestBody SchemaDto schemaDto) {
         Schema schema = SchemaService.findSchemaById(schemaId);

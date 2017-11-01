@@ -3,6 +3,9 @@ package com.database.util;
 import com.database.dto.SchemaDto;
 import com.database.model.Schema;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SchemaUtil {
 
     public static Schema addSchema(SchemaDto schemaDto) {
@@ -23,5 +26,13 @@ public class SchemaUtil {
         schemaDto.setName(schema.getName());
         schemaDto.setImg(schema.getImg());
         return schemaDto;
+    }
+
+    public static List<SchemaDto> convertToDtos(List<Schema> schemas) {
+        List<SchemaDto> schemaDtos = new ArrayList<>();
+        for (Schema schema : schemas) {
+            schemaDtos.add(convertToDto(schema));
+        }
+        return schemaDtos;
     }
 }
