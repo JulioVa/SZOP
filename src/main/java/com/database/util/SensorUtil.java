@@ -38,6 +38,9 @@ public class SensorUtil {
         sensor.setActive(NotNullUtil.setNotNull(sensor.isActive(), sensorUpdate.isActive()));
         sensor.setSchemaX(NotNullUtil.setNotNull(sensor.getSchemaX(), sensorUpdate.getSchemaX()));
         sensor.setSchemaY(NotNullUtil.setNotNull(sensor.getSchemaY(), sensorUpdate.getSchemaY()));
+        if (sensorUpdate.getSchemaId() != null) {
+            sensor.setSchema(SchemaService.findSchemaById(sensorUpdate.getSchemaId()));
+        }
         return sensor;
     }
 
@@ -50,7 +53,9 @@ public class SensorUtil {
         sensorDto.setActive(sensor.isActive());
         sensorDto.setSchemaX(sensor.getSchemaX());
         sensorDto.setSchemaY(sensor.getSchemaY());
-        sensorDto.setSchemaId(sensor.getSchema().getId());
+        if (sensor.getSchema() != null) {
+            sensorDto.setSchemaId(sensor.getSchema().getId());
+        }
         sensorDto.setSystemId(sensor.getSystem().getId());
         return sensorDto;
     }

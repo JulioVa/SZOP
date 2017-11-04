@@ -50,6 +50,26 @@ public class SzopRestController {
         return ResponseEntity.ok().body(sensorDtos);
     }
 
+    @RequestMapping(value = "/sensors/temperature", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorDto>> getTemperatureSensors() {
+        List<Sensor> sensors = SensorService.findAllByType(1);
+        List<SensorDto> sensorDtos = SensorUtil.convertToDtos(sensors);
+        if (sensors.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(sensorDtos);
+    }
+
+    @RequestMapping(value = "/sensors/humidity", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorDto>> getHumiditySensors() {
+        List<Sensor> sensors = SensorService.findAllByType(2);
+        List<SensorDto> sensorDtos = SensorUtil.convertToDtos(sensors);
+        if (sensors.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(sensorDtos);
+    }
+
     @RequestMapping(value = "/sensor/{sensorId}", method = RequestMethod.GET)
     public ResponseEntity<SensorDto> getSensorById(@PathVariable int sensorId) {
         Sensor sensor = SensorService.findSensorById(sensorId);
@@ -73,10 +93,11 @@ public class SzopRestController {
 
     // schema
     @RequestMapping(value = "/schema", method = RequestMethod.POST)
-    public ResponseEntity<SchemaDto> createSchema(@RequestBody SchemaDto schemaDto) {
+    public ResponseEntity<SchemaIdLevelDto> createSchema(@RequestBody SchemaDto schemaDto) {
         Schema schema = SchemaUtil.addSchema(schemaDto);
         SchemaService.save(schema);
-        return ResponseEntity.ok().body(schemaDto);
+        SchemaIdLevelDto schemaIdLevelDto = new SchemaIdLevelDto(schema.getName(), schema.getImg(), schema.getId());
+        return ResponseEntity.ok().body(schemaIdLevelDto);
     }
 
     @RequestMapping(value = "/schema/{schemaId}", method = RequestMethod.GET)
@@ -92,6 +113,16 @@ public class SzopRestController {
     public ResponseEntity<List<SchemaDto>> getSchemas() {
         List<Schema> schemas = SchemaService.findAll();
         List<SchemaDto> schemaDtos = SchemaUtil.convertToDtos(schemas);
+        if (schemas.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(schemaDtos);
+    }
+
+    @RequestMapping(value = "/schemas/id", method = RequestMethod.GET)
+    public ResponseEntity<List<SchemaIdLevelDto>> getSchemasId() {
+        List<Schema> schemas = SchemaService.findAll();
+        List<SchemaIdLevelDto> schemaDtos = SchemaUtil.convertToDtosId(schemas);
         if (schemas.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

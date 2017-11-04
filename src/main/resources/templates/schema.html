@@ -47,14 +47,17 @@
 <main ng-controller="schema">
     <div id="choose-sensor">
         <h3 class="center-align grey-text text-darken-2">Choose sensor</h3>
+        <div ng-repeat="sensor in sensors">
         <p>
-            <input type="checkbox" class="filled-in choose-sensor-checkbox" id="sensor" />
-            <label for="sensor" class="choose-sensor-checkbox">Sensor1</label>
+            <input type="checkbox" class="filled-in choose-sensor-checkbox" id="{{sensor.sensorId}}" />
+            <label for="{{sensor.sensorId}}" class="choose-sensor-checkbox">{{sensor.name}}</label>
         </p>
-        <p>
+        </div>
+        <h4 id='sensor-alert' class='center-align grey-text darken-4' style="display: none;">All sensors are already on a schema!</h4>
+        <!--<p>
             <input type="checkbox" class="filled-in choose-sensor-checkbox" id="sensor2" />
             <label for="sensor2" class="choose-sensor-checkbox">Sensor2</label>
-        </p>
+        </p>-->
         <a class="waves-effect waves-light btn orange darken-1 schema-button-margin" id="cancel-sensor">Cancel</a>
         <a class="waves-effect waves-light btn orange darken-1 schema-button-margin" id="save-sensor">OK</a>
     </div>
@@ -66,12 +69,16 @@
                 <a class="waves-effect waves-light btn orange darken-1 schema-button schema-button-margin" id="add-new-schema"><i class="material-icons left">mode_edit</i>Add new</a>
                 <!--                <a class="waves-effect waves-light btn orange darken-1 schema-button-margin" id="save-schema">Save</a>
                                 <a class="waves-effect waves-light btn orange darken-1 schema-button-margin" id="cancel-schema">Cancel</a>-->
-                <ul id="schemas" class="dropdown-content" ng-repeat="schema in schemaList">
-                    <li><a href="#" class="black-text">{{schema.name}}</a></li>
+                <ul id="schemas" class="dropdown-content">
+                    <!--<li><a href="#" class="black-text">{{schema.name}}</a></li>-->
                 </ul>
                 <input type="file" id="select-file" />
-                <div id="schema-container">
+                <div id="schema-container" style="margin-top: 140px;">
                     <img ng-model="schema1" src="{{schema1.img}}" id="schema-img" style="margin-top: 30px; margin-left: auto; margin-right: auto;                 text-align: center; position: absolute" />
+                    <a id="delete-schema" class="waves-effect waves-light btn orange darken-1" style="position: absolute; right: 0;">
+                        <i class="small material-icons">delete</i></a>
+                    <a id="edit-schema" class="waves-effect waves-light btn orange darken-1" style="position: absolute; right: 100px;">
+                        <i class="small material-icons">border_color</i></a>
                     <!--<div id="temp-sensor"></div>-->
                 </div>
             </div>
@@ -83,11 +90,11 @@
         </div>
         <div class="col s4" style="margin-top:30px;">
             <a class="waves-effect waves-light btn orange darken-1 schema-button-margin" id="cancel-schema">Cancel</a>
-            <a class="waves-effect waves-light btn orange darken-1 schema-button-margin" id="save-schema">Save</a>
+            <a class="waves-effect waves-light btn orange darken-1 schema-button-margin" id="save-schema">Upload</a>
         </div>
     </div>
 
-    <div class="fixed-action-btn horizontal">
+    <div class="fixed-action-btn horizontal" id="add-new-sensor-button">
         <a class="btn-floating btn-large orange darken-2">
             <i class="large material-icons">add</i>
         </a>
