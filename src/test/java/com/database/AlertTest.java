@@ -45,7 +45,7 @@ public class AlertTest extends TestBase {
 
         sensor = new Sensor();
         sensor.setId(1);
-        sensor.setSensorId(1);
+        sensor.setSensorId("1");
         sensor.setName("sensor1");
         sensor.setType(1);
 

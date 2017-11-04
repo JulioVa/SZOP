@@ -29,7 +29,12 @@ create table schema(
   img bytea not null,
   id serial not null
     constraint schema_id_pk
-    primary key
+    primary key,
+  user_id integer not null
+    constraint system_user_id_fk
+    references "user"
+    on update cascade on delete cascade
+      deferrable
 );
 create unique index schema_id_uindex on schema (id);
 --CREATE SENSOR
@@ -37,7 +42,7 @@ create table sensor(
   id serial not null
     constraint sensor_pkey
     primary key,
-  sensor_id integer,
+  sensor_id varchar(50),
   name varchar(50) not null,
   type integer not null,
   last_update TIMESTAMP,

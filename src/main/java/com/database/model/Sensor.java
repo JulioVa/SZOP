@@ -15,7 +15,7 @@ public class Sensor implements Serializable {
     private Integer id;
 
     @Column(name = "sensor_id")
-    private Integer sensorId;
+    private String sensorId;
 
     @Column(name = "name")
     private String name;
@@ -54,11 +54,11 @@ public class Sensor implements Serializable {
         this.id = id;
     }
 
-    public Integer getSensorId() {
+    public String getSensorId() {
         return sensorId;
     }
 
-    public void setSensorId(Integer sensorId) {
+    public void setSensorId(String sensorId) {
         this.sensorId = sensorId;
     }
 
@@ -146,7 +146,7 @@ public class Sensor implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = sensorId;
+        int result = sensorId.hashCode();
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + type;
         result = 31 * result + (lastUpdate != null ? lastUpdate.hashCode() : 0);

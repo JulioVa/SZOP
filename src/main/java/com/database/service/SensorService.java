@@ -12,7 +12,6 @@ public class SensorService {
     private static final Logger LOGGER = LogManager.getLogger("SensorService");
 
     public static Sensor findSensorById(int id){
-        LOGGER.error("xxx" + id);
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
         Sensor sensor = session.createQuery("FROM Sensor s WHERE s.id = :id", Sensor.class).setParameter("id", id).getSingleResult();
@@ -52,7 +51,7 @@ public class SensorService {
         return sensors;
     }
 
-    public static Sensor findBySensorIdAndSystemId(int sensorId, int systemId){
+    public static Sensor findBySensorIdAndSystemId(String sensorId, int systemId){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
         try {

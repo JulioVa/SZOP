@@ -2,6 +2,8 @@ package com.database.util;
 
 import com.database.dto.SchemaDto;
 import com.database.model.Schema;
+import com.database.model.User;
+import com.database.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +11,12 @@ import java.util.List;
 public class SchemaUtil {
 
     public static Schema addSchema(SchemaDto schemaDto) {
+        User user = UserService.findUserById(schemaDto.getUserId());
+
         Schema schema = new Schema();
         schema.setName(schemaDto.getName());
         schema.setImg(schemaDto.getImg());
+        schema.setUser(user);
         return schema;
     }
 
@@ -25,6 +30,7 @@ public class SchemaUtil {
         SchemaDto schemaDto = new SchemaDto();
         schemaDto.setName(schema.getName());
         schemaDto.setImg(schema.getImg());
+        schemaDto.setUserId(schema.getUser().getId());
         return schemaDto;
     }
 

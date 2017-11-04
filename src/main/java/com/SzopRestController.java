@@ -61,7 +61,7 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/system/{systemId}/sensors/{sensorId}", method = RequestMethod.PUT)
-    public ResponseEntity<SensorDto> updateSensor(@PathVariable int systemId, @PathVariable int sensorId, @RequestBody SensorDto sensorDto) {
+    public ResponseEntity<SensorDto> updateSensor(@PathVariable int systemId, @PathVariable String sensorId, @RequestBody SensorDto sensorDto) {
         Sensor sensor = SensorService.findBySensorIdAndSystemId(sensorId, systemId);
         if (sensor == null) {
             return ResponseEntity.notFound().build();
