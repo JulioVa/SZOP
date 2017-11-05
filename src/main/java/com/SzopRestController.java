@@ -103,7 +103,7 @@ public class SzopRestController {
     public ResponseEntity<SchemaIdLevelDto> createSchema(@RequestBody SchemaDto schemaDto) {
         Schema schema = SchemaUtil.addSchema(schemaDto);
         SchemaService.save(schema);
-        SchemaIdLevelDto schemaIdLevelDto = new SchemaIdLevelDto(schema.getName(), schema.getImg(), schema.getId());
+        SchemaIdLevelDto schemaIdLevelDto = new SchemaIdLevelDto(schema.getName(), schema.getImg(), schema.getId(), schema.getUser().getId());
         return ResponseEntity.ok().body(schemaIdLevelDto);
     }
 

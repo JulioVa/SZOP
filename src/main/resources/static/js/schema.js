@@ -11,6 +11,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     var schemaY;
     var currentSchemaId;
     var firstSchemaId;
+    var userId = 1;
 
     function getSchemasList() {
         $("#schemas").empty();
@@ -200,9 +201,11 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     });
 
     $("#save-schema").click(function() {
+        $("#no-name-alert-button").unbind("click");
         var schemaName = $("#schema-name").val();
         if (schemaName == "") {
             console.log("NO SCHEMA NAME!!!");
+            $("#schema-name2").val("");
             $("#no-name-alert").css("visibility", "visible");
             $("#no-name-alert-button").click(function() {
                 var schemaName = $("#schema-name2").val();
@@ -222,7 +225,8 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
         if (loaded === true) {
             var data = {
                 "name": schemaName,
-                "img": img
+                "img": img,
+                "userId": userId
             };
             console.log(schemaName);
 

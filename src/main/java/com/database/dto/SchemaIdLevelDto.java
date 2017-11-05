@@ -6,8 +6,8 @@ public class SchemaIdLevelDto extends SchemaDto {
 
     public SchemaIdLevelDto() {}
 
-    public SchemaIdLevelDto(String name, byte[] img, int id) {
-        super(name, img);
+    public SchemaIdLevelDto(String name, byte[] img, int id, int userId) {
+        super(name, img, userId);
         this.id = id;
     }
 
