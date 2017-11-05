@@ -5,6 +5,7 @@ import com.database.model.Schema;
 import com.database.model.Sensor;
 import com.database.model.System;
 import com.database.service.SchemaService;
+import com.database.service.SensorService;
 import com.database.service.SystemService;
 
 import java.util.ArrayList;
@@ -66,6 +67,15 @@ public class SensorUtil {
             sensorDtos.add(convertToDto(sensor));
         }
         return sensorDtos;
+    }
+
+    public static void unbindFromSchema(List<Sensor> sensors) {
+        for (Sensor sensor : sensors) {
+            sensor.setSchemaX(null);
+            sensor.setSchemaY(null);
+            sensor.setSchema(null);
+            SensorService.update(sensor);
+        }
     }
 
 }

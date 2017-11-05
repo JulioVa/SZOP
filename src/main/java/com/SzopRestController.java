@@ -80,6 +80,13 @@ public class SzopRestController {
         return ResponseEntity.ok().body(sensorDto);
     }
 
+    @RequestMapping(value = "/sensors/schema/{schemaId}/unbind", method = RequestMethod.PUT)
+    public ResponseEntity<Void> unbindSensorsSensors(@PathVariable int schemaId) {
+        List<Sensor> sensors = SensorService.findAllBySchema(schemaId);
+        SensorUtil.unbindFromSchema(sensors);
+        return ResponseEntity.ok().build();
+    }
+
     @RequestMapping(value = "/system/{systemId}/sensors/{sensorId}", method = RequestMethod.PUT)
     public ResponseEntity<SensorDto> updateSensor(@PathVariable int systemId, @PathVariable int sensorId, @RequestBody SensorDto sensorDto) {
         Sensor sensor = SensorService.findBySensorIdAndSystemId(sensorId, systemId);

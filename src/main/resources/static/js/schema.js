@@ -10,6 +10,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     var schemaX;
     var schemaY;
     var currentSchemaId;
+    var firstSchemaId;
 
     function getSchemasList() {
         $("#schemas").empty();
@@ -140,9 +141,22 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
         });
     }
 
+    function getFirstSchemaId() {
+        $http.get('/schemas/id').
+        then(function (response) {
+            var schemasList = response.data;
+            console.log(schemasList[0].id);
+            firstSchemaId = schemasList[0].id;
+        });
+    }
+
+    getFirstSchemaId();
     getSchemasList();
-    getSchemaById(142);
-    getSensorsBySchemaId(142);
+
+    setTimeout(function() {
+        getSchemaById(firstSchemaId);
+        getSensorsBySchemaId(firstSchemaId);
+    }, 2000);
 
     /*$("#choose-schema").click(function() {
      $http.get('/schemas').
@@ -189,8 +203,20 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
         var schemaName = $("#schema-name").val();
         if (schemaName == "") {
             console.log("NO SCHEMA NAME!!!");
+            $("#no-name-alert").css("visibility", "visible");
+            $("#no-name-alert-button").click(function() {
+                var schemaName = $("#schema-name2").val();
+                $("#no-name-alert").css("visibility", "hidden");
+                console.log("nnnnn");
+                saveSchema(schemaName);
+            });
+        } else {
+            saveSchema(schemaName);
         }
         //var img = "sdfasfashfsgasfh";
+    });
+
+    function saveSchema(schemaName) {
         img = img.substring(img.indexOf(",") + 1);
         console.log(img);
         if (loaded === true) {
@@ -221,7 +247,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
                 };
             });
         }
-    });
+    }
 
     $("#add-temp-sensor").click(function() {
         sensorType = "temp";
@@ -297,6 +323,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     });
 
     function moveTempSensor( event ) {
+        $("#save-sensor").css("visibility", "hidden");
         $("#temp-sensor" + tempSensorCounter).css({"margin-top": event.pageY - $('#schema-container').offset().top - 15 + "px", "margin-left": event.pageX - $('#schema-container').offset().left - 15 + "px"});
         //$("#temp-sensor").css({"position": "absolute", "margin-top": event.pageY + "px", "margin-left": event.pageX + "px"});
         schemaX = event.pageX;
@@ -305,6 +332,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     }
 
     function moveHumiditySensor( event ) {
+        $("#save-sensor").css("visibility", "hidden");
         $("#humid-sensor" + humidSensorCounter).css({"margin-top": event.pageY - $('#schema-container').offset().top - 15 + "px", "margin-left": event.pageX - $('#schema-container').offset().left - 15 + "px"});
         //$("#temp-sensor").css({"position": "absolute", "margin-top": event.pageY + "px", "margin-left": event.pageX + "px"});
         schemaX = event.pageX;
@@ -320,6 +348,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
         console.log("id " + sensorId);
         $("#sensor-alert").css("display", "none");
         $("#choose-sensor").css("visibility", "hidden");
+        $("#save-sensor").css("visibility", "hidden");
         if (sensorType == "temp") {
             tempSensorCounter++;
             $("#schema-container").prepend("<div class='sensor-point' id='temp-sensor" + tempSensorCounter + "'></div>");
@@ -394,6 +423,48 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     $("#select-file").change(function(){
         readURL(this);
         $('#schema-img').css({"margin-top": "30px", "margin-left": "auto", "margin-right": "auto"});
+    });
+    
+    $("#not-editable-schema-name").hover(function () {
+        console.log("edit?");
+    });
+
+    $("#not-editable-schema-name").click(function (event) {
+        console.log("lll");
+        $("#not-editable-schema-name").css("display", "none");
+        $("#schema-name").css("visibility", "visible");
+        $("#schema-name").val($scope.schema1.name);
+
+        $("#schema-name").blur(function () {
+            $scope.schema1.name = $("#schema-name").val();
+            $("#schema-name").css("visibility", "hidden");
+            $("#not-editable-schema-name").css("display", "block");
+            var data = {
+                "name": $scope.schema1.name
+            };
+            console.log(data);
+
+            $http.put('/schema/' + currentSchemaId, data).then(function () {
+                console.log("updated" + data);
+                getSchemasList();
+            });
+        })
+    });
+
+    $("#delete-schema").click(function () {
+        $http.put('/sensors/schema/' + currentSchemaId + '/unbind').then(function () {
+            $http.delete('/schema/' + currentSchemaId).then(function () {
+                console.log("deleted");
+                $(".sensor-point").css("display", "none");
+                getFirstSchemaId();
+                getSchemasList();
+                setTimeout(function() {
+                    getSchemaById(firstSchemaId);
+                    getSensorsBySchemaId(firstSchemaId);
+                }, 2000);
+                $('#schema-img').attr('src', schemaImg);
+            });
+        });
     });
 
     setTimeout(function() {
