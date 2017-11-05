@@ -18,6 +18,10 @@ public class Schema {
     @Column(name = "img")
     private byte[] img;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Schema() {
     }
 
@@ -45,6 +49,15 @@ public class Schema {
         this.img = img;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,6 +66,7 @@ public class Schema {
         Schema schema = (Schema) o;
 
         if (name != null ? !name.equals(schema.name) : schema.name != null) return false;
+        if (user != null ? ! user.equals(schema.user) : schema.user != null) return false;
         return Arrays.equals(img, schema.img);
     }
 
@@ -60,6 +74,7 @@ public class Schema {
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + Arrays.hashCode(img);
+        result = 31 * result + user.hashCode();
         return result;
     }
 

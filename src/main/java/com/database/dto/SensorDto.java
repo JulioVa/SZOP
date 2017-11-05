@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class SensorDto implements Serializable {
 
-    private Integer sensorId;
+    private String sensorId;
     private String name;
     private Integer type;
     private Date lastUpdate;
@@ -18,7 +18,7 @@ public class SensorDto implements Serializable {
 
     public SensorDto() {}
 
-    public SensorDto(Integer sensorId, String name, int type, Date lastUpdate, boolean isActive, int schemaId, int systemId, int schemaX, int schemaY) {
+    public SensorDto(String sensorId, String name, int type, Date lastUpdate, boolean isActive, int schemaId, int systemId, int schemaX, int schemaY) {
         this.sensorId = sensorId;
         this.name = name;
         this.type = type;
@@ -30,11 +30,11 @@ public class SensorDto implements Serializable {
         this.schemaY = schemaY;
     }
 
-    public Integer getSensorId() {
+    public String getSensorId() {
         return sensorId;
     }
 
-    public void setSensorId(Integer sensorId) {
+    public void setSensorId(String sensorId) {
         this.sensorId = sensorId;
     }
 

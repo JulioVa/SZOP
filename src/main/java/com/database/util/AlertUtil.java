@@ -37,7 +37,7 @@ public class AlertUtil {
         AlertDto alertDto = new AlertDto();
         alertDto.setValue(alert.getValue());
         alertDto.setGreaterLower(alert.getGreaterLower());
-        alertDto.setSensorId(alert.getSensor().getSensorId());
+        alertDto.setSensorId(alert.getSensor().getId());
         alertDto.setUserId(alert.getUser().getId());
         return alertDto;
     }
