@@ -5,6 +5,8 @@ import com.database.model.*;
 import com.database.model.System;
 import com.database.service.*;
 import com.database.util.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,8 @@ import java.util.UUID;
 
 @RestController
 public class SzopRestController {
+
+    private static final Logger LOGGER = LogManager.getLogger("Controller");
 
     private Temperature temperature = new Temperature();
 
@@ -265,8 +269,10 @@ public class SzopRestController {
     @RequestMapping(value = "/sensors/data", method = RequestMethod.POST)
     ResponseEntity<?> addData(@RequestBody Map<String, Object> data) {
         if (data != null) {
+            LOGGER.debug(data.toString());
             int userId = (int) data.get("user_id");
             int systemId = (int) data.get("system_id");
+            List<TemperatureData> temps = TemperatureDataUtil.convertToDtos((List<Map<String, Object>>) data.get("sensors"));
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.noContent().build();
