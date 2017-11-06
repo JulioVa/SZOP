@@ -2,16 +2,16 @@ package com.database.model;
 
 public class TemperatureData {
 
-    private long date;
+    private String date;
     private String type;
     private String sensorId;
     private double value;
 
-    public long getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(long date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -66,9 +66,9 @@ public class TemperatureData {
     public int hashCode() {
         int result;
         long temp;
-        result = (int) (date ^ (date >>> 32));
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (sensorId != null ? sensorId.hashCode() : 0);
+        result = date.hashCode();
+        result = 31 * result + type.hashCode();
+        result = 31 * result + sensorId.hashCode();
         temp = Double.doubleToLongBits(value);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
