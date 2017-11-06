@@ -10,7 +10,7 @@ public class TemperatureDataUtil {
 
     public static TemperatureData convertToDto(Map<String, Object> data) {
         TemperatureData tempData = new TemperatureData();
-        tempData.setValue((float) data.get("value"));
+        tempData.setValue((double) data.get("value"));
         tempData.setDate((long) data.get("date"));
         tempData.setSensorId((String) data.get("id"));
         tempData.setType((String) data.get("type"));

@@ -5,7 +5,7 @@ public class TemperatureData {
     private long date;
     private String type;
     private String sensorId;
-    private float value;
+    private double value;
 
     public long getDate() {
         return date;
@@ -31,11 +31,11 @@ public class TemperatureData {
         this.sensorId = sensorId;
     }
 
-    public float getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(float value) {
+    public void setValue(double value) {
         this.value = value;
     }
 
@@ -64,10 +64,13 @@ public class TemperatureData {
 
     @Override
     public int hashCode() {
-        int result = (int) (date ^ (date >>> 32));
+        int result;
+        long temp;
+        result = (int) (date ^ (date >>> 32));
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (sensorId != null ? sensorId.hashCode() : 0);
-        result = 31 * result + (value != +0.0f ? Float.floatToIntBits(value) : 0);
+        temp = Double.doubleToLongBits(value);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
 }
