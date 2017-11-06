@@ -261,6 +261,16 @@ public class SzopRestController {
         return ResponseEntity.ok().build();
     }
 
+
+    @RequestMapping(value = "/sensors/data", method = RequestMethod.POST)
+    ResponseEntity<?> addData(@RequestBody Map<String, Object> data) {
+        if (data != null) {
+            int userId = (int) data.get("user_id");
+            int systemId = (int) data.get("system_id");
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.noContent().build();
+    }
     // TODO remove below methods, they were used for testing connection with raspberry pi
     @RequestMapping(value = "/temp")
     public Map<String, Object> temp() {
@@ -268,14 +278,5 @@ public class SzopRestController {
         temp.put("id", UUID.randomUUID().toString());
         temp.put("content", temperature.getTemperature());
         return temp;
-    }
-
-    @RequestMapping(value = "/data", method = RequestMethod.POST)
-    ResponseEntity<?> add(@RequestBody Map<String, Float> temp) {
-        if (temp != null) {
-            temperature.setTemperature(temp.get("temp"));
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.noContent().build();
     }
 }
