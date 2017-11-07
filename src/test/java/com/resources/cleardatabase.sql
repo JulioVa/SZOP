@@ -43,7 +43,7 @@ create table sensor(
   id serial not null
     constraint sensor_pkey
     primary key,
-  sensor_id integer,
+  sensor_id varchar(50),
   name varchar(50) not null,
   type integer not null,
   last_update TIMESTAMP,

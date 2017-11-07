@@ -171,3 +171,15 @@
     bottom: 20px;
     float: bottom;
 }
+
+#sensor-details {
+    position: absolute;
+    margin-top: 300px;
+    margin-left: 600px;
+    width: 300px;
+    height: 200px;
+    background-color: #455a64;
+    z-index: 104;
+    box-shadow: 2px 2px 5px #989898;
+    visibility: hidden;
+}
