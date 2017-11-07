@@ -5,6 +5,8 @@ import com.database.model.*;
 import com.database.model.System;
 import com.database.service.*;
 import com.database.util.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,8 @@ import java.util.UUID;
 
 @RestController
 public class SzopRestController {
+
+    private static final Logger LOGGER = LogManager.getLogger("Controller");
 
     private Temperature temperature = new Temperature();
 
@@ -299,6 +303,19 @@ public class SzopRestController {
         return ResponseEntity.ok().build();
     }
 
+
+    @RequestMapping(value = "/sensors/data", method = RequestMethod.POST)
+    ResponseEntity<?> addData(@RequestBody Map<String, Object> data) {
+        if (data != null) {
+            LOGGER.error(data.toString());
+            int userId = (int) data.get("user_id");
+            int systemId = (int) data.get("system_id");
+            List<TemperatureData> temps = TemperatureDataUtil.convertToDtos((List<Map<String, Object>>) data.get("sensors"));
+            InfluxService.writeData(userId,systemId,temps);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.noContent().build();
+    }
     // TODO remove below methods, they were used for testing connection with raspberry pi
     @RequestMapping(value = "/temp")
     public Map<String, Object> temp() {
@@ -306,14 +323,5 @@ public class SzopRestController {
         temp.put("id", UUID.randomUUID().toString());
         temp.put("content", temperature.getTemperature());
         return temp;
-    }
-
-    @RequestMapping(value = "/data", method = RequestMethod.POST)
-    ResponseEntity<?> add(@RequestBody Map<String, Float> temp) {
-        if (temp != null) {
-            temperature.setTemperature(temp.get("temp"));
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.noContent().build();
     }
 }
