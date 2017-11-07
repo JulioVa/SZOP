@@ -24,11 +24,11 @@ public class InfluxService {
         for (TemperatureData temp: temps) {
 
             Point point = Point.measurement("user_" + userId)
-                    .time(temp.getDate(), TimeUnit.MILLISECONDS)
+                    .time(Long.parseLong(temp.getDate()), TimeUnit.MILLISECONDS)
                     .addField("value", temp.getValue())
-                    .addField("type", temp.getType())
-                    .addField("sensor", temp.getSensorId())
-                    .addField("system", systemId)
+                    .tag("type", temp.getType())
+                    .tag("sensor", temp.getSensorId())
+                    .tag("system", Integer.valueOf(systemId).toString())
                     .build();
 
             batchPoints.point(point);
