@@ -273,6 +273,7 @@ public class SzopRestController {
             int userId = (int) data.get("user_id");
             int systemId = (int) data.get("system_id");
             List<TemperatureData> temps = TemperatureDataUtil.convertToDtos((List<Map<String, Object>>) data.get("sensors"));
+            InfluxService.writeData(userId,systemId,temps);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.noContent().build();
