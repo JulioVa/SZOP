@@ -269,7 +269,7 @@ public class SzopRestController {
     @RequestMapping(value = "/sensors/data", method = RequestMethod.POST)
     ResponseEntity<?> addData(@RequestBody Map<String, Object> data) {
         if (data != null) {
-            LOGGER.debug(data.toString());
+            LOGGER.error(data.toString());
             int userId = (int) data.get("user_id");
             int systemId = (int) data.get("system_id");
             List<TemperatureData> temps = TemperatureDataUtil.convertToDtos((List<Map<String, Object>>) data.get("sensors"));
