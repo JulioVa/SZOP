@@ -3,7 +3,6 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     var sensorCounter = 0;
     var sensorType = "temp";
     var img;
-    var reasonableTimeToWaitForFileToLoad = 10000;
     var loaded = false;
     var schemaImg;
     var schemaX;
@@ -12,6 +11,11 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     var currentSensorId;
     var firstSchemaId;
     var userId = 1;
+
+    getFirstSchemaId();
+    getSchemasList();
+    chartHover();
+    moveRemoveClick();
 
     function getSchemasList() {
         $("#schemas").empty();
@@ -40,37 +44,8 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
                 $('#schema-img').attr('src', schemaImg);
                 $('#schema-img').css("opacity", "1");
 
-                setTimeout(function() {
-                    $(".sensor-point").hover(function () {
-                        var posTop = $(this).offset().top;
-                        var posLeft = $(this).offset().left;
-                        showChart(posTop, posLeft);
-                    });
-                    var timer;
-                    $(".sensor-point, #sensor-details").mouseleave(function() {
-                        timer = setTimeout(hideChart, 10);
-                    }).mouseenter(function() {
-                        clearTimeout(timer);
-                    });
-                }, 2000);
-
-                setTimeout(function() {
-                    $(".sensor-point").click(function (event) {
-                        currentSensorId = event.target.id;
-                        currentSensorId = currentSensorId.substring(11);
-                        console.log("current sensor id" + currentSensorId);
-                        var posTop = $(this).offset().top;
-                        var posLeft = $(this).offset().left;
-                        showMoveRemove(posTop, posLeft);
-                    });
-
-                    var timer;
-                    $(".sensor-point, #move-remove").mouseleave(function() {
-                        timer = setTimeout(hideMoveRemove, 10);
-                    }).mouseenter(function() {
-                        clearTimeout(timer);
-                    });
-                }, 3000);
+                chartHover();
+                moveRemoveClick();
             });
         }, function () {
             $scope.schema1 = null;
@@ -136,23 +111,10 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
             firstSchemaId = schemasList[0].id;
         });
     }
-
-    getFirstSchemaId();
-    getSchemasList();
-
     setTimeout(function() {
         getSchemaById(firstSchemaId);
         getSensorsBySchemaId(firstSchemaId);
     }, 2000);
-
-    /*$("#choose-schema").click(function() {
-     $http.get('/schemas').
-     then(function (response) {
-     var schemasList = response.data;
-     console.log(schemasList);
-     $scope.schemaList = schemasList;
-     });
-     });*/
 
     $("#add-new-schema").click(function() {
         console.log("xxx");
@@ -328,15 +290,6 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
         console.log(event.pageX + " " + event.pageY);
     }
 
-   /* function moveHumiditySensor( event ) {
-        $("#save-sensor").css("visibility", "hidden");
-        $("#sensorpoint" + humidSensorCounter).css({"margin-top": event.pageY - $('#schema-container').offset().top - 15 + "px", "margin-left": event.pageX - $('#schema-container').offset().left - 15 + "px"});
-        //$("#temp-sensor").css({"position": "absolute", "margin-top": event.pageY + "px", "margin-left": event.pageX + "px"});
-        schemaX = event.pageX;
-        schemaY = event.pageY;
-        console.log(event.pageX + " " + event.pageY);
-    }*/
-
     $("#save-sensor").click(function() {
         var sensorId;
         $(':checked').each(function() {
@@ -382,47 +335,11 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
 
             //$("#sensorpoint" + sensorCounter).unbind("click");
 
-            setTimeout(function() {
-                $(".sensor-point").hover(function () {
-                    var posTop = $(this).offset().top;
-                    var posLeft = $(this).offset().left;
-                    showChart(posTop, posLeft);
-                });
-
-                var timer;
-                $(".sensor-point, #sensor-details").mouseleave(function() {
-                    timer = setTimeout(hideChart, 10);
-                }).mouseenter(function() {
-                    clearTimeout(timer);
-                });
-            }, 1000);
-
-            setTimeout(function() {
-                $(".sensor-point").click(function (event) {
-                    currentSensorId = event.target.id;
-                    currentSensorId = currentSensorId.substring(11);
-                    console.log("current sensor id" + currentSensorId);
-                    var posTop = $(this).offset().top;
-                    var posLeft = $(this).offset().left;
-                    showMoveRemove(posTop, posLeft);
-                });
-
-                var timer;
-                $(".sensor-point, #move-remove").mouseleave(function() {
-                    timer = setTimeout(hideMoveRemove, 10);
-                }).mouseenter(function() {
-                    clearTimeout(timer);
-                });
-            }, 3000);
+            chartHover();
+            moveRemoveClick();
 
         });
     });
-
-    /*$( "#schema-container" ).mousemove(function( event ) {
-     $("#temp-sensor").css({"position": "relative", "margin-top": event.pageY - 190 + "px", "margin-left": event.pageX - 330 + "px"});
-     //$("#temp-sensor").css({"position": "absolute", "margin-top": event.pageY + "px", "margin-left": event.pageX + "px"});
-     console.log(event.pageX + " " + event.pageY);
-     });*/
 
     function readURL(input) {
         if (input.files && input.files[0]) {
@@ -481,57 +398,28 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
                     //getSchemasList();
                 }, 2000);
                 $('#schema-img').attr('src', schemaImg);
-
-                setTimeout(function() {
-                    $(".sensor-point").hover(function () {
-                        var posTop = $(this).offset().top;
-                        var posLeft = $(this).offset().left;
-                        showChart(posTop, posLeft);
-                    });
-
-                    var timer;
-                    $(".sensor-point, #sensor-details").mouseleave(function() {
-                        timer = setTimeout(hideChart, 10);
-                    }).mouseenter(function() {
-                        clearTimeout(timer);
-                    });
-                }, 3000);
-
-                setTimeout(function() {
-                    $(".sensor-point").click(function (event) {
-                        currentSensorId = event.target.id;
-                        currentSensorId = currentSensorId.substring(11);
-                        console.log("current sensor id" + currentSensorId);
-                        var posTop = $(this).offset().top;
-                        var posLeft = $(this).offset().left;
-                        showMoveRemove(posTop, posLeft);
-                    });
-
-                    var timer;
-                    $(".sensor-point, #move-remove").mouseleave(function() {
-                        timer = setTimeout(hideMoveRemove, 10);
-                    }).mouseenter(function() {
-                        clearTimeout(timer);
-                    });
-                }, 3000);
+                chartHover();
+                moveRemoveClick();
             });
         });
     });
 
-    setTimeout(function() {
-        $(".sensor-point").hover(function () {
-            var posTop = $(this).offset().top;
-            var posLeft = $(this).offset().left;
-            showChart(posTop, posLeft);
-        });
+    function chartHover() {
+        setTimeout(function() {
+            $(".sensor-point").hover(function () {
+                var posTop = $(this).offset().top;
+                var posLeft = $(this).offset().left;
+                showChart(posTop, posLeft);
+            });
 
-        var timer;
-        $(".sensor-point, #sensor-details").mouseleave(function() {
-            timer = setTimeout(hideChart, 10);
-        }).mouseenter(function() {
-            clearTimeout(timer);
-        });
-    }, 3000);
+            var timer;
+            $(".sensor-point, #sensor-details").mouseleave(function() {
+                timer = setTimeout(hideChart, 10);
+            }).mouseenter(function() {
+                clearTimeout(timer);
+            });
+        }, 3000);
+    }
 
     function hideChart() {
         $("#sensor-details").css("visibility", "hidden");
@@ -544,23 +432,25 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
         $("#sensor-details").css("margin-top", posTop - 60);
     }
 
-    setTimeout(function() {
-        $(".sensor-point").click(function (event) {
-            currentSensorId = event.target.id;
-            currentSensorId = currentSensorId.substring(11);
-            console.log("current sensor id" + currentSensorId);
-            var posTop = $(this).offset().top;
-            var posLeft = $(this).offset().left;
-            showMoveRemove(posTop, posLeft);
-        });
+    function moveRemoveClick() {
+        setTimeout(function() {
+            $(".sensor-point").click(function (event) {
+                currentSensorId = event.target.id;
+                currentSensorId = currentSensorId.substring(11);
+                console.log("current sensor id" + currentSensorId);
+                var posTop = $(this).offset().top;
+                var posLeft = $(this).offset().left;
+                showMoveRemove(posTop, posLeft);
+            });
 
-        var timer;
-        $(".sensor-point, #move-remove").mouseleave(function() {
-            timer = setTimeout(hideMoveRemove, 10);
-        }).mouseenter(function() {
-            clearTimeout(timer);
-        });
-    }, 3000);
+            var timer;
+            $(".sensor-point, #move-remove").mouseleave(function() {
+                timer = setTimeout(hideMoveRemove, 10);
+            }).mouseenter(function() {
+                clearTimeout(timer);
+            });
+        }, 3000);
+    }
 
     function showMoveRemove(posTop, posLeft) {
         console.log(posTop + " " + posLeft);
@@ -580,39 +470,8 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
         setTimeout(function() {
             $(".sensor-point").css("visibility", "hidden");
             getSensorsBySchemaId(currentSchemaId);
-
-            setTimeout(function() {
-                $(".sensor-point").hover(function () {
-                    var posTop = $(this).offset().top;
-                    var posLeft = $(this).offset().left;
-                    showChart(posTop, posLeft);
-                });
-
-                var timer;
-                $(".sensor-point, #sensor-details").mouseleave(function() {
-                    timer = setTimeout(hideChart, 10);
-                }).mouseenter(function() {
-                    clearTimeout(timer);
-                });
-            }, 3000);
-
-            setTimeout(function() {
-                $(".sensor-point").click(function (event) {
-                    currentSensorId = event.target.id;
-                    currentSensorId = currentSensorId.substring(11);
-                    console.log("current sensor id" + currentSensorId);
-                    var posTop = $(this).offset().top;
-                    var posLeft = $(this).offset().left;
-                    showMoveRemove(posTop, posLeft);
-                });
-
-                var timer;
-                $(".sensor-point, #move-remove").mouseleave(function() {
-                    timer = setTimeout(hideMoveRemove, 10);
-                }).mouseenter(function() {
-                    clearTimeout(timer);
-                });
-            }, 3000);
+            chartHover();
+            moveRemoveClick();
         }, 1000);
     });
 
@@ -640,38 +499,8 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
 
             //$("#sensorpoint" + sensorCounter).unbind("click");
 
-            setTimeout(function() {
-                $(".sensor-point").hover(function () {
-                    var posTop = $(this).offset().top;
-                    var posLeft = $(this).offset().left;
-                    showChart(posTop, posLeft);
-                });
-
-                var timer;
-                $(".sensor-point, #sensor-details").mouseleave(function() {
-                    timer = setTimeout(hideChart, 10);
-                }).mouseenter(function() {
-                    clearTimeout(timer);
-                });
-            }, 1000);
-
-            setTimeout(function() {
-                $(".sensor-point").click(function (event) {
-                    currentSensorId = event.target.id;
-                    currentSensorId = currentSensorId.substring(11);
-                    console.log("current sensor id" + currentSensorId);
-                    var posTop = $(this).offset().top;
-                    var posLeft = $(this).offset().left;
-                    showMoveRemove(posTop, posLeft);
-                });
-
-                var timer;
-                $(".sensor-point, #move-remove").mouseleave(function() {
-                    timer = setTimeout(hideMoveRemove, 10);
-                }).mouseenter(function() {
-                    clearTimeout(timer);
-                });
-            }, 3000);
+            chartHover();
+            moveRemoveClick();
 
         });
         $("#sensor-details").css("visibility", "visible");
@@ -680,11 +509,6 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     setTimeout(function() {
         console.log(img);
         loaded = true;
-    }, reasonableTimeToWaitForFileToLoad);
-
-    /*$('input.choose-sensor-checkbox').on('change', function() {
-        console.log("vvv");
-        $('input.choose-sensor-checkbox').not(this).prop('checked', false);
-    });*/
+    }, 10000);
 
 }]);
