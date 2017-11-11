@@ -1,5 +1,6 @@
 package com.database.util;
 
+import com.database.service.InfluxService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.influxdb.InfluxDB;
@@ -16,20 +17,23 @@ public class InfluxUtils {
     public static boolean connect() {
 
         influxDB = InfluxDBFactory.connect("http://77.55.225.4:8086", "root", "Szop1234");
-        boolean influxDbStarted = false;
+        boolean influxDBstarted = false;
         do {
             Pong response;
             try {
                 response = influxDB.ping();
                 if (!response.getVersion().equalsIgnoreCase("unknown")) {
-                    influxDbStarted = true;
+                    influxDBstarted = true;
                 }
             } catch (Exception e) {
                 // NOOP intentional
-                LOGGER.error(e);
+                LOGGER.error(e  );
             }
-        } while (!influxDbStarted);
+        } while (!influxDBstarted);
+        influxDB.createDatabase(DB_NAME);
         influxDB.setDatabase(DB_NAME);
+
+        InfluxService.getDataForSensor(1,1,"28-000008fe8820");
 
         return true;
     }
