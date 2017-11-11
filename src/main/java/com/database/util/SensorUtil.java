@@ -78,4 +78,11 @@ public class SensorUtil {
         }
     }
 
+    public static void unbindSingleFromSchema(Sensor sensor) {
+        sensor.setSchemaX(null);
+        sensor.setSchemaY(null);
+        sensor.setSchema(null);
+        SensorService.update(sensor);
+    }
+
 }

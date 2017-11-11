@@ -183,3 +183,43 @@
     box-shadow: 2px 2px 5px #989898;
     visibility: hidden;
 }
+
+#no-image-alert {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-top: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #455a64;
+    width: 500px;
+    height: 150px;
+    z-index: 105;
+    box-shadow: 2px 2px 5px #989898;
+    visibility: hidden;
+}
+
+#no-image-alert-button {
+    float: right;
+    display: block;
+    margin-top: 20px;
+    margin-right: 40px;
+}
+
+.collection .collection-item {
+    background-color: #455a64;
+    line-height: 1.5rem;
+    padding: 10px 20px;
+    margin: 0;
+    border-bottom: 1px solid orange;
+}
+
+.collection a.collection-item:not(.active):hover {
+    background-color: #617985;
+}
+
+#move-remove {
+    visibility: hidden;
+}
