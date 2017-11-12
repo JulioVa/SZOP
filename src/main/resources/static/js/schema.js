@@ -1,17 +1,21 @@
 angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', function ($scope, $http, $window) {
 
-    var tempSensorCounter = 0;
-    var humidSensorCounter = 0;
+    var sensorCounter = 0;
     var sensorType = "temp";
     var img;
-    var reasonableTimeToWaitForFileToLoad = 10000;
     var loaded = false;
     var schemaImg;
     var schemaX;
     var schemaY;
     var currentSchemaId;
+    var currentSensorId;
     var firstSchemaId;
     var userId = 1;
+
+    getFirstSchemaId();
+    getSchemasList();
+    chartHover();
+    moveRemoveClick();
 
     function getSchemasList() {
         $("#schemas").empty();
@@ -40,19 +44,8 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
                 $('#schema-img').attr('src', schemaImg);
                 $('#schema-img').css("opacity", "1");
 
-                setTimeout(function() {
-                    $(".sensor-point").hover(function () {
-                        var posTop = $(this).offset().top;
-                        var posLeft = $(this).offset().left;
-                        showChart(posTop, posLeft);
-                    });
-                    var timer;
-                    $(".sensor-point, #sensor-details").mouseleave(function() {
-                        timer = setTimeout(hideChart, 10);
-                    }).mouseenter(function() {
-                        clearTimeout(timer);
-                    });
-                }, 2000);
+                chartHover();
+                moveRemoveClick();
             });
         }, function () {
             $scope.schema1 = null;
@@ -80,8 +73,8 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
                 var sensorY = entry.schemaY;
                 if (entry.type == 1) {
                     console.log("ccc");
-                    $("#schema-container").prepend("<div class='sensor-point' id='temp-sensor" + entry.sensorId + "'></div>");
-                    $("#temp-sensor" + entry.sensorId).css({
+                    $("#schema-container").prepend("<div class='sensor-point' id='sensorpoint" + entry.sensorId + "'></div>");
+                    $("#sensorpoint" + entry.sensorId).css({
                         "width": "30px",
                         "height": "30px",
                         "background-color": "#f44336",
@@ -93,8 +86,8 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
                         "margin-left": sensorX - $('#schema-container').offset().left - 15 + "px"
                     });
                 } else if (entry.type == 2) {
-                    $("#schema-container").prepend("<div class='sensor-point' id='humid-sensor" + entry.sensorId + "'></div>");
-                    $("#humid-sensor" + entry.sensorId).css({
+                    $("#schema-container").prepend("<div class='sensor-point' id='sensorpoint" + entry.sensorId + "'></div>");
+                    $("#sensorpoint" + entry.sensorId).css({
                         "width": "30px",
                         "height": "30px",
                         "background-color": "#2196f3",
@@ -118,23 +111,10 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
             firstSchemaId = schemasList[0].id;
         });
     }
-
-    getFirstSchemaId();
-    getSchemasList();
-
     setTimeout(function() {
         getSchemaById(firstSchemaId);
         getSensorsBySchemaId(firstSchemaId);
     }, 2000);
-
-    /*$("#choose-schema").click(function() {
-     $http.get('/schemas').
-     then(function (response) {
-     var schemasList = response.data;
-     console.log(schemasList);
-     $scope.schemaList = schemasList;
-     });
-     });*/
 
     $("#add-new-schema").click(function() {
         console.log("xxx");
@@ -171,7 +151,9 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     $("#save-schema").click(function() {
         $("#no-name-alert-button").unbind("click");
         var schemaName = $("#schema-name").val();
-        if (schemaName == "") {
+        if ($("#select-file").val() == "") {
+            $("#no-image-alert").css("visibility", "visible");
+        } else if (schemaName == "") {
             console.log("NO SCHEMA NAME!!!");
             $("#schema-name2").val("");
             $("#no-name-alert").css("visibility", "visible");
@@ -185,6 +167,10 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
             saveSchema(schemaName);
         }
         //var img = "sdfasfashfsgasfh";
+    });
+
+    $("#no-image-alert-button").click(function() {
+        $("#no-image-alert").css("visibility", "hidden");
     });
 
     function saveSchema(schemaName) {
@@ -294,18 +280,10 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
         $("#sensor-alert").css("display", "none");
     });
 
-    function moveTempSensor( event ) {
+    function moveSensor( event ) {
+        $("#sensor-details").css("visibility", "hidden");
         $("#save-sensor").css("visibility", "hidden");
-        $("#temp-sensor" + tempSensorCounter).css({"margin-top": event.pageY - $('#schema-container').offset().top - 15 + "px", "margin-left": event.pageX - $('#schema-container').offset().left - 15 + "px"});
-        //$("#temp-sensor").css({"position": "absolute", "margin-top": event.pageY + "px", "margin-left": event.pageX + "px"});
-        schemaX = event.pageX;
-        schemaY = event.pageY;
-        console.log(event.pageX + " " + event.pageY);
-    }
-
-    function moveHumiditySensor( event ) {
-        $("#save-sensor").css("visibility", "hidden");
-        $("#humid-sensor" + humidSensorCounter).css({"margin-top": event.pageY - $('#schema-container').offset().top - 15 + "px", "margin-left": event.pageX - $('#schema-container').offset().left - 15 + "px"});
+        $("#sensorpoint" + sensorCounter).css({"margin-top": event.pageY - $('#schema-container').offset().top - 15 + "px", "margin-left": event.pageX - $('#schema-container').offset().left - 15 + "px"});
         //$("#temp-sensor").css({"position": "absolute", "margin-top": event.pageY + "px", "margin-left": event.pageX + "px"});
         schemaX = event.pageX;
         schemaY = event.pageY;
@@ -322,91 +300,46 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
         $("#choose-sensor").css("visibility", "hidden");
         $("#save-sensor").css("visibility", "hidden");
         if (sensorType == "temp") {
-            tempSensorCounter++;
-            $("#schema-container").prepend("<div class='sensor-point' id='temp-sensor" + tempSensorCounter + "'></div>");
-            $("#temp-sensor" + tempSensorCounter).css({
+            sensorCounter = sensorId;
+            $("#schema-container").prepend("<div class='sensor-point' id='sensorpoint" + sensorCounter + "'></div>");
+            $("#sensorpoint" + sensorCounter).css({
                 "width": "30px", "height": "30px", "background-color": "#f44336",
                 "background-image": "url('../img/temp2.png')", "border-radius": "90px",
                 "position": "absolute", "z-index": "100"
             });
-            $("#schema-container").mousemove(moveTempSensor);
-            $("#temp-sensor" + tempSensorCounter).click(function () {
-                $("#schema-container").off("mousemove", moveTempSensor);
-
-                var data = {
-                    "schemaX": schemaX,
-                    "schemaY": schemaY,
-                    "schemaId": currentSchemaId
-                };
-                console.log(data);
-
-                $http.put('/system/1/sensors/' + sensorId, data).then(function () {
-                    console.log("updated" + data);
-                });
-
-                setTimeout(function() {
-                    $(".sensor-point").hover(function () {
-                        var posTop = $(this).offset().top;
-                        var posLeft = $(this).offset().left;
-                        showChart(posTop, posLeft);
-                    });
-
-                    var timer;
-                    $(".sensor-point, #sensor-details").mouseleave(function() {
-                        timer = setTimeout(hideChart, 10);
-                    }).mouseenter(function() {
-                        clearTimeout(timer);
-                    });
-                }, 1000);
-
-            });
-        }
+                    }
         if (sensorType == "humid") {
-            humidSensorCounter++;
-            $("#schema-container").prepend("<div class='sensor-point' id='humid-sensor" + humidSensorCounter + "'></div>");
-            $("#humid-sensor" + humidSensorCounter).css({
+            sensorCounter = sensorId;
+            $("#schema-container").prepend("<div class='sensor-point' id='sensorpoint" + sensorCounter + "'></div>");
+            $("#sensorpoint" + sensorCounter).css({
                 "width": "30px", "height": "30px", "background-color": "#2196f3",
                 "background-image": "url('../img/humidity2.png')", "border-radius": "90px",
                 "position": "absolute", "z-index": "100"
             });
-            $("#schema-container").mousemove(moveHumiditySensor);
-            $("#humid-sensor" + humidSensorCounter).click(function () {
-                $("#schema-container").off("mousemove", moveHumiditySensor);
-
-                var data = {
-                    "schemaX": schemaX,
-                    "schemaY": schemaY,
-                    "schemaId": currentSchemaId
-                };
-                console.log(data);
-
-                $http.put('/system/1/sensors/' + sensorId, data).then(function () {
-                    console.log("updated" + data);
-                });
-
-                setTimeout(function() {
-                    $(".sensor-point").hover(function () {
-                        var posTop = $(this).offset().top;
-                        var posLeft = $(this).offset().left;
-                        showChart(posTop, posLeft);
-                    });
-
-                    var timer;
-                    $(".sensor-point, #sensor-details").mouseleave(function() {
-                        timer = setTimeout(hideChart, 10);
-                    }).mouseenter(function() {
-                        clearTimeout(timer);
-                    });
-                }, 1000);
-            })
         }
-    });
 
-    /*$( "#schema-container" ).mousemove(function( event ) {
-     $("#temp-sensor").css({"position": "relative", "margin-top": event.pageY - 190 + "px", "margin-left": event.pageX - 330 + "px"});
-     //$("#temp-sensor").css({"position": "absolute", "margin-top": event.pageY + "px", "margin-left": event.pageX + "px"});
-     console.log(event.pageX + " " + event.pageY);
-     });*/
+        $("#schema-container").mousemove(moveSensor);
+        $("#sensorpoint" + sensorCounter).click(function () {
+            $("#schema-container").off("mousemove", moveSensor);
+
+            var data = {
+                "schemaX": schemaX,
+                "schemaY": schemaY,
+                "schemaId": currentSchemaId
+            };
+            console.log(data);
+
+            $http.put('/system/1/sensors/' + sensorId, data).then(function () {
+                console.log("updated" + data);
+            });
+
+            //$("#sensorpoint" + sensorCounter).unbind("click");
+
+            chartHover();
+            moveRemoveClick();
+
+        });
+    });
 
     function readURL(input) {
         if (input.files && input.files[0]) {
@@ -465,24 +398,28 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
                     //getSchemasList();
                 }, 2000);
                 $('#schema-img').attr('src', schemaImg);
+                chartHover();
+                moveRemoveClick();
             });
         });
     });
 
-    setTimeout(function() {
-        $(".sensor-point").hover(function () {
-            var posTop = $(this).offset().top;
-            var posLeft = $(this).offset().left;
-            showChart(posTop, posLeft);
-        });
+    function chartHover() {
+        setTimeout(function() {
+            $(".sensor-point").hover(function () {
+                var posTop = $(this).offset().top;
+                var posLeft = $(this).offset().left;
+                showChart(posTop, posLeft);
+            });
 
-        var timer;
-        $(".sensor-point, #sensor-details").mouseleave(function() {
-            timer = setTimeout(hideChart, 10);
-        }).mouseenter(function() {
-            clearTimeout(timer);
-        });
-    }, 3000);
+            var timer;
+            $(".sensor-point, #sensor-details").mouseleave(function() {
+                timer = setTimeout(hideChart, 10);
+            }).mouseenter(function() {
+                clearTimeout(timer);
+            });
+        }, 3000);
+    }
 
     function hideChart() {
         $("#sensor-details").css("visibility", "hidden");
@@ -495,14 +432,83 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
         $("#sensor-details").css("margin-top", posTop - 60);
     }
 
+    function moveRemoveClick() {
+        setTimeout(function() {
+            $(".sensor-point").click(function (event) {
+                currentSensorId = event.target.id;
+                currentSensorId = currentSensorId.substring(11);
+                console.log("current sensor id" + currentSensorId);
+                var posTop = $(this).offset().top;
+                var posLeft = $(this).offset().left;
+                showMoveRemove(posTop, posLeft);
+            });
+
+            var timer;
+            $(".sensor-point, #move-remove").mouseleave(function() {
+                timer = setTimeout(hideMoveRemove, 10);
+            }).mouseenter(function() {
+                clearTimeout(timer);
+            });
+        }, 3000);
+    }
+
+    function showMoveRemove(posTop, posLeft) {
+        console.log(posTop + " " + posLeft);
+        $("#move-remove").css("visibility", "visible");
+        $("#move-remove").css("margin-left", posLeft - 190);
+        $("#move-remove").css("margin-top", posTop - 60);
+    }
+
+    function hideMoveRemove() {
+        $("#move-remove").css("visibility", "hidden");
+    }
+
+    $("#remove-sensor").click(function () {
+        $http.put('/sensors/' + currentSensorId + '/unbind').then(function () {
+            console.log("removed");
+        });
+        setTimeout(function() {
+            $(".sensor-point").css("visibility", "hidden");
+            getSensorsBySchemaId(currentSchemaId);
+            chartHover();
+            moveRemoveClick();
+        }, 1000);
+    });
+
+    $("#move-sensor").click(function () {
+        $("#move-remove").css("visibility", "hidden");
+        $("#sensor-details").css("visibility", "hidden");
+        sensorCounter = currentSensorId;
+        $("#sensorpoint" + currentSensorId).unbind('mouseenter mouseleave');
+        $("#schema-container").mousemove(moveSensor);
+        $("#sensorpoint" + currentSensorId).click(function () {
+            /*$("#sensor-details").css("visibility", "hidden");
+            $("#sensor-details").css("display", "none");*/
+            $("#schema-container").off("mousemove", moveSensor);
+
+            var data = {
+                "schemaX": schemaX,
+                "schemaY": schemaY,
+                "schemaId": currentSchemaId
+            };
+            console.log(data);
+
+            $http.put('/system/1/sensors/' + currentSensorId, data).then(function () {
+                console.log("updated" + data);
+            });
+
+            //$("#sensorpoint" + sensorCounter).unbind("click");
+
+            chartHover();
+            moveRemoveClick();
+
+        });
+        $("#sensor-details").css("visibility", "visible");
+    });
+
     setTimeout(function() {
         console.log(img);
         loaded = true;
-    }, reasonableTimeToWaitForFileToLoad);
-
-    /*$('input.choose-sensor-checkbox').on('change', function() {
-        console.log("vvv");
-        $('input.choose-sensor-checkbox').not(this).prop('checked', false);
-    });*/
+    }, 10000);
 
 }]);

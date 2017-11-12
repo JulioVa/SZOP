@@ -10,15 +10,12 @@ import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 public class SzopRestController {
 
-    private static final Logger LOGGER = LogManager.getLogger("Controller");
+    private static final Logger LOGGER = LogManager.getLogger(SzopRestController.class);
 
     private Temperature temperature = new Temperature();
 
@@ -85,9 +82,16 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/sensors/schema/{schemaId}/unbind", method = RequestMethod.PUT)
-    public ResponseEntity<Void> unbindSensorsSensors(@PathVariable int schemaId) {
+    public ResponseEntity<Void> unbindAllSensorsFromSchema(@PathVariable int schemaId) {
         List<Sensor> sensors = SensorService.findAllBySchema(schemaId);
         SensorUtil.unbindFromSchema(sensors);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/sensors/{sensorId}/unbind", method = RequestMethod.PUT)
+    public ResponseEntity<Void> unbindSensorFromSchema(@PathVariable String sensorId) {
+        Sensor sensor = SensorService.findSensorBySensorId(sensorId);
+        SensorUtil.unbindSingleFromSchema(sensor);
         return ResponseEntity.ok().build();
     }
 
@@ -303,6 +307,15 @@ public class SzopRestController {
         return ResponseEntity.ok().build();
     }
 
+    @RequestMapping(value = "/sensors/{sensorId}/user/{userId}/system/{systemId}/data", method = RequestMethod.GET)
+    public ResponseEntity<Map<Date, Double>> getSensorsData(@PathVariable int userId, @PathVariable int systemId, @PathVariable String sensorId) {
+        Map<Date, Double> data = InfluxService.getDataForSensor(userId, systemId, sensorId);
+        LOGGER.info("data from sensor: " + data);
+        if (data.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(data);
+    }
 
     @RequestMapping(value = "/sensors/data", method = RequestMethod.POST)
     ResponseEntity<?> addData(@RequestBody Map<String, Object> data) {
@@ -316,6 +329,8 @@ public class SzopRestController {
         }
         return ResponseEntity.noContent().build();
     }
+
+
     // TODO remove below methods, they were used for testing connection with raspberry pi
     @RequestMapping(value = "/temp")
     public Map<String, Object> temp() {
