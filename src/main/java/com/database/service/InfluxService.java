@@ -7,6 +7,7 @@ import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.Query;
+import org.influxdb.dto.QueryResult;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,7 +52,7 @@ public class InfluxService {
     public static Map<Date, Double> getDataForSensor(int userId, int systemId, String sensorId){
         Map<Date, Double> results = new HashMap<>();
         Query query = new Query("SELECT * FROM user_" + userId + " WHERE system='" + systemId + "' AND sensor='" + sensorId +"' GROUP BY *", DB_NAME);
-        influxDB.query(query, 50, queryResult -> {
+        QueryResult queryResult = influxDB.query(query);
             if(queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
             for (List<Object> qResult :queryResult.getResults().get(0).getSeries().get(0).getValues()){
                 try {
@@ -60,7 +61,6 @@ public class InfluxService {
                     LOGGER.error("Error:",e);
                 }
           }
-        });
         return results;
     }
 }
