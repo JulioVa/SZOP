@@ -49,14 +49,14 @@ public class InfluxService {
         influxDB.write(batchPoints);
     }
 
-    public static Map<Date, Double> getDataForSensor(int userId, int systemId, String sensorId){
-        Map<Date, Double> results = new HashMap<>();
+    public static Map<Long, Double> getDataForSensor(int userId, int systemId, String sensorId){
+        Map<Long, Double> results = new HashMap<>();
         Query query = new Query("SELECT * FROM user_" + userId + " WHERE system='" + systemId + "' AND sensor='" + sensorId +"' GROUP BY *", DB_NAME);
         QueryResult queryResult = influxDB.query(query);
             if(queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
             for (List<Object> qResult :queryResult.getResults().get(0).getSeries().get(0).getValues()){
                 try {
-                    results.put(formatter.parse((String) qResult.get(0)), (Double) qResult.get(1));
+                    results.put(formatter.parse((String) qResult.get(0)).getTime(), (Double) qResult.get(1));
                 } catch (ParseException e) {
                     LOGGER.error("Error:",e);
                 }
