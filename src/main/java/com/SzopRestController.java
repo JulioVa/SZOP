@@ -308,8 +308,8 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/sensors/{sensorId}/user/{userId}/system/{systemId}/data", method = RequestMethod.GET)
-    public ResponseEntity<Map<Date, Double>> getSensorsData(@PathVariable int userId, @PathVariable int systemId, @PathVariable String sensorId) {
-        Map<Date, Double> data = InfluxService.getDataForSensor(userId, systemId, sensorId);
+    public ResponseEntity<Map<Long, Double>> getSensorsData(@PathVariable int userId, @PathVariable int systemId, @PathVariable String sensorId) {
+        Map<Long, Double> data = InfluxService.getDataForSensor(userId, systemId, sensorId);
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
             return ResponseEntity.notFound().build();
