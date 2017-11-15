@@ -1,6 +1,8 @@
 package com.database.service;
 
+import com.database.model.Sensor;
 import com.database.model.SensorTempData;
+import com.database.model.System;
 import com.database.model.Temperature;
 import com.database.model.TemperatureData;
 import org.apache.log4j.LogManager;
@@ -26,6 +28,8 @@ public class InfluxService {
 
     public static void writeData(int userId, int systemId, List<TemperatureData> temps){
 
+        System sys = SystemService.findSystemById(systemId);
+        Set<String> sensors = new HashSet<>();
         BatchPoints batchPoints = BatchPoints
                 .database(DB_NAME)
                 .tag("async", "true")
@@ -42,6 +46,14 @@ public class InfluxService {
                     .addField("value", temp.getValue())
                     .build();
 
+           if(sensors.add(temp.getSensorId()) &&  (SensorService.findBySensorIdAndSystemId(temp.getSensorId(),systemId) == null)){
+                int type = temp.getType().equals("temp")? 1: 2;
+                try {
+                    SensorService.save(new Sensor(temp.getSensorId(),"new sensor", type,formatter.parse(temp.getDate()), true, null, sys, null,null ));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
             batchPoints.point(point);
         }
 
@@ -81,6 +93,7 @@ public class InfluxService {
                 }
                 results.add(new SensorTempData(sensor.getTags().get("sensor"),temperatures));
             }
+        LOGGER.error(queryResult);
         return results;
     }
 }
