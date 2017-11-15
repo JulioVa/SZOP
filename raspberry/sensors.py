@@ -1,13 +1,24 @@
 import os
 import glob
 import time
-import datetime
 import json
 import requests
-
+import ConfigParser
 
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
+
+
+def ConfigSectionMap(section):
+    dict1 = {}
+    options = config.options(section)
+    for option in options:
+        try:
+            dict1[option] = config.get(section, option)
+        except:
+            print('exception on %s!' % option)
+            dict1[option] = None
+    return dict1
 
 
 def read_ds18b20_raw(device_file):
@@ -40,17 +51,33 @@ def delete_last_line():
         file.truncate()
 
 
-def save_ds18b20_value(sensor, file):
+def save_ds18b20_value(sensor, file, date):
     data = {
         'id': sensor.split("/")[-1],
         'type': 'temp',
-        'date': datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+        'date': str(date),
         'value': read_ds18b20(sensor + '/w1_slave')
     }
     file.write('\n\t' + json.dumps(data) + '\n\t,')
 
 
-connected = True
+def prepare_new_file(file):
+    file.write('{\n')
+    file.write(json.dumps('user_id') + ': ' + ConfigSectionMap('user data')['user_id'] + ',\n')
+    file.write(json.dumps('system_id') + ': ' + ConfigSectionMap('user data')['system_id'] + ',\n')
+    file.write(json.dumps('sensors') + ': [')
+
+
+def prepare_existing_file(file):
+    delete_last_line()
+    file.write('\t,')
+
+config = ConfigParser.ConfigParser()
+config.read('config.ini')
+
+url = 'http://77.55.225.4:8090/sensors/data'
+headers = {'Content-type': 'application/json'}
+
 base_dir = '/sys/bus/w1/devices/'
 ds18b20_list = glob.glob(base_dir + '28*')
 #device_file = device_folder + '/w1_slave'
@@ -58,15 +85,16 @@ ds18b20_list = glob.glob(base_dir + '28*')
 #todo populate DHT11
 
 while True:
-    if connected is True:
+    connected = ConfigSectionMap('connection')['connection']
+    if connected == 'True':
         file = open('data.json', 'w+')
-        file.write('{' + json.dumps('sensors') + ': [')
+        prepare_new_file(file)
     else:
         file = open('data.json', 'a+')
-        delete_last_line()
-        file.write('\t,')
+        prepare_existing_file(file)
+    date = long(time.time()*1000)
     for sensor in ds18b20_list:
-        save_ds18b20_value(sensor, file)
+        save_ds18b20_value(sensor, file, date)
 
     #todo save DHT11 data
 
@@ -74,9 +102,11 @@ while True:
     file.write('\n]}')
     file.close()
     with open('data.json', 'rb') as f:
-        r = requests.post(url, files={'data.json': f})
-        if r.status_code != 201:
-            connected = False
+        r = requests.post(url, data=f, headers=headers)
+    with open('config.ini', 'w') as cfg_file:
+        if r.status_code != 200:
+            config.set('connection', 'connection', 'False')
         else:
-            connected = True
+            config.set('connection', 'connection', 'True')
+        config.write(cfg_file)
     time.sleep(300)
