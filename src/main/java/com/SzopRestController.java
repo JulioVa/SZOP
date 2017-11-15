@@ -308,8 +308,18 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/sensors/{sensorId}/user/{userId}/system/{systemId}/data", method = RequestMethod.GET)
-    public ResponseEntity<Map<Long, Double>> getSensorsData(@PathVariable int userId, @PathVariable int systemId, @PathVariable String sensorId) {
-        Map<Long, Double> data = InfluxService.getDataForSensor(userId, systemId, sensorId);
+    public ResponseEntity<List<Temperature>> getSensorsData(@PathVariable int userId, @PathVariable int systemId, @PathVariable String sensorId) {
+        List<Temperature> data = InfluxService.getDataForSensor(userId, systemId, sensorId);
+        LOGGER.info("data from sensor: " + data);
+        if (data.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(data);
+    }
+
+    @RequestMapping(value = "/sensors/user/{userId}/data", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorTempData>> getSensorsData(@PathVariable int userId) {
+        List<SensorTempData> data = InfluxService.getDataForUser(userId);
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -328,15 +338,5 @@ public class SzopRestController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.noContent().build();
-    }
-
-
-    // TODO remove below methods, they were used for testing connection with raspberry pi
-    @RequestMapping(value = "/temp")
-    public Map<String, Object> temp() {
-        Map<String, Object> temp = new HashMap<>();
-        temp.put("id", UUID.randomUUID().toString());
-        temp.put("content", temperature.getTemperature());
-        return temp;
     }
 }
