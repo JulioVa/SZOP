@@ -26,7 +26,7 @@ public class InfluxService {
     private static final Logger LOGGER = LogManager.getLogger("InfluxService");
     private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-    public static void writeData(int userId, int systemId, List<TemperatureData> temps){
+    public static void writeData(int userId, int systemId, List<TemperatureData> temps) {
 
         System sys = SystemService.findSystemById(systemId);
         Set<String> sensors = new HashSet<>();
@@ -36,7 +36,7 @@ public class InfluxService {
                 .consistency(InfluxDB.ConsistencyLevel.ALL)
                 .build();
 
-        for (TemperatureData temp: temps) {
+        for (TemperatureData temp : temps) {
 
             Point point = Point.measurement("user_" + userId)
                     .tag("type", temp.getType())
@@ -46,13 +46,9 @@ public class InfluxService {
                     .addField("value", temp.getValue())
                     .build();
 
-           if(sensors.add(temp.getSensorId()) &&  (SensorService.findBySensorIdAndSystemId(temp.getSensorId(),systemId) == null)){
-                int type = temp.getType().equals("temp")? 1: 2;
-                try {
-                    SensorService.save(new Sensor(temp.getSensorId(),"new sensor", type,formatter.parse(temp.getDate()), true, null, sys, null,null ));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+            if (sensors.add(temp.getSensorId()) && (SensorService.findBySensorIdAndSystemId(temp.getSensorId(), systemId) == null)) {
+                int type = temp.getType().equals("temp") ? 1 : 2;
+                SensorService.save(new Sensor(temp.getSensorId(), "new sensor", type, new Date(Long.parseLong(temp.getDate())), true, null, sys, null, null));
             }
             batchPoints.point(point);
         }
@@ -60,38 +56,38 @@ public class InfluxService {
         influxDB.write(batchPoints);
     }
 
-    public static List<Temperature> getDataForSensor(int userId, int systemId, String sensorId){
-        List<Temperature>  results = new ArrayList<>();
+    public static List<Temperature> getDataForSensor(int userId, int systemId, String sensorId) {
+        List<Temperature> results = new ArrayList<>();
 
-        Query query = new Query("SELECT * FROM user_" + userId + " WHERE system='" + systemId + "' AND sensor='" + sensorId +"' GROUP BY * ORDER BY time", DB_NAME);
+        Query query = new Query("SELECT * FROM user_" + userId + " WHERE system='" + systemId + "' AND sensor='" + sensorId + "' GROUP BY * ORDER BY time", DB_NAME);
         QueryResult queryResult = influxDB.query(query);
-            if(queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
-            for (List<Object> qResult :queryResult.getResults().get(0).getSeries().get(0).getValues()){
+        if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
+            for (List<Object> qResult : queryResult.getResults().get(0).getSeries().get(0).getValues()) {
                 try {
                     results.add(new Temperature((Double) qResult.get(1), formatter.parse((String) qResult.get(0)).getTime()));
                 } catch (ParseException e) {
-                    LOGGER.error("Error:",e);
+                    LOGGER.error("Error:", e);
                 }
-          }
+            }
 
         return results;
     }
 
-    public static List<SensorTempData> getDataForUser(int userId){
+    public static List<SensorTempData> getDataForUser(int userId) {
         List<SensorTempData> results = new ArrayList<>();
         Query query = new Query("SELECT * FROM user_" + userId + " GROUP BY * ORDER BY time", DB_NAME);
         QueryResult queryResult = influxDB.query(query);
-        if(queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
-            for (QueryResult.Series sensor :queryResult.getResults().get(0).getSeries()){
+        if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
+            for (QueryResult.Series sensor : queryResult.getResults().get(0).getSeries()) {
                 List<Temperature> temperatures = new ArrayList<>();
-                for(List<Object> tmps: sensor.getValues()){
+                for (List<Object> tmps : sensor.getValues()) {
                     try {
                         temperatures.add(new Temperature((Double) tmps.get(1), formatter.parse((String) tmps.get(0)).getTime()));
                     } catch (ParseException e) {
-                        LOGGER.error("Error:",e);
+                        LOGGER.error("Error:", e);
                     }
                 }
-                results.add(new SensorTempData(sensor.getTags().get("sensor"),temperatures));
+                results.add(new SensorTempData(sensor.getTags().get("sensor"), temperatures));
             }
         LOGGER.error(queryResult);
         return results;
