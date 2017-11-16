@@ -89,7 +89,7 @@ public class InfluxService {
                 }
                 results.add(new SensorTempData(sensor.getTags().get("sensor"), temperatures));
             }
-        LOGGER.error(queryResult);
+        LOGGER.info(queryResult);
         return results;
     }
 }
