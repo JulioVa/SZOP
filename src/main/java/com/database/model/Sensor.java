@@ -46,6 +46,18 @@ public class Sensor implements Serializable {
     public Sensor() {
     }
 
+    public Sensor(String sensorId, String name, Integer type, Date lastUpdate, Boolean isActive, Schema schema, System system, Integer schemaX, Integer schemaY) {
+        this.sensorId = sensorId;
+        this.name = name;
+        this.type = type;
+        this.lastUpdate = lastUpdate;
+        this.isActive = isActive;
+        this.schema = schema;
+        this.system = system;
+        this.schemaX = schemaX;
+        this.schemaY = schemaY;
+    }
+
     public Integer getId() {
         return id;
     }
