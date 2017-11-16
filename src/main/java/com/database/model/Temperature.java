@@ -1,32 +1,34 @@
 package com.database.model;
 
+import java.io.Serializable;
+
 /**
  * Created by damia_000 on 2017-06-10.
  */
-public class Temperature implements Comparable<Temperature>{
+public class Temperature implements Comparable<Temperature>, Serializable {
 
-    private double value;
-    private long time;
+    private double y;
+    private long x;
 
     public Temperature(double value, long time) {
-        this.value = value;
-        this.time = time;
+        this.y = value;
+        this.x = time;
     }
 
-    public double getValue() {
-        return value;
+    public double getY() {
+        return y;
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    public void setY(double value) {
+        this.y = value;
     }
 
-    public long getTime() {
-        return time;
+    public long getX() {
+        return x;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setX(long time) {
+        this.x = time;
     }
 
     public Temperature(){
@@ -39,26 +41,34 @@ public class Temperature implements Comparable<Temperature>{
 
         Temperature that = (Temperature) o;
 
-        if (Double.compare(that.value, value) != 0) return false;
-        return time == that.time;
+        if (Double.compare(that.y, y) != 0) return false;
+        return x == that.x;
     }
 
     @Override
     public int hashCode() {
         int result;
         long temp;
-        temp = Double.doubleToLongBits(value);
+        temp = Double.doubleToLongBits(y);
         result = (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (int) (time ^ (time >>> 32));
+        result = 31 * result + (int) (x ^ (x >>> 32));
         return result;
     }
 
     @Override
     public int compareTo(Temperature o) {
-        if(time>o.time){
+        if(x >o.x){
             return 1;
-        } else if(time<o.time){
+        } else if(x <o.x){
             return -1;
         } else return 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Temperature{" +
+                "y=" + y +
+                ", x=" + x +
+                '}';
     }
 }

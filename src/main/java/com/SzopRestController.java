@@ -317,9 +317,19 @@ public class SzopRestController {
         return ResponseEntity.ok().body(data);
     }
 
-    @RequestMapping(value = "/sensors/user/{userId}/data", method = RequestMethod.GET)
-    public ResponseEntity<List<SensorTempData>> getSensorsData(@PathVariable int userId) {
-        List<SensorTempData> data = InfluxService.getDataForUser(userId);
+    @RequestMapping(value = "/sensors/user/{userId}/data/temp", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorTempData>> getSensorsDataTemp(@PathVariable int userId) {
+        List<SensorTempData> data = InfluxService.getDataForUser(userId, "temp");
+        LOGGER.info("data from sensor: " + data);
+        if (data.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(data);
+    }
+
+    @RequestMapping(value = "/sensors/user/{userId}/data/humid", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorTempData>> getSensorsDataHumid(@PathVariable int userId) {
+        List<SensorTempData> data = InfluxService.getDataForUser(userId, "humid");
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
             return ResponseEntity.notFound().build();

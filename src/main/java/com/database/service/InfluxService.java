@@ -65,9 +65,9 @@ public class InfluxService {
         return results;
     }
 
-    public static List<SensorTempData> getDataForUser(int userId){
+    public static List<SensorTempData> getDataForUser(int userId, String type){
         List<SensorTempData> results = new ArrayList<>();
-        Query query = new Query("SELECT * FROM user_" + userId + " GROUP BY * ORDER BY time", DB_NAME);
+        Query query = new Query("SELECT * FROM user_" + userId + " WHERE type = '" + type + "' GROUP BY * ORDER BY time", DB_NAME);
         QueryResult queryResult = influxDB.query(query);
         if(queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
             for (QueryResult.Series sensor :queryResult.getResults().get(0).getSeries()){
