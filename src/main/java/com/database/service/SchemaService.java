@@ -9,19 +9,25 @@ public class SchemaService {
     public static Schema findSchemaById(int id){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
-        return session.createQuery("FROM Schema s WHERE s.id = :id", Schema.class).setParameter("id", id).getSingleResult();
+        Schema schema = session.createQuery("FROM Schema s WHERE s.id = :id", Schema.class).setParameter("id", id).getSingleResult();
+        session.getTransaction().commit();
+        return schema;
     }
 
     public static List<Schema> findAll(){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
-        return session.createQuery("FROM Schema s", Schema.class).getResultList();
+        List<Schema> schemas = session.createQuery("FROM Schema s", Schema.class).getResultList();
+        session.getTransaction().commit();
+        return schemas;
     }
 
     public static List<Schema> findSchemasByUserId(int userId){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
-        return session.createQuery("FROM Schema s WHERE s.user.id = :userId", Schema.class).setParameter("userId", userId).getResultList();
+        List<Schema> schemas = session.createQuery("FROM Schema s WHERE s.user.id = :userId", Schema.class).setParameter("userId", userId).getResultList();
+        session.getTransaction().commit();
+        return schemas;
     }
 
     public static int save(Schema schema) {
