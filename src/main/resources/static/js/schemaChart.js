@@ -11,21 +11,10 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
     };
 
     function getData() {
-        var minMax = [0, 0];
         $http.get('/sensors/28-000008fe8820/user/1/system/1/data').then(function (response) {
-            var keys = (Object.keys(response.data)).sort();
-            //console.log(keys[0]);
-            minDate = keys[0];
-            maxDate = keys[keys.length - 1];
-
-            /* const map = new Map();
-             Object.keys(response.data).forEach(key => {
-             map.set(key, response.data[key]);
-             });*/
-
             data = Object.entries(response.data);
 
-            //console.log(data);
+            console.log(data);
 
             data.forEach(function (entry) {
                 //console.log(entry);
@@ -46,17 +35,8 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
         return minMax;
     }
 
-    function createChart(minMax) {
+    function createChart() {
 
-        $scope.model.min = parseInt(minMax[0]);
-        $scope.model.max = parseInt(minMax[1]);
-
-        //console.log(min + " " + max);
-
-
-        console.log("scope " + $scope.model.min);
-        var xxx = $scope.model.min;
-        console.log(xxx);
         var options = {
             colors: ['#ff9800', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066',
                 '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
@@ -73,6 +53,7 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                 text: 'Temperature Chart'
             },
             xAxis: {
+                type: 'datetime',
                 gridLineColor: '#707073',
                 labels: {
                     style: {
@@ -81,10 +62,7 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                 },
                 lineColor: '#707073',
                 minorGridLineColor: '#505053',
-                tickColor: '#707073',
-                type: 'datetime',
-                min: $scope.model.min,
-                max: $scope.model.max
+                tickColor: '#707073'
             },
             yAxis: [{
                 gridLineColor: '#707073',
@@ -254,29 +232,30 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
             textColor: '#C0C0C0',
             contrastTextColor: '#F0F0F3',
             maskColor: 'rgba(255,255,255,0.3)',
-            series: [{
-                yAxis: 0,
-                name: 'Sensor1'
-            }]
+            series: []
+
         };
 
-        console.log("min " + options.xAxis.min.type + " max " + options.xAxis.max);
+        var i = 0;
+        var seriesOptions = [];
+        $scope.model.data.forEach(function (entry) {
+            console.log(entry[1].temps);
+            seriesOptions[i] = {
+                name: entry[1].sensorID,
+                data: entry[1].temps,
+                yAxis: 0,
+                turboThreshold: Number.MAX_VALUE
+            };
+            options.series.push(seriesOptions[i]);
+        });
+
+        /*console.log("min " + options.xAxis.min.type + " max " + options.xAxis.max);
         //console.log(options.series[0].data);
-        options.series[0].data = $scope.model.data;
-        chart = $('#container').highcharts(options);
+        options.series[0].data = $scope.model.data;*/
+        chart = $('#sensor-details').highcharts(options);
 
 
         //chart.xAxis.setExtremes(new Date().getTime(), new Date().setHours(new Date().getHours()+1));
-    }
-
-
-    function getInput(_callback){
-        var m = getData();
-        _callback(m);
-    }
-
-    function generateChart(minMax){
-        createChart(minMax);
     }
 
     getData();

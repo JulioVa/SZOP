@@ -74,6 +74,7 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                     opposite: true
                 }],
                 tooltip: {
+                    pointFormat: '{series.name}: <b>{point.y}\n<br>{point.series.yAxis.axisTitle.textStr}</b><br>',
                     backgroundColor: 'rgba(0, 0, 0, 0.85)',
                     style: {
                         color: '#F0F0F0'
@@ -166,7 +167,8 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                 seriesOptions[i] = {
                     name: entry[1].sensorID,
                     data: entry[1].temps,
-                    yAxis: 0
+                    yAxis: 0,
+                    turboThreshold: Number.MAX_VALUE
                 };
                 options.series.push(seriesOptions[i]);
             });
@@ -176,7 +178,8 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
             seriesOptions[i] = {
                 name: entry[1].sensorID,
                 data: entry[1].temps,
-                yAxis: 1
+                yAxis: 1,
+                turboThreshold: Number.MAX_VALUE
             };
             options.series.push(seriesOptions[i]);
         });
