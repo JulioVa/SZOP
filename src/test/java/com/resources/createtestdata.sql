@@ -1,5 +1,5 @@
-INSERT INTO "user" (id, name, password, mail)
-VALUES (1, 'name1', 'dfsgf2376', 'mail@name1.com');
+INSERT INTO "user" (id, user_id, name, profile_pic, email)
+VALUES (1, '111', 'name1', 'https://www.cbdzoe.pl/img/artykuly/rzeczy-ktore-wie-twoj-pies-artykuly-cbdzoe-06.jpg', 'mail@name1.com');
 
 INSERT INTO system (id, user_id, name)
 VALUES (1, 1, 'system1'),

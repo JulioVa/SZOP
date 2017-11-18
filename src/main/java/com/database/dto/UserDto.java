@@ -4,16 +4,26 @@ import java.io.Serializable;
 
 public class UserDto implements Serializable {
 
+    private String userId;
     private String name;
-    private String password;
-    private String mail;
+    private String profilePic;
+    private String email;
 
     public UserDto() {}
 
-    public UserDto(String name, String password, String mail) {
+    public UserDto(String userId, String name, String profilePic, String email) {
+        this.userId = userId;
         this.name = name;
-        this.password = password;
-        this.mail = mail;
+        this.profilePic = profilePic;
+        this.email = email;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -24,20 +34,20 @@ public class UserDto implements Serializable {
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
+    public String getProfilePic() {
+        return profilePic;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
@@ -47,25 +57,28 @@ public class UserDto implements Serializable {
 
         UserDto userDto = (UserDto) o;
 
+        if (userId != null ? !userId.equals(userDto.userId) : userDto.userId != null) return false;
         if (name != null ? !name.equals(userDto.name) : userDto.name != null) return false;
-        if (password != null ? !password.equals(userDto.password) : userDto.password != null) return false;
-        return mail != null ? mail.equals(userDto.mail) : userDto.mail == null;
+        if (profilePic != null ? !profilePic.equals(userDto.profilePic) : userDto.profilePic != null) return false;
+        return email != null ? email.equals(userDto.email) : userDto.email == null;
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (mail != null ? mail.hashCode() : 0);
+        int result = userId != null ? userId.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (profilePic != null ? profilePic.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "UserDto{" +
-                "name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", mail='" + mail + '\'' +
+                "userId='" + userId + '\'' +
+                ", name='" + name + '\'' +
+                ", profile_pic='" + profilePic + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

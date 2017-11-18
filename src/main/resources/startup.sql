@@ -3,13 +3,13 @@ create table "user"(
   id serial not null
     constraint user_pkey
     primary key,
-  name varchar(50) not null,
-  password varchar(50) not null,
-  mail varchar(50) not null
+  user_id varchar(50) not null,
+  name varchar(50),
+  profile_pic varchar(250),
+  email varchar(50) not null
 );
 create unique index user_id_uindex on "user" (id);
-create unique index user_name_uindex on "user" (name);
-create unique index user_mail_uindex on "user" (mail);
+create unique index user_mail_uindex on "user" (email);
 --CREATE SYSTEM
 create table system(
   id serial not null
