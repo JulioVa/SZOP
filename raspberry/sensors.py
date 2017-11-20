@@ -4,6 +4,8 @@ import time
 import json
 import requests
 import ConfigParser
+import Adafruit_DHT
+from requests.exceptions import ConnectionError
 
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
@@ -61,6 +63,27 @@ def save_ds18b20_value(sensor, file, date):
     file.write('\n\t' + json.dumps(data) + '\n\t,')
 
 
+def save_dht11_value(sensor_type, sensor, file, date):
+    humid, temp = Adafruit_DHT.read_retry(sensor_type, sensor)
+    if humid is not None and temp is not None:
+        temp_data = {
+            'id': str(sensor),
+            'type': 'temp',
+            'date': str(date),
+            'value': temp
+        }
+        file.write('\n\t' + json.dumps(temp_data) + '\n\t,')
+        humid_data = {
+            'id': str(sensor),
+            'type': 'humid',
+            'date': str(date),
+            'value': humid
+        }
+        file.write('\n\t' + json.dumps(humid_data) + '\n\t,')
+    else:
+        print 'Failed to read dht11 sensor for pin= ' + str(sensor)
+
+
 def prepare_new_file(file):
     file.write('{\n')
     file.write(json.dumps('user_id') + ': ' + ConfigSectionMap('user data')['user_id'] + ',\n')
@@ -80,9 +103,9 @@ headers = {'Content-type': 'application/json'}
 
 base_dir = '/sys/bus/w1/devices/'
 ds18b20_list = glob.glob(base_dir + '28*')
-#device_file = device_folder + '/w1_slave'
 
-#todo populate DHT11
+sensor_type = Adafruit_DHT.DHT11
+dht11_list = json.loads(config.get('dht11', 'sensors'))
 
 while True:
     connected = ConfigSectionMap('connection')['connection']
@@ -95,18 +118,23 @@ while True:
     date = long(time.time()*1000)
     for sensor in ds18b20_list:
         save_ds18b20_value(sensor, file, date)
-
-    #todo save DHT11 data
+    for sensor in dht11_list:
+        save_dht11_value(sensor_type, sensor, file, date)
 
     delete_last_line()
     file.write('\n]}')
     file.close()
     with open('data.json', 'rb') as f:
-        r = requests.post(url, data=f, headers=headers)
-    with open('config.ini', 'w') as cfg_file:
-        if r.status_code != 200:
+        try:
+            r = requests.post(url, data=f, headers=headers)
+            if r.status_code != 200:
+                config.set('connection', 'connection', 'False')
+            else:
+                config.set('connection', 'connection', 'True')
+        except ConnectionError as e:
+            print e
+            r = 'No response'
             config.set('connection', 'connection', 'False')
-        else:
-            config.set('connection', 'connection', 'True')
-        config.write(cfg_file)
+        with open('config.ini', 'w') as cfg_file:
+            config.write(cfg_file)
     time.sleep(300)
