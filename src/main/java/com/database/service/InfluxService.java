@@ -10,8 +10,6 @@ import org.influxdb.dto.Point;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -21,17 +19,16 @@ import static com.database.util.InfluxUtils.influxDB;
 public class InfluxService {
 
     private static final Logger LOGGER = LogManager.getLogger("InfluxService");
-    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     public static void writeData(String userId, String sysName, List<TemperatureData> temps) {
 
         User user = UserService.findUserById(userId);
-        if(user == null)
+        if (user == null)
             return;
 
         System sys = SystemService.findSystemByName(sysName);
-        if(sys == null){
-            sys.setId(SystemService.save(new System(user,sysName)));
+        if (sys == null) {
+            sys.setId(SystemService.save(new System(user, sysName)));
         }
         Set<String> sensors = new HashSet<>();
         BatchPoints batchPoints = BatchPoints
@@ -64,32 +61,24 @@ public class InfluxService {
         List<Temperature> results = new ArrayList<>();
 
         Query query = new Query("SELECT * FROM user_" + userId + " WHERE system='" + systemId + "' AND sensor='" + sensorId + "' GROUP BY * ORDER BY time", DB_NAME);
-        QueryResult queryResult = influxDB.query(query);
+        QueryResult queryResult = influxDB.query(query, TimeUnit.MILLISECONDS);
         if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
             for (List<Object> qResult : queryResult.getResults().get(0).getSeries().get(0).getValues()) {
-                try {
-                    results.add(new Temperature((Double) qResult.get(1), formatter.parse((String) qResult.get(0)).getTime()));
-                } catch (ParseException e) {
-                    LOGGER.error("Error:", e);
-                }
+                results.add(new Temperature((Double) qResult.get(1), ((Double) qResult.get(0)).longValue()));
             }
 
         return results;
     }
 
-    public static List<SensorTempData> getDataForUser(int userId, String type){
+    public static List<SensorTempData> getDataForUser(int userId, String type) {
         List<SensorTempData> results = new ArrayList<>();
         Query query = new Query("SELECT * FROM user_" + userId + " WHERE type = '" + type + "' GROUP BY * ORDER BY time", DB_NAME);
-        QueryResult queryResult = influxDB.query(query);
+        QueryResult queryResult = influxDB.query(query, TimeUnit.MILLISECONDS);
         if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
             for (QueryResult.Series sensor : queryResult.getResults().get(0).getSeries()) {
                 List<Temperature> temperatures = new ArrayList<>();
                 for (List<Object> tmps : sensor.getValues()) {
-                    try {
-                        temperatures.add(new Temperature((Double) tmps.get(1), formatter.parse((String) tmps.get(0)).getTime()));
-                    } catch (ParseException e) {
-                        LOGGER.error("Error:", e);
-                    }
+                    temperatures.add(new Temperature((Double) tmps.get(1), ((Double) tmps.get(0)).longValue()));
                 }
                 results.add(new SensorTempData(sensor.getTags().get("sensor"), temperatures));
             }
