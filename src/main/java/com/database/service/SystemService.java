@@ -31,6 +31,14 @@ public class SystemService {
         return systems;
     }
 
+    public static System findSystemByName(String name){
+        Session session = HibernateUtils.getSession();
+        session.beginTransaction();
+        System system = session.createQuery("FROM System s WHERE s.name = :name", System.class).setParameter("name", name).uniqueResultOptional().orElse(null);
+        session.getTransaction().commit();
+        return system;
+    }
+
     public static int save(System system) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();

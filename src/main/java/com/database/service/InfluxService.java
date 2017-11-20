@@ -1,10 +1,7 @@
 package com.database.service;
 
-import com.database.model.Sensor;
-import com.database.model.SensorTempData;
+import com.database.model.*;
 import com.database.model.System;
-import com.database.model.Temperature;
-import com.database.model.TemperatureData;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.influxdb.InfluxDB;
@@ -26,9 +23,16 @@ public class InfluxService {
     private static final Logger LOGGER = LogManager.getLogger("InfluxService");
     private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-    public static void writeData(int userId, int systemId, List<TemperatureData> temps) {
+    public static void writeData(String userId, String sysName, List<TemperatureData> temps) {
 
-        System sys = SystemService.findSystemById(systemId);
+        User user = UserService.findUserById(userId);
+        if(user == null)
+            return;
+
+        System sys = SystemService.findSystemByName(sysName);
+        if(sys == null){
+            sys.setId(SystemService.save(new System(user,sysName)));
+        }
         Set<String> sensors = new HashSet<>();
         BatchPoints batchPoints = BatchPoints
                 .database(DB_NAME)
@@ -41,12 +45,12 @@ public class InfluxService {
             Point point = Point.measurement("user_" + userId)
                     .tag("type", temp.getType())
                     .tag("sensor", temp.getSensorId())
-                    .tag("system", Integer.valueOf(systemId).toString())
+                    .tag("system", Integer.valueOf(sys.getId()).toString())
                     .time(Long.parseLong(temp.getDate()), TimeUnit.MILLISECONDS)
                     .addField("value", temp.getValue())
                     .build();
 
-            if (sensors.add(temp.getSensorId()) && (SensorService.findBySensorIdAndSystemId(temp.getSensorId(), systemId) == null)) {
+            if (sensors.add(temp.getSensorId()) && (SensorService.findBySensorIdAndSystemId(temp.getSensorId(), sys.getId()) == null)) {
                 int type = temp.getType().equals("temp") ? 1 : 2;
                 SensorService.save(new Sensor(temp.getSensorId(), "new sensor", type, new Date(Long.parseLong(temp.getDate())), true, null, sys, null, null));
             }

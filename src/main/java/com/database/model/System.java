@@ -22,6 +22,11 @@ public class System {
     public System() {
     }
 
+    public System(User user, String name) {
+        this.user = user;
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }
