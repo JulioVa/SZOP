@@ -11,7 +11,7 @@ import javax.persistence.NoResultException;
 import java.util.List;
 
 public class UserTest extends TestBase {
-
+/*
     @Test
     public void findUserByIdTest(){
         User userTest = UserService.findUserById(1);
@@ -93,5 +93,5 @@ public class UserTest extends TestBase {
         userTest2 = UserService.findUserById(id);
 
         Assert.assertNull(userTest2);
-    }
+    }*/
 }

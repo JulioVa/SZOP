@@ -10,19 +10,25 @@ public class AlertService {
     public static Alert findAlertById(int id){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
-        return session.createQuery("FROM Alert a WHERE a.id = :id", Alert.class).setParameter("id", id).getSingleResult();
+        Alert alert = session.createQuery("FROM Alert a WHERE a.id = :id", Alert.class).setParameter("id", id).getSingleResult();
+        session.getTransaction().commit();
+        return alert;
     }
 
     public static List<Alert> findAll(){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
-        return session.createQuery("FROM Alert a", Alert.class).getResultList();
+        List<Alert> alerts = session.createQuery("FROM Alert a", Alert.class).getResultList();
+        session.getTransaction().commit();
+        return alerts;
     }
 
     public static List<Alert> findAllForUser(int userId){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
-        return session.createQuery("SELECT a FROM Alert a WHERE a.user.id = :userId",Alert.class).setParameter("userId", userId).getResultList();
+        List<Alert> alerts = session.createQuery("SELECT a FROM Alert a WHERE a.user.id = :userId",Alert.class).setParameter("userId", userId).getResultList();
+        session.getTransaction().commit();
+        return alerts;
     }
 
     public static int save(Alert alert) {

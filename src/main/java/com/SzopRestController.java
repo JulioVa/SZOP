@@ -5,16 +5,17 @@ import com.database.model.*;
 import com.database.model.System;
 import com.database.service.*;
 import com.database.util.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 public class SzopRestController {
+
+    private static final Logger LOGGER = LogManager.getLogger(SzopRestController.class);
 
     private Temperature temperature = new Temperature();
 
@@ -50,6 +51,26 @@ public class SzopRestController {
         return ResponseEntity.ok().body(sensorDtos);
     }
 
+    @RequestMapping(value = "/sensors/temperature", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorDto>> getTemperatureSensors() {
+        List<Sensor> sensors = SensorService.findAllByType(1);
+        List<SensorDto> sensorDtos = SensorUtil.convertToDtos(sensors);
+        if (sensors.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(sensorDtos);
+    }
+
+    @RequestMapping(value = "/sensors/humidity", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorDto>> getHumiditySensors() {
+        List<Sensor> sensors = SensorService.findAllByType(2);
+        List<SensorDto> sensorDtos = SensorUtil.convertToDtos(sensors);
+        if (sensors.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(sensorDtos);
+    }
+
     @RequestMapping(value = "/sensor/{sensorId}", method = RequestMethod.GET)
     public ResponseEntity<SensorDto> getSensorById(@PathVariable int sensorId) {
         Sensor sensor = SensorService.findSensorById(sensorId);
@@ -60,8 +81,22 @@ public class SzopRestController {
         return ResponseEntity.ok().body(sensorDto);
     }
 
+    @RequestMapping(value = "/sensors/schema/{schemaId}/unbind", method = RequestMethod.PUT)
+    public ResponseEntity<Void> unbindAllSensorsFromSchema(@PathVariable int schemaId) {
+        List<Sensor> sensors = SensorService.findAllBySchema(schemaId);
+        SensorUtil.unbindFromSchema(sensors);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/sensors/{sensorId}/unbind", method = RequestMethod.PUT)
+    public ResponseEntity<Void> unbindSensorFromSchema(@PathVariable String sensorId) {
+        Sensor sensor = SensorService.findSensorBySensorId(sensorId);
+        SensorUtil.unbindSingleFromSchema(sensor);
+        return ResponseEntity.ok().build();
+    }
+
     @RequestMapping(value = "/system/{systemId}/sensors/{sensorId}", method = RequestMethod.PUT)
-    public ResponseEntity<SensorDto> updateSensor(@PathVariable int systemId, @PathVariable int sensorId, @RequestBody SensorDto sensorDto) {
+    public ResponseEntity<SensorDto> updateSensor(@PathVariable int systemId, @PathVariable String sensorId, @RequestBody SensorDto sensorDto) {
         Sensor sensor = SensorService.findBySensorIdAndSystemId(sensorId, systemId);
         if (sensor == null) {
             return ResponseEntity.notFound().build();
@@ -73,10 +108,11 @@ public class SzopRestController {
 
     // schema
     @RequestMapping(value = "/schema", method = RequestMethod.POST)
-    public ResponseEntity<SchemaDto> createSchema(@RequestBody SchemaDto schemaDto) {
+    public ResponseEntity<SchemaIdLevelDto> createSchema(@RequestBody SchemaDto schemaDto) {
         Schema schema = SchemaUtil.addSchema(schemaDto);
         SchemaService.save(schema);
-        return ResponseEntity.ok().body(schemaDto);
+        SchemaIdLevelDto schemaIdLevelDto = new SchemaIdLevelDto(schema.getName(), schema.getImg(), schema.getId(), schema.getUser().getId());
+        return ResponseEntity.ok().body(schemaIdLevelDto);
     }
 
     @RequestMapping(value = "/schema/{schemaId}", method = RequestMethod.GET)
@@ -86,6 +122,26 @@ public class SzopRestController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(SchemaUtil.convertToDto(schema));
+    }
+
+    @RequestMapping(value = "/schemas", method = RequestMethod.GET)
+    public ResponseEntity<List<SchemaDto>> getSchemas() {
+        List<Schema> schemas = SchemaService.findAll();
+        List<SchemaDto> schemaDtos = SchemaUtil.convertToDtos(schemas);
+        if (schemas.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(schemaDtos);
+    }
+
+    @RequestMapping(value = "/schemas/id", method = RequestMethod.GET)
+    public ResponseEntity<List<SchemaIdLevelDto>> getSchemasId() {
+        List<Schema> schemas = SchemaService.findAll();
+        List<SchemaIdLevelDto> schemaDtos = SchemaUtil.convertToDtosId(schemas);
+        if (schemas.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(schemaDtos);
     }
 
     @RequestMapping(value = "/schema/{schemaId}", method = RequestMethod.PUT)
@@ -251,19 +307,44 @@ public class SzopRestController {
         return ResponseEntity.ok().build();
     }
 
-    // TODO remove below methods, they were used for testing connection with raspberry pi
-    @RequestMapping(value = "/temp")
-    public Map<String, Object> temp() {
-        Map<String, Object> temp = new HashMap<>();
-        temp.put("id", UUID.randomUUID().toString());
-        temp.put("content", temperature.getTemperature());
-        return temp;
+    @RequestMapping(value = "/sensors/{sensorId}/user/{userId}/system/{systemId}/data", method = RequestMethod.GET)
+    public ResponseEntity<List<Temperature>> getSensorsData(@PathVariable int userId, @PathVariable int systemId, @PathVariable String sensorId) {
+        List<Temperature> data = InfluxService.getDataForSensor(userId, systemId, sensorId);
+        LOGGER.info("data from sensor: " + data);
+        if (data.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(data);
     }
 
-    @RequestMapping(value = "/data", method = RequestMethod.POST)
-    ResponseEntity<?> add(@RequestBody Map<String, Float> temp) {
-        if (temp != null) {
-            temperature.setTemperature(temp.get("temp"));
+    @RequestMapping(value = "/sensors/user/{userId}/data/temp", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorTempData>> getSensorsDataTemp(@PathVariable int userId) {
+        List<SensorTempData> data = InfluxService.getDataForUser(userId, "temp");
+        LOGGER.info("data from sensor: " + data);
+        if (data.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(data);
+    }
+
+    @RequestMapping(value = "/sensors/user/{userId}/data/humid", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorTempData>> getSensorsDataHumid(@PathVariable int userId) {
+        List<SensorTempData> data = InfluxService.getDataForUser(userId, "humid");
+        LOGGER.info("data from sensor: " + data);
+        if (data.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(data);
+    }
+
+    @RequestMapping(value = "/sensors/data", method = RequestMethod.POST)
+    ResponseEntity<?> addData(@RequestBody Map<String, Object> data) {
+        if (data != null) {
+            LOGGER.error(data.toString());
+            String userId = (String) data.get("user_id");
+            String systemName = (String) data.get("system_id");
+            List<TemperatureData> temps = TemperatureDataUtil.convertToDtos((List<Map<String, Object>>) data.get("sensors"));
+            InfluxService.writeData(userId,systemName,temps);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.noContent().build();

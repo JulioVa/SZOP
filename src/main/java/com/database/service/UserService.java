@@ -9,13 +9,25 @@ public class UserService {
     public static User findUserById(int id){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
-        return session.createQuery("FROM User u WHERE u.id = :id", User.class).setParameter("id", id).getSingleResult();
+        User user = session.createQuery("FROM User u WHERE u.id = :id", User.class).setParameter("id", id).getSingleResult();
+        session.getTransaction().commit();
+        return user;
+    }
+
+    public static User findUserById(String id){
+        Session session = HibernateUtils.getSession();
+        session.beginTransaction();
+        User user = session.createQuery("FROM User u WHERE u.userId = :id", User.class).setParameter("id", id).uniqueResultOptional().orElse(null);
+        session.getTransaction().commit();
+        return user;
     }
 
     public static List<User> findAll(){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
-        return session.createQuery("FROM User u", User.class).getResultList();
+        List<User> users = session.createQuery("FROM User u", User.class).getResultList();
+        session.getTransaction().commit();
+        return users;
     }
 
     public static int save(User user) {

@@ -7,12 +7,14 @@ public class SchemaDto implements Serializable {
 
     private String name;
     private byte[] img;
+    private int userId;
 
     public SchemaDto() {}
 
-    public SchemaDto(String name, byte[] img) {
+    public SchemaDto(String name, byte[] img, int userId) {
         this.name = name;
         this.img = img;
+        this.userId = userId;
     }
 
     public String getName() {
@@ -31,6 +33,14 @@ public class SchemaDto implements Serializable {
         this.img = img;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -39,6 +49,7 @@ public class SchemaDto implements Serializable {
         SchemaDto schemaDto = (SchemaDto) o;
 
         if (name != null ? !name.equals(schemaDto.name) : schemaDto.name != null) return false;
+        if (userId != (schemaDto.userId)) return false;
         return Arrays.equals(img, schemaDto.img);
     }
 
@@ -46,6 +57,7 @@ public class SchemaDto implements Serializable {
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + Arrays.hashCode(img);
+        result = 31 * result + userId;
         return result;
     }
 

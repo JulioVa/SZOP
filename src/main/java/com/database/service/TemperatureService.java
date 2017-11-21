@@ -10,13 +10,17 @@ public class TemperatureService {
     public static Temperature findTemperatureById(int id){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
-        return session.createQuery("FROM Temperature t WHERE t.id = :id", Temperature.class).setParameter("id", id).getSingleResult();
+        Temperature temperature = session.createQuery("FROM Temperature t WHERE t.id = :id", Temperature.class).setParameter("id", id).getSingleResult();
+        session.getTransaction().commit();
+        return temperature;
     }
 
     public static List<Temperature> findAll(){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
-        return session.createQuery("FROM Temperature t", Temperature.class).getResultList();
+        List<Temperature> temperatures = session.createQuery("FROM Temperature t", Temperature.class).getResultList();
+        session.getTransaction().commit();
+        return temperatures;
     }
 
     public static void save(Temperature temperature) {

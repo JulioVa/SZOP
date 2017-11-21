@@ -15,7 +15,7 @@ public class Sensor implements Serializable {
     private Integer id;
 
     @Column(name = "sensor_id")
-    private Integer sensorId;
+    private String sensorId;
 
     @Column(name = "name")
     private String name;
@@ -46,6 +46,18 @@ public class Sensor implements Serializable {
     public Sensor() {
     }
 
+    public Sensor(String sensorId, String name, Integer type, Date lastUpdate, Boolean isActive, Schema schema, System system, Integer schemaX, Integer schemaY) {
+        this.sensorId = sensorId;
+        this.name = name;
+        this.type = type;
+        this.lastUpdate = lastUpdate;
+        this.isActive = isActive;
+        this.schema = schema;
+        this.system = system;
+        this.schemaX = schemaX;
+        this.schemaY = schemaY;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -54,11 +66,11 @@ public class Sensor implements Serializable {
         this.id = id;
     }
 
-    public Integer getSensorId() {
+    public String getSensorId() {
         return sensorId;
     }
 
-    public void setSensorId(Integer sensorId) {
+    public void setSensorId(String sensorId) {
         this.sensorId = sensorId;
     }
 
@@ -146,7 +158,7 @@ public class Sensor implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = sensorId;
+        int result = sensorId.hashCode();
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + type;
         result = 31 * result + (lastUpdate != null ? lastUpdate.hashCode() : 0);

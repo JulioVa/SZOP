@@ -11,7 +11,7 @@ import javax.persistence.NoResultException;
 import java.util.List;
 
 public class SystemTest extends TestBase {
-
+/*
     private User user;
 
     @Before
@@ -108,5 +108,5 @@ public class SystemTest extends TestBase {
         newSystem = SystemService.findSystemById(id);
 
         Assert.assertNull(newSystem);
-    }
+    }*/
 }

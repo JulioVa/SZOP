@@ -11,14 +11,17 @@ public class User {
     @Column(name = "id")
     private int id;
 
+    @Column(name = "user_id")
+    private String userId;
+
     @Column(name = "name")
     private String name;
 
-    @Column(name = "password")
-    private String password;
+    @Column(name = "profile_pic")
+    private String profilePic;
 
-    @Column(name = "mail")
-    private String mail;
+    @Column(name = "email")
+    private String email;
 
     public User() {
     }
@@ -31,6 +34,14 @@ public class User {
         this.id = id;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public String getName() {
         return name;
     }
@@ -39,20 +50,20 @@ public class User {
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
+    public String getProfilePic() {
+        return profilePic;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
@@ -62,25 +73,31 @@ public class User {
 
         User user = (User) o;
 
+        if (id != user.id) return false;
+        if (!userId.equals(user.userId)) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
-        if (password != null ? !password.equals(user.password) : user.password != null) return false;
-        return mail != null ? mail.equals(user.mail) : user.mail == null;
+        if (profilePic != null ? !profilePic.equals(user.profilePic) : user.profilePic != null) return false;
+        return email.equals(user.email);
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (mail != null ? mail.hashCode() : 0);
+        int result = id;
+        result = 31 * result + userId.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (profilePic != null ? profilePic.hashCode() : 0);
+        result = 31 * result + email.hashCode();
         return result;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", mail='" + mail + '\'' +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
+                ", name='" + name + '\'' +
+                ", profilePic='" + profilePic + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

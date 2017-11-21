@@ -5,6 +5,7 @@ import com.database.model.Schema;
 import com.database.model.Sensor;
 import com.database.model.System;
 import com.database.service.SchemaService;
+import com.database.service.SensorService;
 import com.database.service.SystemService;
 
 import java.util.ArrayList;
@@ -38,6 +39,9 @@ public class SensorUtil {
         sensor.setActive(NotNullUtil.setNotNull(sensor.isActive(), sensorUpdate.isActive()));
         sensor.setSchemaX(NotNullUtil.setNotNull(sensor.getSchemaX(), sensorUpdate.getSchemaX()));
         sensor.setSchemaY(NotNullUtil.setNotNull(sensor.getSchemaY(), sensorUpdate.getSchemaY()));
+        if (sensorUpdate.getSchemaId() != null) {
+            sensor.setSchema(SchemaService.findSchemaById(sensorUpdate.getSchemaId()));
+        }
         return sensor;
     }
 
@@ -50,7 +54,9 @@ public class SensorUtil {
         sensorDto.setActive(sensor.isActive());
         sensorDto.setSchemaX(sensor.getSchemaX());
         sensorDto.setSchemaY(sensor.getSchemaY());
-        sensorDto.setSchemaId(sensor.getSchema().getId());
+        if (sensor.getSchema() != null) {
+            sensorDto.setSchemaId(sensor.getSchema().getId());
+        }
         sensorDto.setSystemId(sensor.getSystem().getId());
         return sensorDto;
     }
@@ -61,6 +67,22 @@ public class SensorUtil {
             sensorDtos.add(convertToDto(sensor));
         }
         return sensorDtos;
+    }
+
+    public static void unbindFromSchema(List<Sensor> sensors) {
+        for (Sensor sensor : sensors) {
+            sensor.setSchemaX(null);
+            sensor.setSchemaY(null);
+            sensor.setSchema(null);
+            SensorService.update(sensor);
+        }
+    }
+
+    public static void unbindSingleFromSchema(Sensor sensor) {
+        sensor.setSchemaX(null);
+        sensor.setSchemaY(null);
+        sensor.setSchema(null);
+        SensorService.update(sensor);
     }
 
 }

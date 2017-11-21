@@ -24,7 +24,7 @@ public class SensorTest extends TestBase {
     @Test
     public void createSensorTest() {
         Sensor sensor = new Sensor();
-        sensor.setSensorId(3);
+        sensor.setSensorId("3");
         sensor.setName("new sensor");
         sensor.setType(SensorTypeEnum.HUMIDITY.getId());
         sensor.setActive(true);
@@ -32,14 +32,14 @@ public class SensorTest extends TestBase {
         sensor.setSchema(SchemaService.findSchemaById(2));
         SensorService.save(sensor);
 
-        Sensor cachedSensor = SensorService.findBySensorIdAndSystemId(3, 2);
+        Sensor cachedSensor = SensorService.findBySensorIdAndSystemId("3", 2);
         Assert.assertEquals(sensor, cachedSensor);
     }
 
     @Test
     public void updateSensorTest() {
         Sensor sensor = new Sensor();
-        sensor.setSensorId(4);
+        sensor.setSensorId("4");
         sensor.setName("new sensor");
         sensor.setType(SensorTypeEnum.HUMIDITY.getId());
         sensor.setActive(true);
@@ -50,14 +50,14 @@ public class SensorTest extends TestBase {
         sensor.setName("updated sensor");
         sensor.setType(2);
         SensorService.update(sensor);
-        Sensor updatedSensor = SensorService.findBySensorIdAndSystemId(4, 2);
+        Sensor updatedSensor = SensorService.findBySensorIdAndSystemId("4", 2);
         Assert.assertEquals(sensor, updatedSensor);
     }
 
     @Test
     public void deleteSensorTest() {
         Sensor sensor = new Sensor();
-        sensor.setSensorId(5);
+        sensor.setSensorId("5");
         sensor.setName("new sensor");
         sensor.setType(SensorTypeEnum.HUMIDITY.getId());
         sensor.setActive(true);
@@ -66,7 +66,7 @@ public class SensorTest extends TestBase {
         SensorService.save(sensor);
         SensorService.delete(sensor);
 
-        Sensor deletedSensor = SensorService.findBySensorIdAndSystemId(5, 2);
+        Sensor deletedSensor = SensorService.findBySensorIdAndSystemId("5", 2);
         Assert.assertNull(deletedSensor);
     }
 
