@@ -65,7 +65,9 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                     tickWidth: 1,
                     title: {
                         text: 'Temperature (°C)'
-                    }
+                    },
+                    align: 'left',
+                    opposite: false
                 }, {
                     tickWidth: 1,
                     title: {
@@ -78,6 +80,22 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                     backgroundColor: 'rgba(0, 0, 0, 0.85)',
                     style: {
                         color: '#F0F0F0'
+                    },
+                    shared: false,
+                    split: true
+                },
+
+                legend: {
+                    enabled: true,
+                    maxHeight: 100,
+                    labelFormatter: function() {
+                        var pos;
+                        if (this.options.stack == "Temperature") {
+                            pos = "left";
+                        } else {
+                            pos = "right";
+                        }
+                        return '<div class="' + this.name + '-arrow" style="float:' + pos + '; clear: both"></div>' + this.name +'<br/><span style="font-size:10px; color:#ababaa">' + this.options.stack + '</span>';
                     }
                 },
 
@@ -90,65 +108,41 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                     }
                 },
 
-                rangeSelector: {
-                    buttonTheme: {
-                        fill: '#505053',
-                        stroke: '#000000',
-                        style: {
-                            color: '#CCC'
+                plotOptions: {
+                    series: {
+                        marker: {
+                            enabled: false
                         },
-                        states: {
-                            hover: {
-                                fill: '#707073',
-                                stroke: '#000000',
-                                style: {
-                                    color: 'white'
-                                }
-                            },
-                            select: {
-                                fill: '#000003',
-                                stroke: '#000000',
-                                style: {
-                                    color: 'white'
-                                }
-                            }
+                        dataGrouping: {
+                            enabled: false
                         }
-                    },
-                    inputBoxBorderColor: '#505053',
-                    inputStyle: {
-                        backgroundColor: '#333',
-                        color: 'silver'
-                    },
-                    labelStyle: {
-                        color: 'silver'
                     }
                 },
 
+                rangeSelector: {
+                    selected: 0,
+                    allButtonsEnabled: true,
+                    buttons: [{
+                        type: 'hour',
+                        count: 24,
+                        text: 'Day'
+                    }, {
+                        type: 'day',
+                        count: 7,
+                        text: 'Week'
+                    }, {
+                        type: 'all',
+                        text: 'All'
+                    }]
+                },
+
                 navigator: {
-                    handles: {
-                        backgroundColor: '#666',
-                        borderColor: '#AAA'
-                    },
                     outlineColor: '#CCC',
                     maskFill: 'rgba(255,255,255,0.1)',
                     series: {
                         color: '#7798BF',
                         lineColor: '#A6C7ED'
-                    },
-                    xAxis: {
-                        gridLineColor: '#505053'
                     }
-                },
-
-                scrollbar: {
-                    barBackgroundColor: '#808083',
-                    barBorderColor: '#808083',
-                    buttonArrowColor: '#CCC',
-                    buttonBackgroundColor: '#606063',
-                    buttonBorderColor: '#606063',
-                    rifleColor: '#FFF',
-                    trackBackgroundColor: '#404043',
-                    trackBorderColor: '#404043'
                 },
 
                 legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -160,7 +154,9 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                 series: []
             };
 
-            var i = 0;
+            var i = 0, tempColorsCounter = 0, humidColorsCounter = 0;
+            var tempColors = ['#F44C36', '#F78C31', '#F3478C', '#DF5353'];
+            var humidColors = ['#7cb5ec', '#7798BF', '#aaeeee', '#8971B7'];
             var seriesOptions = [];
             $scope.model.dataTemp.forEach(function (entry) {
                 console.log(entry[1].temps);
@@ -168,8 +164,11 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                     name: entry[1].sensorID,
                     data: entry[1].temps,
                     yAxis: 0,
-                    turboThreshold: Number.MAX_VALUE
+                    turboThreshold: Number.MAX_VALUE,
+                    stack: 'Temperature',
+                    color: tempColors[tempColorsCounter%4]
                 };
+                tempColorsCounter++;
                 options.series.push(seriesOptions[i]);
             });
 
@@ -179,13 +178,16 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                 name: entry[1].sensorID,
                 data: entry[1].temps,
                 yAxis: 1,
-                turboThreshold: Number.MAX_VALUE
+                turboThreshold: Number.MAX_VALUE,
+                stack: 'Humidity',
+                color: humidColors[humidColorsCounter%4]
             };
+            humidColorsCounter++;
             options.series.push(seriesOptions[i]);
         });
 
             console.log(options.series);
-            chart = $('#container').highcharts(options);
+            chart = $('#container').highcharts('StockChart', options).highcharts();
 
     }
 
