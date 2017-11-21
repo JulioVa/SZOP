@@ -98,7 +98,7 @@ def prepare_existing_file(file):
 config = ConfigParser.ConfigParser()
 config.read('config.ini')
 
-url = 'http://192.168.0.33:8080/sensors/data'
+url = 'http://77.55.225.4:8090/sensors/data'
 headers = {'Content-type': 'application/json'}
 
 base_dir = '/sys/bus/w1/devices/'
