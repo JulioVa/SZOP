@@ -70,14 +70,14 @@ def save_dht11_value(sensor_type, sensor, file, date):
             'id': str(sensor),
             'type': 'temp',
             'date': str(date),
-            'value': temp
+            'value': float(temp)
         }
         file.write('\n\t' + json.dumps(temp_data) + '\n\t,')
         humid_data = {
             'id': str(sensor),
             'type': 'humid',
             'date': str(date),
-            'value': humid
+            'value': float(humid)
         }
         file.write('\n\t' + json.dumps(humid_data) + '\n\t,')
     else:
@@ -86,8 +86,8 @@ def save_dht11_value(sensor_type, sensor, file, date):
 
 def prepare_new_file(file):
     file.write('{\n')
-    file.write(json.dumps('user_id') + ': ' + ConfigSectionMap('user data')['user_id'] + ',\n')
-    file.write(json.dumps('system_id') + ': ' + ConfigSectionMap('user data')['system_id'] + ',\n')
+    file.write(json.dumps('user_id') + ': ' + json.dumps(ConfigSectionMap('user data')['user_id']) + ',\n')
+    file.write(json.dumps('system_id') + ': ' + json.dumps(ConfigSectionMap('user data')['system_id']) + ',\n')
     file.write(json.dumps('sensors') + ': [')
 
 
@@ -98,7 +98,7 @@ def prepare_existing_file(file):
 config = ConfigParser.ConfigParser()
 config.read('config.ini')
 
-url = 'http://77.55.225.4:8090/sensors/data'
+url = 'http://192.168.0.33:8080/sensors/data'
 headers = {'Content-type': 'application/json'}
 
 base_dir = '/sys/bus/w1/devices/'
@@ -137,4 +137,4 @@ while True:
             config.set('connection', 'connection', 'False')
         with open('config.ini', 'w') as cfg_file:
             config.write(cfg_file)
-time.sleep(300)
+    time.sleep(300)

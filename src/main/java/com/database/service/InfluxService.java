@@ -28,7 +28,9 @@ public class InfluxService {
 
         System sys = SystemService.findSystemByName(sysName);
         if (sys == null) {
-            sys.setId(SystemService.save(new System(user, sysName)));
+            sys = new System(user, sysName);
+            int id = SystemService.save(sys);
+            sys.setId(id);
         }
         Set<String> sensors = new HashSet<>();
         BatchPoints batchPoints = BatchPoints
