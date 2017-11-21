@@ -14,6 +14,14 @@ public class UserService {
         return user;
     }
 
+    public static User findUserById(String id){
+        Session session = HibernateUtils.getSession();
+        session.beginTransaction();
+        User user = session.createQuery("FROM User u WHERE u.userId = :id", User.class).setParameter("id", id).uniqueResultOptional().orElse(null);
+        session.getTransaction().commit();
+        return user;
+    }
+
     public static List<User> findAll(){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
