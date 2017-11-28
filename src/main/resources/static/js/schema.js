@@ -9,6 +9,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     var schemaY;
     var currentSchemaId;
     var currentSensorId;
+    var sensorsMap = new Map();
     var firstSchemaId;
     var userId = 1;
 
@@ -69,12 +70,13 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
         $http.get('/schema/' + schemaId + '/sensors').then(function (response) {
             var tempSensorsList = response.data;
             tempSensorsList.forEach(function (entry) {
+                sensorsMap.set(entry.id, entry.sensorId);
                 var sensorX = entry.schemaX;
                 var sensorY = entry.schemaY;
                 if (entry.type == 1) {
                     console.log("ccc");
-                    $("#schema-container").prepend("<div class='sensor-point' id='sensorpoint" + entry.sensorId + "'></div>");
-                    $("#sensorpoint" + entry.sensorId).css({
+                    $("#schema-container").prepend("<div class='sensor-point' id='sensorpoint" + entry.id + "'></div>");
+                    $("#sensorpoint" + entry.id).css({
                         "width": "30px",
                         "height": "30px",
                         "background-color": "#f44336",
@@ -86,8 +88,8 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
                         "margin-left": sensorX - $('#schema-container').offset().left - 15 + "px"
                     });
                 } else if (entry.type == 2) {
-                    $("#schema-container").prepend("<div class='sensor-point' id='sensorpoint" + entry.sensorId + "'></div>");
-                    $("#sensorpoint" + entry.sensorId).css({
+                    $("#schema-container").prepend("<div class='sensor-point' id='sensorpoint" + entry.id + "'></div>");
+                    $("#sensorpoint" + entry.id).css({
                         "width": "30px",
                         "height": "30px",
                         "background-color": "#2196f3",
@@ -210,7 +212,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     $("#add-temp-sensor").click(function() {
         sensorType = "temp";
         console.log("temp");
-        $http.get('/sensors/temperature').
+        $http.get('/sensors/temperature/user/1').
         then(function (response) {
             var tempSensorsList = response.data;
             console.log(tempSensorsList);
@@ -244,7 +246,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
 
     $("#add-humid-sensor").click(function() {
         sensorType = "humid";
-        $http.get('/sensors/humidity').
+        $http.get('/sensors/humidity/user/1').
         then(function (response) {
             var humidSensorsList = response.data;
             var formattedSensorsList = [];
@@ -294,6 +296,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
         var sensorId;
         $(':checked').each(function() {
             sensorId = this.id;
+            console.log("xxxxxxxxxxxxxxxx " + sensorId)
         });
         console.log("id " + sensorId);
         $("#sensor-alert").css("display", "none");
@@ -329,15 +332,20 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
             };
             console.log(data);
 
-            $http.put('/system/1/sensors/' + sensorId, data).then(function () {
-                console.log("updated" + data);
+            var systemId;
+            $http.get('/sensor/' + sensorId).
+            then(function (response) {
+                systemId = response.data.systemId;
+
+                console.log(systemId);
+
+                $http.put('/system/' + systemId + '/sensors/' + sensorId, data).then(function () {
+                    console.log("updated" + data);
+                });
+
+                chartHover();
+                moveRemoveClick();
             });
-
-            //$("#sensorpoint" + sensorCounter).unbind("click");
-
-            chartHover();
-            moveRemoveClick();
-
         });
     });
 
@@ -497,14 +505,22 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
             };
             console.log(data);
 
-            $http.put('/system/1/sensors/' + currentSensorId, data).then(function () {
-                console.log("updated" + data);
+            var systemId;
+            $http.get('/sensor/' + currentSensorId).
+            then(function (response) {
+                systemId = response.data.systemId;
+
+                console.log(systemId);
+
+                $http.put('/system/' + systemId + '/sensors/' + currentSensorId, data).then(function () {
+                    console.log("updated" + data);
+                });
+
+                //$("#sensorpoint" + sensorCounter).unbind("click");
+
+                chartHover();
+                moveRemoveClick();
             });
-
-            //$("#sensorpoint" + sensorCounter).unbind("click");
-
-            chartHover();
-            moveRemoveClick();
 
         });
         $("#sensor-details").css("visibility", "visible");
@@ -523,19 +539,25 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     };
 
     function getData() {
-        console.log("llll");
-        $http.get('/sensors/' + currentSensorId + '/user/1/system/1/data').then(function (response) {
-            data = Object.entries(response.data);
+        var systemId;
+        $http.get('/sensor/' + currentSensorId).
+        then(function (response) {
+            systemId = response.data.systemId;
+            var sensId = response.data.sensorId;
+            console.log(systemId);
 
-            data.forEach(function (entry) {
-                entry[0] = parseInt(entry[0]);
+            $http.get('/sensors/' + sensId + '/user/1/system/' + systemId + '/data').then(function (response) {
+                data = Object.entries(response.data);
+
+                data.forEach(function (entry) {
+                    entry[0] = parseInt(entry[0]);
+                });
+
+                console.log(data);
+
+                $scope.model.data = data;
+                createChart()
             });
-
-            console.log(data);
-            console.log("pp");
-
-            $scope.model.data = data;
-            createChart()
         });
     }
 
@@ -554,7 +576,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
                     color: '#E0E0E3',
                     fontSize: '20px'
                 },
-                text: currentSensorId
+                text: sensorsMap.get(parseInt(currentSensorId))
             },
             xAxis: {
                 type: 'datetime',
@@ -753,6 +775,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
 
         var seriesOptions = {
             data: formattedData,
+            name: sensorsMap.get(parseInt(currentSensorId)),
             yAxis: 0,
             turboThreshold: Number.MAX_VALUE
         };

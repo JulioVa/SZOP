@@ -42,9 +42,9 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/schema/{schemaId}/sensors", method = RequestMethod.GET)
-    public ResponseEntity<List<SensorDto>> getSensorsBySchemaId(@PathVariable int schemaId) {
+    public ResponseEntity<List<SensorIdLevelDto>> getSensorsBySchemaId(@PathVariable int schemaId) {
         List<Sensor> sensors = SensorService.findAllBySchema(schemaId);
-        List<SensorDto> sensorDtos = SensorUtil.convertToDtos(sensors);
+        List<SensorIdLevelDto> sensorDtos = SensorUtil.convertToDtosId(sensors);
         if (sensors.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -71,10 +71,40 @@ public class SzopRestController {
         return ResponseEntity.ok().body(sensorDtos);
     }
 
-    @RequestMapping(value = "/sensor/{sensorId}", method = RequestMethod.GET)
-    public ResponseEntity<SensorDto> getSensorById(@PathVariable int sensorId) {
-        Sensor sensor = SensorService.findSensorById(sensorId);
+    @RequestMapping(value = "/sensors/temperature/user/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorIdLevelDto>> getTemperatureSensorsForUser(@PathVariable int userId) {
+        List<Sensor> sensors = SensorService.findAllByTypeForUser(1, userId);
+        List<SensorIdLevelDto> sensorDtos = SensorUtil.convertToDtosId(sensors);
+        if (sensors.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(sensorDtos);
+    }
+
+    @RequestMapping(value = "/sensors/humidity/user/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorIdLevelDto>> getHumiditySensorsForUser(@PathVariable int userId) {
+        List<Sensor> sensors = SensorService.findAllByTypeForUser(2, userId);
+        List<SensorIdLevelDto> sensorDtos = SensorUtil.convertToDtosId(sensors);
+        if (sensors.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(sensorDtos);
+    }
+
+    @RequestMapping(value = "/sensor/sensorId/{sensorId}", method = RequestMethod.GET)
+    public ResponseEntity<SensorDto> getSensorBySensorId(@PathVariable String sensorId) {
+        Sensor sensor = SensorService.findSensorBySensorId(sensorId);
         SensorDto sensorDto = SensorUtil.convertToDto(sensor);
+        if (sensor == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(sensorDto);
+    }
+
+    @RequestMapping(value = "/sensor/{sensorId}", method = RequestMethod.GET)
+    public ResponseEntity<SensorIdLevelDto> getSensorById(@PathVariable int sensorId) {
+        Sensor sensor = SensorService.findSensorById(sensorId);
+        SensorIdLevelDto sensorDto = SensorUtil.convertToDtoId(sensor);
         if (sensor == null) {
             return ResponseEntity.notFound().build();
         }
@@ -89,15 +119,15 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/sensors/{sensorId}/unbind", method = RequestMethod.PUT)
-    public ResponseEntity<Void> unbindSensorFromSchema(@PathVariable String sensorId) {
-        Sensor sensor = SensorService.findSensorBySensorId(sensorId);
+    public ResponseEntity<Void> unbindSensorFromSchema(@PathVariable int sensorId) {
+        Sensor sensor = SensorService.findSensorById(sensorId);
         SensorUtil.unbindSingleFromSchema(sensor);
         return ResponseEntity.ok().build();
     }
 
     @RequestMapping(value = "/system/{systemId}/sensors/{sensorId}", method = RequestMethod.PUT)
-    public ResponseEntity<SensorDto> updateSensor(@PathVariable int systemId, @PathVariable String sensorId, @RequestBody SensorDto sensorDto) {
-        Sensor sensor = SensorService.findBySensorIdAndSystemId(sensorId, systemId);
+    public ResponseEntity<SensorDto> updateSensor(@PathVariable int systemId, @PathVariable int sensorId, @RequestBody SensorDto sensorDto) {
+        Sensor sensor = SensorService.findSensorById(sensorId);
         if (sensor == null) {
             return ResponseEntity.notFound().build();
         }

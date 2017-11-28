@@ -1,6 +1,7 @@
 package com.database.util;
 
 import com.database.dto.SensorDto;
+import com.database.dto.SensorIdLevelDto;
 import com.database.model.Schema;
 import com.database.model.Sensor;
 import com.database.model.System;
@@ -61,10 +62,35 @@ public class SensorUtil {
         return sensorDto;
     }
 
+    public static SensorIdLevelDto convertToDtoId(Sensor sensor) {
+        SensorIdLevelDto sensorDto = new SensorIdLevelDto();
+        sensorDto.setSensorId(sensor.getSensorId());
+        sensorDto.setName(sensor.getName());
+        sensorDto.setType(sensor.getType());
+        sensorDto.setLastUpdate(sensor.getLastUpdate());
+        sensorDto.setActive(sensor.isActive());
+        sensorDto.setSchemaX(sensor.getSchemaX());
+        sensorDto.setSchemaY(sensor.getSchemaY());
+        if (sensor.getSchema() != null) {
+            sensorDto.setSchemaId(sensor.getSchema().getId());
+        }
+        sensorDto.setSystemId(sensor.getSystem().getId());
+        sensorDto.setId(sensor.getId());
+        return sensorDto;
+    }
+
     public static List<SensorDto> convertToDtos(List<Sensor> sensors) {
         List<SensorDto> sensorDtos = new ArrayList<>();
         for (Sensor sensor : sensors) {
             sensorDtos.add(convertToDto(sensor));
+        }
+        return sensorDtos;
+    }
+
+    public static List<SensorIdLevelDto> convertToDtosId(List<Sensor> sensors) {
+        List<SensorIdLevelDto> sensorDtos = new ArrayList<>();
+        for (Sensor sensor : sensors) {
+            sensorDtos.add(convertToDtoId(sensor));
         }
         return sensorDtos;
     }

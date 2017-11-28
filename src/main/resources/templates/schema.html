@@ -49,8 +49,8 @@
         <h4 class="center-align white-text" style="margin-top:20px;">Choose sensor</h4>
         <div ng-repeat="sensor in sensors">
         <p>
-            <input type="checkbox" class="filled-in checkbox-orange choose-sensor-checkbox" id="{{sensor.sensorId}}" />
-            <label for="{{sensor.sensorId}}" class="choose-sensor-checkbox" style="color: #e0e0e0">{{sensor.name}}</label>
+            <input type="checkbox" class="filled-in checkbox-orange choose-sensor-checkbox" id="{{sensor.id}}" />
+            <label for="{{sensor.id}}" class="choose-sensor-checkbox" style="color: #e0e0e0">{{sensor.name}}</label>
         </p>
         </div>
         <h5 id='sensor-alert' class='center-align grey-text darken-4' style="display: none; color: #e0e0e0">All sensors are already on a schema!</h5>

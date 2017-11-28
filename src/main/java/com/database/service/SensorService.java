@@ -59,6 +59,14 @@ public class SensorService {
         return sensors;
     }
 
+    public static List<Sensor> findAllByTypeForUser(int sensorType, int userId){
+        Session session = HibernateUtils.getSession();
+        session.beginTransaction();
+        List<Sensor> sensors = session.createQuery("SELECT s FROM Sensor s WHERE s.type = :sensorType AND s.system.user.id = :userId",Sensor.class).setParameter("sensorType", sensorType).setParameter("userId", userId).getResultList();
+        session.getTransaction().commit();
+        return sensors;
+    }
+
     public static Sensor findBySensorIdAndSystemId(String sensorId, int systemId){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
