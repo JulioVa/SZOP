@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="szop">
+<head>
+    <meta charset="UTF-8"/>
+    <title>SZOP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css"/>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    <meta name="google-signin-client_id" content="100008317632-rp63ps1kq4jaess9g0u5ltbsm6oh8e2u.apps.googleusercontent.com"/>
+    <script src="js/script.js" type="text/javascript"></script>
+    <script src="js/diagrams.js" type="text/javascript"></script>
+    <link href="css/style.css" type="text/css" rel="stylesheet"/>
+    <script src="js/index.js"></script>
+    <script src="js/login.js"></script>
+</head>
+<body>
+<header>
+    <div class="navbar-fixed">
+        <nav>
+            <div class="nav-wrapper grey darken-4">
+                <a href="#" class="brand-logo nav-menu-logo">SZOP</a>
+                <a href="#" data-activates="mobile-demo" class="button-collapse"><i
+                        class="material-icons">menu</i></a>
+                <ul class="left hide-on-med-and-down nav-menu-left">
+                    <li><a href="schema.html">Schema</a></li>
+                    <li><a href="diagrams.html">Diagrams</a></li>
+                    <li><a href="sensors.html">Sensors</a></li>
+                    <li><a href="alerts.html">Alerts</a></li>
+                </ul>
+                <ul class="right hide-on-med-and-down nav-menu-right">
+                    <li id="login-butt" style="display: none; cursor: pointer;" onclick="handleSignInClick()"></li>
+                    <li id="profile-butt" style="display: none; cursor: pointer;"></li>
+                    <li id="logout-butt" onclick="handleSignOutClick()" style="display: none; cursor: pointer;"></li>
+                </ul>
+                <!--
+                <ul class="side-nav" id="mobile-demo">
+                    <li><a href="schema.html">Schema</a></li>
+                    <li><a href="diagrams.html">Diagrams</a></li>
+                    <li><a href="sensors.html">Sensors</a></li>
+                    <li><a href="alerts.html">Alerts</a></li>
+                    <li id="login-butt" style="display: none; cursor: pointer;" onclick="handleSignInClick()"><a href="login.html"></a></li>
+                    <li id="profile-butt" style="display: none; cursor: pointer;"><a href="profile.html">Profile</a></li>
+                    <li id="logout-butt" onclick="handleSignOutClick()" style="display: none; cursor: pointer;"><a href="login.html"></a></li>
+                </ul>
+                -->
+            </div>
+        </nav>
+    </div>
+    <main ng-controller="user">
+        <div class="container" style="width: 1200px; margin: 0 auto;">
+            <!-- <div style="width: 600px; font-size: 40px; color: black; text-align: center; padding-top: 20px; float: left;" >
+                <p>Please fill form below:</p>
+            </div> -->
+            <div style="float: left; width: 600px;">
+                <div style="font-size: 40px; color: black; text-align: center; padding-top: 20px;" >
+                    <p>Sign in with google:</p>
+                </div>
+                <div style="right: 0; left: 200px; margin: 0 auto; text-align: center;">
+                    <div id="my-signin2"></div>
+                </div>
+                <script src="https://apis.google.com/js/platform.js?onload=renderButton" async="async" defer="defer"
+                        onload="this.onload=function(){};handleClientLoad()"
+                        onreadystatechange="if (this.readyState === 'complete') this.onload()">
+                </script>
+                <!-- <div style=" font-size: 40px; color: black; text-align: center; padding-top: 20px;" >
+                    <p>or</p>
+                    <img src="../img/fb_sign_in.JPG"/>
+                </div> -->
+            </div>
+
+        </div>
+    </main>
+</header>
+</body>
+</html>
