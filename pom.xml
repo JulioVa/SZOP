@@ -89,6 +89,12 @@
 			<version>2.7</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-oauth2</artifactId>
+			<version>v1-rev132-1.22.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

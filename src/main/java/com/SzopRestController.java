@@ -10,6 +10,8 @@ import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.*;
 
 @RestController
@@ -378,5 +380,13 @@ public class SzopRestController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.noContent().build();
+    }
+
+    // user
+    @RequestMapping(value = "/user/token", method = RequestMethod.POST)
+    public ResponseEntity<String> createUser(@RequestBody String userToken) throws GeneralSecurityException, IOException {
+        LOGGER.info(userToken);
+        Authentication.authenticate(userToken);
+        return ResponseEntity.ok().body(userToken);
     }
 }
