@@ -22,7 +22,7 @@ public class InfluxService {
 
     public static void writeData(String userId, String sysName, List<TemperatureData> temps) {
 
-        User user = UserService.findUserById(userId);
+        User user = UserService.findUserByEmail(userId);
         if (user == null)
             return;
 

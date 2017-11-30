@@ -11,9 +11,6 @@ public class User {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "user_id")
-    private String userId;
-
     @Column(name = "name")
     private String name;
 
@@ -32,14 +29,6 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getName() {
@@ -74,7 +63,6 @@ public class User {
         User user = (User) o;
 
         if (id != user.id) return false;
-        if (!userId.equals(user.userId)) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
         if (profilePic != null ? !profilePic.equals(user.profilePic) : user.profilePic != null) return false;
         return email.equals(user.email);
@@ -83,7 +71,6 @@ public class User {
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + userId.hashCode();
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (profilePic != null ? profilePic.hashCode() : 0);
         result = 31 * result + email.hashCode();
@@ -94,7 +81,6 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", userId='" + userId + '\'' +
                 ", name='" + name + '\'' +
                 ", profilePic='" + profilePic + '\'' +
                 ", email='" + email + '\'' +
