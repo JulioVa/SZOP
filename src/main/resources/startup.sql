@@ -11,18 +11,15 @@ create table "user"(
 create unique index user_id_uindex on "user" (id);
 create unique index user_mail_uindex on "user" (email);
 --CREATE SYSTEM
-create table system(
+create table "user"(
   id serial not null
-    constraint system_pkey
+    constraint user_pkey
     primary key,
-  user_id integer not null
-    constraint system_user_id_fk
-    references "user"
-    on update cascade on delete cascade
-    deferrable,
-  name varchar(50) not null
+  name varchar(50),
+  profile_pic varchar(250),
+  email varchar(50) not null
 );
-create unique index system_id_uindex on system (id);
+create unique index user_mail_uindex on "user" (email);
 --CREATE SCHEMA
 create table schema(
   name varchar(50) not null,
