@@ -1,4 +1,3 @@
-//angular.module('szop', []).controller('user', ['$scope', '$http', '$window', function ($scope, $http, $window) {
     /**
      * The Sign-In client object.
      */
@@ -18,9 +17,19 @@
         });
     }
 
-    function signInCallback() {
-        console.log("call back");
-        auth2 = gapi.auth2.init({
+    function signInCallback(googleUser) {
+        var id_token = googleUser.getAuthResponse().id_token;
+        console.log("xxxxx " + id_token);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://localhost:8090/user/token');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            console.log('Signed in as: ' + xhr.responseText);
+        };
+        xhr.send(id_token);
+
+        /*auth2 = gapi.auth2.init({
             client_id: '100008317632-rp63ps1kq4jaess9g0u5ltbsm6oh8e2u.apps.googleusercontent.com',
             fetch_basic_profile: true,
             scope: 'profile'
@@ -55,7 +64,7 @@
                 });
 
             console.log("after post");
-        });
+        });*/
     }
 
     function updateSigninStatus(isSignedIn) {
@@ -89,13 +98,14 @@
     }
 
     function handleClientLoad() {
+        console.log("xxxxxxxx");
         gapi.load('client:auth2', initClient);
     }
 
     function onSuccess(googleUser) {
         console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
         console.log("before");
-        signInCallback();
+        signInCallback(googleUser);
         console.log("after");
     }
 
@@ -121,4 +131,3 @@
             console.log('User signed out.');
         });
     }
-//}]);
