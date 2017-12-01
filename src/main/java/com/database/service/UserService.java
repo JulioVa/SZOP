@@ -17,7 +17,7 @@ public class UserService {
     public static User findUserByEmail(String email){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();
-        User user = session.createQuery("FROM User u WHERE u.email = :email", User.class).setParameter("email", email).uniqueResultOptional().orElse(null);
+        User user = session.createQuery("FROM User u WHERE u.email LIKE :email", User.class).setParameter("email", email).uniqueResultOptional().orElse(null);
         session.getTransaction().commit();
         return user;
     }

@@ -3,23 +3,24 @@ create table "user"(
   id serial not null
     constraint user_pkey
     primary key,
-  user_id varchar(50) not null,
   name varchar(50),
   profile_pic varchar(250),
   email varchar(50) not null
 );
-create unique index user_id_uindex on "user" (id);
 create unique index user_mail_uindex on "user" (email);
 --CREATE SYSTEM
-create table "user"(
+create table system(
   id serial not null
-    constraint user_pkey
+    constraint system_pkey
     primary key,
-  name varchar(50),
-  profile_pic varchar(250),
-  email varchar(50) not null
+  user_id integer not null
+    constraint system_user_id_fk
+    references "user"
+    on update cascade on delete cascade
+    deferrable,
+  name varchar(50) not null
 );
-create unique index user_mail_uindex on "user" (email);
+create unique index system_id_uindex on system (id);
 --CREATE SCHEMA
 create table schema(
   name varchar(50) not null,
