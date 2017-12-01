@@ -7,9 +7,11 @@ import com.database.service.*;
 import com.database.util.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.*;
@@ -18,6 +20,9 @@ import java.util.*;
 public class SzopRestController {
 
     private static final Logger LOGGER = LogManager.getLogger(SzopRestController.class);
+
+    @Autowired
+    private HttpSession httpSession;
 
     private Temperature temperature = new Temperature();
 
@@ -36,6 +41,16 @@ public class SzopRestController {
     @RequestMapping(value = "/system/{systemId}/sensors", method = RequestMethod.GET)
     public ResponseEntity<List<SensorDto>> getSensorsBySystemId(@PathVariable int systemId) {
         List<Sensor> sensors = SensorService.findAllBySystem(systemId);
+        List<SensorDto> sensorDtos = SensorUtil.convertToDtos(sensors);
+        if (sensors.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(sensorDtos);
+    }
+
+    @RequestMapping(value = "/user/{userId}/sensors", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorDto>> getSensorsByUserId(@PathVariable int userId) {
+        List<Sensor> sensors = SensorService.findAllByUser(userId);
         List<SensorDto> sensorDtos = SensorUtil.convertToDtos(sensors);
         if (sensors.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -166,9 +181,9 @@ public class SzopRestController {
         return ResponseEntity.ok().body(schemaDtos);
     }
 
-    @RequestMapping(value = "/schemas/id", method = RequestMethod.GET)
-    public ResponseEntity<List<SchemaIdLevelDto>> getSchemasId() {
-        List<Schema> schemas = SchemaService.findAll();
+    @RequestMapping(value = "/schemas/id/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<List<SchemaIdLevelDto>> getSchemasId(@PathVariable int userId) {
+        List<Schema> schemas = SchemaService.findSchemasByUserId(userId);
         List<SchemaIdLevelDto> schemaDtos = SchemaUtil.convertToDtosId(schemas);
         if (schemas.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -384,9 +399,20 @@ public class SzopRestController {
 
     // user
     @RequestMapping(value = "/user/token", method = RequestMethod.POST)
-    public ResponseEntity<String> createUser(@RequestBody String userToken) throws GeneralSecurityException, IOException {
+    public ResponseEntity<String> createUser(@RequestBody String userToken, HttpSession httpSession) throws GeneralSecurityException, IOException {
         LOGGER.info(userToken);
-        Authentication.authenticate(userToken);
+        String email = Authentication.authenticate(userToken);
+        httpSession.setAttribute("UserId", email);
+        String emailGet = (String) httpSession.getAttribute("UserId");
+        LOGGER.info("email: " + emailGet);
         return ResponseEntity.ok().body(userToken);
+    }
+
+    @RequestMapping(value = "/user/id", method = RequestMethod.GET)
+    public ResponseEntity<Integer> getCurrentUserId() {
+        String email = (String) httpSession.getAttribute("UserId");
+        LOGGER.info("email: " + email);
+        User user = UserService.findUserByEmail(email);
+        return ResponseEntity.ok().body(user.getId());
     }
 }

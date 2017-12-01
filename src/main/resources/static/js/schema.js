@@ -11,16 +11,29 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     var currentSensorId;
     var sensorsMap = new Map();
     var firstSchemaId;
-    var userId = 1;
+    var userId;
 
-    getFirstSchemaId();
-    getSchemasList();
-    chartHover();
-    moveRemoveClick();
+    getCurrentUserId();
+    setTimeout(function() {
+        getFirstSchemaId();
+        getSchemasList();
+        chartHover();
+        moveRemoveClick();
+    }, 1000);
+
+
+    function getCurrentUserId() {
+        $http.get('/user/id').
+        then(function (response) {
+            userId = parseInt(response.data);
+            console.log("id: " + userId);
+        });
+    }
 
     function getSchemasList() {
         $("#schemas").empty();
-        $http.get('/schemas/id').
+
+        $http.get('/schemas/id/' + userId).
         then(function (response) {
             var schemasList = response.data;
             console.log(schemasList);
@@ -106,7 +119,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     }
 
     function getFirstSchemaId() {
-        $http.get('/schemas/id').
+        $http.get('/schemas/id/' + userId).
         then(function (response) {
             var schemasList = response.data;
             console.log(schemasList[0].id);
@@ -529,7 +542,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     setTimeout(function() {
         console.log(img);
         loaded = true;
-    }, 10000);
+    }, 15000);
 
 
     var data;
