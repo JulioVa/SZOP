@@ -6,8 +6,8 @@ import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Pong;
 
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 
@@ -18,10 +18,10 @@ public class InfluxUtils {
     public static String DB_NAME = "";
     public boolean connect() {
 
-        final InputStream input = getClass().getClassLoader().getResourceAsStream("influx.properties");
-        final Properties properties = new Properties();
         try {
-            properties.load(input);
+            final FileInputStream file = new FileInputStream("./influx.properties");
+            final Properties properties = new Properties();
+            properties.load(file);
             DB_NAME = properties.getProperty("influx.db.name");
             String userName = properties.getProperty("influx.username");
             String password = properties.getProperty("influx.password");
@@ -44,7 +44,7 @@ public class InfluxUtils {
         influxDB.setDatabase(DB_NAME);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error:",e);
             return false;
         }
 
