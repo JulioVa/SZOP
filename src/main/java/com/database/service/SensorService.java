@@ -79,6 +79,18 @@ public class SensorService {
         }
     }
 
+    public static Sensor findBySensorIdAndSystemIdAndType(String sensorId, int systemId, int type){
+        Session session = HibernateUtils.getSession();
+        session.beginTransaction();
+        try {
+            return session.createQuery("FROM Sensor s WHERE s.sensorId = :sensorId AND s.system.id = :systemId AND s.type = :type", Sensor.class).setParameter("sensorId", sensorId).setParameter("systemId", systemId).setParameter("type", type).getSingleResult();
+        } catch (final NoResultException e) {
+            return null;
+        } finally {
+            session.getTransaction().commit();
+        }
+    }
+
     public static void save(Sensor sensor) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
