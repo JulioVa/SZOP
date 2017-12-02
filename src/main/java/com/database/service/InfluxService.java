@@ -49,8 +49,8 @@ public class InfluxService {
                     .addField("value", temp.getValue())
                     .build();
 
-            if (sensors.add(temp.getSensorId()) && (SensorService.findBySensorIdAndSystemId(temp.getSensorId(), sys.getId()) == null)) {
-                int type = temp.getType().equals("temp") ? 1 : 2;
+            int type = temp.getType().equals("temp") ? 1 : 2;
+            if (sensors.add(temp.getSensorId()) && (SensorService.findBySensorIdAndSystemIdAndType(temp.getSensorId(), sys.getId(), type) == null)) {
                 SensorService.save(new Sensor(temp.getSensorId(), "new sensor", type, new Date(Long.parseLong(temp.getDate())), true, null, sys, null, null));
             }
             batchPoints.point(point);
