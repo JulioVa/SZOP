@@ -41,10 +41,10 @@ public class InfluxService {
 
         for (TemperatureData temp : temps) {
 
-            Point point = Point.measurement("user_" + user.getId())
+            Point point = Point.measurement("user_" + user.getEmail())
                     .tag("type", temp.getType())
                     .tag("sensor", temp.getSensorId())
-                    .tag("system", Integer.valueOf(sys.getId()).toString())
+                    .tag("system", sys.getName())
                     .time(Long.parseLong(temp.getDate()), TimeUnit.MILLISECONDS)
                     .addField("value", temp.getValue())
                     .build();
