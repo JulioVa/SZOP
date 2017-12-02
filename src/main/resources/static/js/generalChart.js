@@ -71,7 +71,7 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                 }, {
                     tickWidth: 1,
                     title: {
-                        text: 'Humidity'
+                        text: 'Humidity (%)'
                     },
                     opposite: true
                 }],
@@ -133,7 +133,10 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                     }, {
                         type: 'all',
                         text: 'All'
-                    }]
+                    }],
+                    inputStyle: {
+                        backgroundColor: '#F5F5F5'
+                    }
                 },
 
                 navigator: {

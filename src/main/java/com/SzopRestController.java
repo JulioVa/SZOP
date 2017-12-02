@@ -84,10 +84,10 @@ public class SzopRestController {
     @RequestMapping(value = "/sensors/humidity/user/{userId}", method = RequestMethod.GET)
     public ResponseEntity<List<SensorIdLevelDto>> getHumiditySensorsForUser(@PathVariable int userId) {
         List<Sensor> sensors = SensorService.findAllByTypeForUser(2, userId);
-        List<SensorIdLevelDto> sensorDtos = SensorUtil.convertToDtosId(sensors);
         if (sensors.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok().body(new ArrayList<SensorIdLevelDto>());
         }
+        List<SensorIdLevelDto> sensorDtos = SensorUtil.convertToDtosId(sensors);
         return ResponseEntity.ok().body(sensorDtos);
     }
 
