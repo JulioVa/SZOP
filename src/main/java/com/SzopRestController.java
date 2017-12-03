@@ -229,6 +229,15 @@ public class SzopRestController {
         return ResponseEntity.ok().body(UserUtil.convertToDto(user));
     }
 
+    @RequestMapping(value = "/user/loggedin", method = RequestMethod.GET)
+    public ResponseEntity<UserDto> getCurrentlyLoggedInUser(@PathVariable int userId) {
+        User user = UserService.findUserByEmail((String) httpSession.getAttribute("UserId"));
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(UserUtil.convertToDto(user));
+    }
+
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.PUT)
     public ResponseEntity<UserDto> updateUser(@PathVariable int userId, @RequestBody UserDto userDto) {
         User user = UserService.findUserById(userId);
