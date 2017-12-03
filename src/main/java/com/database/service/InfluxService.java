@@ -22,7 +22,7 @@ public class InfluxService {
 
     public static void writeData(String userId, String sysName, List<TemperatureData> temps) {
 
-        User user = UserService.findUserById(userId);
+        User user = UserService.findUserByEmail(userId);
         if (user == null)
             return;
 
@@ -41,7 +41,7 @@ public class InfluxService {
 
         for (TemperatureData temp : temps) {
 
-            Point point = Point.measurement("user_" + userId)
+            Point point = Point.measurement("user_" + user.getId())
                     .tag("type", temp.getType())
                     .tag("sensor", temp.getSensorId())
                     .tag("system", Integer.valueOf(sys.getId()).toString())
