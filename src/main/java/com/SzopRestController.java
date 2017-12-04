@@ -375,6 +375,7 @@ public class SzopRestController {
 
     @RequestMapping(value = "/sensors/user/{userId}/data/temp", method = RequestMethod.GET)
     public ResponseEntity<List<SensorTempData>> getSensorsDataTemp(@PathVariable int userId) {
+        LOGGER.info("temp data");
         List<SensorTempData> data = InfluxService.getDataForUser(userId, "temp");
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
