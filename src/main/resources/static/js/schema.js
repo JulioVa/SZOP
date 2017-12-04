@@ -225,7 +225,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     $("#add-temp-sensor").click(function() {
         sensorType = "temp";
         console.log("temp");
-        $http.get('/sensors/temperature/user/1').
+        $http.get('/sensors/temperature/user/' + userId).
         then(function (response) {
             var tempSensorsList = response.data;
             console.log(tempSensorsList);
@@ -259,7 +259,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
 
     $("#add-humid-sensor").click(function() {
         sensorType = "humid";
-        $http.get('/sensors/humidity/user/1').
+        $http.get('/sensors/humidity/user/' + userId).
         then(function (response) {
             var humidSensorsList = response.data;
             var formattedSensorsList = [];
@@ -559,7 +559,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
             var sensId = response.data.sensorId;
             console.log(systemId);
 
-            $http.get('/sensors/' + sensId + '/user/1/system/' + systemId + '/data').then(function (response) {
+            $http.get('/sensors/' + sensId + '/user/' + userId + '/system/' + systemId + '/data').then(function (response) {
                 data = Object.entries(response.data);
 
                 data.forEach(function (entry) {
