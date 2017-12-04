@@ -7,7 +7,7 @@
     function initClient() {
         //console.log("init");
         auth2 = gapi.auth2.init({
-            clientId: '1024855410706-fnspfn6v8g2f1lsqjc27k1jvfu5lkltp.apps.googleusercontent.com',
+            clientId: '100008317632-rp63ps1kq4jaess9g0u5ltbsm6oh8e2u.apps.googleusercontent.com',
             fetch_basic_profile: true,
             scope: 'profile'
         }).then(function () {

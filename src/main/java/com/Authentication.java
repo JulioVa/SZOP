@@ -17,7 +17,7 @@ public class Authentication {
 
     private static final Logger LOGGER = LogManager.getLogger(Authentication.class);
 
-    private static final String CLIENT_ID = "1024855410706-fnspfn6v8g2f1lsqjc27k1jvfu5lkltp.apps.googleusercontent.com";
+    private static final String CLIENT_ID = "100008317632-rp63ps1kq4jaess9g0u5ltbsm6oh8e2u.apps.googleusercontent.com";
 
     private static final JacksonFactory jacksonFactory = new JacksonFactory();
     private static final GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new ApacheHttpTransport(), jacksonFactory)
