@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/szop.iml" filepath="$PROJECT_DIR$/szop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SZOP.iml" filepath="$PROJECT_DIR$/SZOP.iml" />
     </modules>
   </component>
 </project>

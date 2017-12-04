@@ -6,13 +6,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css"/>
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
-    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <meta name="google-signin-client_id" content="100008317632-rp63ps1kq4jaess9g0u5ltbsm6oh8e2u.apps.googleusercontent.com"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script src="js/script.js" type="text/javascript"></script>
     <script src="js/diagrams.js" type="text/javascript"></script>
     <script src="js/sensors.js" type="text/javascript"></script>
     <link href="css/style.css" type="text/css" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    <script src="js/userData.js"></script>
+    <script src="js/login.js"></script>
 </head>
 <body>
 <header>
@@ -29,8 +33,9 @@
                     <li><a href="alerts.html">Alerts</a></li>
                 </ul>
                 <ul class="right hide-on-med-and-down nav-menu-right">
-                    <li><a href="profile.html">Profile</a></li>
-                    <li><a href="#">Logout</a></li>
+                    <li id="profile-pic" style="float: left;  width: 75px;"></li>
+                    <li id="name" style="float: left;  width: 150px;"></li>
+                    <li id="logout-butt" onclick = "logoutFunction()" style="float: left;  width: 100px; cursor: pointer;"></li>
                 </ul>
                 <ul class="side-nav" id="mobile-demo">
                     <li><a href="schema.html">Schema</a></li>
@@ -64,6 +69,7 @@
             </ul>
         </div>
     </div>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoadCallback" async="async" defer="defer"></script>
 </main>
 </body>
 </html>

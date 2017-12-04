@@ -3,6 +3,7 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
     var minDate;
     var maxDate;
     var data;
+    var userId;
 
     $scope.model = {
         min: 0,
@@ -11,9 +12,19 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
         dataHumid: []
     };
 
+    getCurrentUserId();
+
+    function getCurrentUserId() {
+        $http.get('/user/id').
+        then(function (response) {
+            userId = response.data;
+            console.log("id: " + userId);
+        });
+    }
+
     function getData(type) {
         var minMax = [0, 0];
-        $http.get('/sensors/user/1/data/' + type).then(function (response) {
+        $http.get('/sensors/user/' + parseInt(userId) + '/data/' + type).then(function (response) {
             var keys = (Object.keys(response.data)).sort();
             minDate = keys[0];
             maxDate = keys[keys.length - 1];
@@ -194,7 +205,9 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
 
     }
 
-    getData("temp");
-    getData("humid");
+    setTimeout(function() {
+        getData("temp");
+        getData("humid");
+    }, 2000);
 
 }]);

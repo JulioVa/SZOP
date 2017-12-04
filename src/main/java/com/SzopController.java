@@ -30,5 +30,20 @@ public class SzopController {
     public String sensors() {
         return "sensors";
     }
+
+    @RequestMapping("/logout")
+    public String logout() {
+        return "logout";
+    }
+
+    @RequestMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @RequestMapping("/profile")
+    public String profile() {
+        return "profile";
+    }
 }
 
