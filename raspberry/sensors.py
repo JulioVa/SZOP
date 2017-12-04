@@ -24,22 +24,28 @@ def ConfigSectionMap(section):
 
 
 def read_ds18b20_raw(device_file):
-    f = open(device_file, 'r')
-    lines = f.readlines()
-    f.close()
+    try:
+        f = open(device_file, 'r')
+        lines = f.readlines()
+        f.close()
+    except:
+        print 'ds18b20 file not found'
+        print 'probably disconnected sensor'
+        lines = None
     return lines
 
 
 def read_ds18b20(device_file):
     lines = read_ds18b20_raw(device_file)
-    while lines[0].strip()[-3:] != 'YES':
-        time.sleep(0.2)
-        lines = read_ds18b20_raw(device_file)
-    equals_pos = lines[1].find('t=')
-    if equals_pos != -1:
-        temp_string = lines[1][equals_pos+2:]
-        temp_c = float(temp_string) / 1000.0
-        return temp_c
+    if lines is not None:
+        while lines[0].strip()[-3:] != 'YES':
+            time.sleep(0.2)
+            lines = read_ds18b20_raw(device_file)
+        equals_pos = lines[1].find('t=')
+        if equals_pos != -1:
+            temp_string = lines[1][equals_pos+2:]
+            temp_c = float(temp_string) / 1000.0
+            return temp_c
 
 
 def delete_last_line():
@@ -67,14 +73,14 @@ def save_dht11_value(sensor_type, sensor, file, date):
     humid, temp = Adafruit_DHT.read_retry(sensor_type, sensor)
     if humid is not None and temp is not None:
         temp_data = {
-            'id': str(sensor),
+            'id': str(sensor) + '/temp',
             'type': 'temp',
             'date': str(date),
             'value': float(temp)
         }
         file.write('\n\t' + json.dumps(temp_data) + '\n\t,')
         humid_data = {
-            'id': str(sensor),
+            'id': str(sensor) + '/humid',
             'type': 'humid',
             'date': str(date),
             'value': float(humid)
