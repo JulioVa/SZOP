@@ -72,6 +72,7 @@
     }
 
     function onSuccess(googleUser) {
+        signInCallback(googleUser);
         console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
         location.href = "/";
     }
