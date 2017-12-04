@@ -365,7 +365,8 @@ public class SzopRestController {
 
     @RequestMapping(value = "/sensors/{sensorId}/user/{userId}/system/{systemId}/data", method = RequestMethod.GET)
     public ResponseEntity<List<Temperature>> getSensorsData(@PathVariable int userId, @PathVariable int systemId, @PathVariable String sensorId) {
-        List<Temperature> data = InfluxService.getDataForSensor(userId, systemId, sensorId);
+        String mail = (String)httpSession.getAttribute("UserId");
+        List<Temperature> data = InfluxService.getDataForSensor(mail, systemId, sensorId);
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -375,7 +376,8 @@ public class SzopRestController {
 
     @RequestMapping(value = "/sensors/user/{userId}/data/temp", method = RequestMethod.GET)
     public ResponseEntity<List<SensorTempData>> getSensorsDataTemp(@PathVariable int userId) {
-        List<SensorTempData> data = InfluxService.getDataForUser(userId, "temp");
+        String mail = (String)httpSession.getAttribute("UserId");
+        List<SensorTempData> data = InfluxService.getDataForUser(mail, "temp");
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -385,7 +387,8 @@ public class SzopRestController {
 
     @RequestMapping(value = "/sensors/user/{userId}/data/humid", method = RequestMethod.GET)
     public ResponseEntity<List<SensorTempData>> getSensorsDataHumid(@PathVariable int userId) {
-        List<SensorTempData> data = InfluxService.getDataForUser(userId, "humid");
+        String mail = (String)httpSession.getAttribute("UserId");
+        List<SensorTempData> data = InfluxService.getDataForUser(mail, "humid");
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
             return ResponseEntity.notFound().build();
