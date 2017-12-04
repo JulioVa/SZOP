@@ -26,7 +26,7 @@
         console.log("xxxxx " + id_token);
 
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://localhost:8090/user/token');
+        xhr.open('POST', '/user/token');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onload = function() {
             console.log('Signed in as: ' + xhr.responseText);
