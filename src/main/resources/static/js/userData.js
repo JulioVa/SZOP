@@ -2,12 +2,14 @@ var auth2;
 
 window.onLoadCallback = function() {
     function indexInitClient() {
+        console.log("yyyyy");
         gapi.load('auth2', function () {
             auth2 = gapi.auth2.init({
                 clientId: '1024855410706-fnspfn6v8g2f1lsqjc27k1jvfu5lkltp.apps.googleusercontent.com',
                 fetch_basic_profile: true,
                 scope: 'profile'
             }).then(function () {
+                console.log("xxxxx");
                 // Handle the initial sign-in state.
                 upSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
             });
@@ -16,9 +18,9 @@ window.onLoadCallback = function() {
 
 
     function upSigninStatus(isSignedIn) {
-
+        console.log("before if signed in");
         if (isSignedIn) {
-
+            console.log("if signed in");
             document.getElementById("logout-butt").innerHTML = "Logout";
 
             /*$http.get('/user/loggedin').then(function (response) {
