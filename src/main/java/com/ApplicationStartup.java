@@ -1,11 +1,10 @@
 package com;
 
-import org.influxdb.InfluxDB;
+import com.database.util.InfluxUtils;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import static com.database.util.InfluxUtils.connect;
 
 @Component
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
@@ -17,8 +16,8 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     @Override
     public void onApplicationEvent(final ApplicationReadyEvent event) {
 
-        connect();
-
+        InfluxUtils influxUtils = new InfluxUtils();
+        influxUtils.connect();
     }
 
 }

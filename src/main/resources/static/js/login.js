@@ -2,8 +2,10 @@
      * The Sign-In client object.
      */
     var auth2;
+    //var signedStatus;
 
     function initClient() {
+        //console.log("init");
         auth2 = gapi.auth2.init({
             clientId: '100008317632-rp63ps1kq4jaess9g0u5ltbsm6oh8e2u.apps.googleusercontent.com',
             fetch_basic_profile: true,
@@ -12,12 +14,14 @@
             // Listen for sign-in state changes.
             gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
 
+            //signedStatus = gapi.auth2.getAuthInstance().isSignedIn.get();
             // Handle the initial sign-in state.
             updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
         });
     }
 
     function signInCallback(googleUser) {
+        console.log("signInCallback");
         var id_token = googleUser.getAuthResponse().id_token;
         console.log("xxxxx " + id_token);
 
@@ -28,46 +32,10 @@
             console.log('Signed in as: ' + xhr.responseText);
         };
         xhr.send(id_token);
-
-        /*auth2 = gapi.auth2.init({
-            client_id: '100008317632-rp63ps1kq4jaess9g0u5ltbsm6oh8e2u.apps.googleusercontent.com',
-            fetch_basic_profile: true,
-            scope: 'profile'
-        });
-
-        gapi.load('auth2', function () {
-            console.log(gapi.auth2.currentUser);
-            //        var profileData;
-            var profile = auth2.currentUser.get().getBasicProfile();
-            console.log("Profile: " + profile);
-            var profileData = {
-                userId: profile.getId(),
-                name: profile.getName(),
-                profilePic: profile.getImageUrl(),
-                email: profile.getEmail(),
-            };
-            console.log("profiled Data");
-
-            console.log('ID: ' + profile.getId());
-            console.log('Full Name: ' + profile.getName());
-            console.log('Given Name: ' + profile.getGivenName());
-            console.log('Family Name: ' + profile.getFamilyName());
-            console.log('Image URL: ' + profile.getImageUrl());
-            console.log('Email: ' + profile.getEmail());
-
-            console.log("before post");
-            $http.post('/user', data)
-                .then(function (data){
-                    console.log("posted");
-                }, function (err){
-                    console.log(err);
-                });
-
-            console.log("after post");
-        });*/
     }
 
     function updateSigninStatus(isSignedIn) {
+        //console.log("updateSigninStatus");
         // When signin status changes, this function is called.
         // If the signin status is changed to signedIn, we make an API call.
         if (isSignedIn) {
@@ -82,15 +50,16 @@
             document.getElementById("profile-butt").style.display = "none";
             document.getElementById("login-butt").style.display = "block";
             document.getElementById("login-butt").innerHTML = "Login";
-            //document.getElementById("login-butt").onclick = handleSignInClick();
         }
     }
 
     function handleSignInClick(event) {
+        //console.log("handleSignInClick");
         // Ideally the button should only show up after gapi.client.init finishes, so that this
         // handler won't be called before OAuth is initialized.
         gapi.auth2.getAuthInstance().signIn();
-        ///console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+        console.log("xxxxxx");
+        location.href = "/";
     }
 
     function handleSignOutClick(event) {
@@ -98,15 +67,13 @@
     }
 
     function handleClientLoad() {
-        console.log("xxxxxxxx");
+        //console.log("handleClientLoad");
         gapi.load('client:auth2', initClient);
     }
 
     function onSuccess(googleUser) {
         console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-        console.log("before");
-        signInCallback(googleUser);
-        console.log("after");
+        location.href = "/";
     }
 
     function onFailure(error) {
@@ -114,6 +81,7 @@
     }
 
     function renderButton() {
+        //console.log("renderButton");
         gapi.signin2.render('my-signin2', {
             'scope': 'profile email',
             'width': 240,
@@ -124,6 +92,11 @@
             'onfailure': onFailure
         });
     }
+
+    /*function getSignedStatus() {
+        initClient();
+        return this.signedStatus;
+    }*/
 
     function signOut() {
         var auth2 = gapi.auth2.getAuthInstance();

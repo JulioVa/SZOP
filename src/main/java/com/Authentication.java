@@ -1,5 +1,7 @@
 package com;
 
+import com.database.model.User;
+import com.database.service.UserService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.apache.ApacheHttpTransport;
@@ -22,7 +24,7 @@ public class Authentication {
             .setAudience(Collections.singletonList(CLIENT_ID))
             .build();
 
-    public static void authenticate(String token) throws GeneralSecurityException, IOException {
+    public static String authenticate(String token) throws GeneralSecurityException, IOException {
         GoogleIdToken idToken = verifier.verify(token);
         if (idToken != null) {
             GoogleIdToken.Payload payload = idToken.getPayload();
@@ -39,9 +41,17 @@ public class Authentication {
             LOGGER.info(email);
 
             // save to db
-
+            if (UserService.findUserByEmail(email) == null) {
+                User user = new User();
+                user.setEmail(email);
+                user.setName(name);
+                user.setProfilePic(pictureUrl);
+                UserService.save(user);
+            }
+            return email;
         } else {
             System.out.println("Invalid ID token.");
         }
+        return "";
     }
 }

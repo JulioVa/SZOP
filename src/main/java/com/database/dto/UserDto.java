@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 public class UserDto implements Serializable {
 
-    private String userId;
     private String name;
     private String profilePic;
     private String email;
@@ -12,18 +11,9 @@ public class UserDto implements Serializable {
     public UserDto() {}
 
     public UserDto(String userId, String name, String profilePic, String email) {
-        this.userId = userId;
         this.name = name;
         this.profilePic = profilePic;
         this.email = email;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getName() {
@@ -57,7 +47,6 @@ public class UserDto implements Serializable {
 
         UserDto userDto = (UserDto) o;
 
-        if (userId != null ? !userId.equals(userDto.userId) : userDto.userId != null) return false;
         if (name != null ? !name.equals(userDto.name) : userDto.name != null) return false;
         if (profilePic != null ? !profilePic.equals(userDto.profilePic) : userDto.profilePic != null) return false;
         return email != null ? email.equals(userDto.email) : userDto.email == null;
@@ -65,8 +54,7 @@ public class UserDto implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = userId != null ? userId.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (profilePic != null ? profilePic.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
         return result;
@@ -75,8 +63,7 @@ public class UserDto implements Serializable {
     @Override
     public String toString() {
         return "UserDto{" +
-                "userId='" + userId + '\'' +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", profile_pic='" + profilePic + '\'' +
                 ", email='" + email + '\'' +
                 '}';
