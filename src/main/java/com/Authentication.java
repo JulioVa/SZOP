@@ -26,6 +26,7 @@ public class Authentication {
 
     public static String authenticate(String token) throws GeneralSecurityException, IOException {
         GoogleIdToken idToken = verifier.verify(token);
+        LOGGER.info(idToken);
         if (idToken != null) {
             GoogleIdToken.Payload payload = idToken.getPayload();
 
@@ -50,7 +51,7 @@ public class Authentication {
             }
             return email;
         } else {
-            System.out.println("Invalid ID token.");
+            LOGGER.info("Invalid ID token.");
         }
         return "";
     }
