@@ -59,10 +59,10 @@ public class InfluxService {
         influxDB.write(batchPoints);
     }
 
-    public static List<Temperature> getDataForSensor(String mail, int systemId, String sensorId) {
+    public static List<Temperature> getDataForSensor(String mail, String sensorId) {
         List<Temperature> results = new ArrayList<>();
 
-        Query query = new Query("SELECT * FROM \"user_" + mail + "\" WHERE system='" + systemId + "' AND sensor='" + sensorId + "' GROUP BY * ORDER BY time", DB_NAME);
+        Query query = new Query("SELECT * FROM \"user_" + mail + "\" WHERE sensor='" + sensorId + "' GROUP BY * ORDER BY time", DB_NAME);
         QueryResult queryResult = influxDB.query(query, TimeUnit.MILLISECONDS);
         if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
             for (List<Object> qResult : queryResult.getResults().get(0).getSeries().get(0).getValues()) {

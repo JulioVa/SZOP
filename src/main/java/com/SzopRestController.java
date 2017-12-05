@@ -363,10 +363,10 @@ public class SzopRestController {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/sensors/{sensorId}/user/{userId}/system/{systemId}/data", method = RequestMethod.GET)
-    public ResponseEntity<List<Temperature>> getSensorsData(@PathVariable int userId, @PathVariable int systemId, @PathVariable String sensorId) {
+    @RequestMapping(value = "/sensors/{sensorId}/user/{userId}/data", method = RequestMethod.GET)
+    public ResponseEntity<List<Temperature>> getSensorsData(@PathVariable int userId, @PathVariable String sensorId) {
         String mail = (String)httpSession.getAttribute("UserId");
-        List<Temperature> data = InfluxService.getDataForSensor(mail, systemId, sensorId);
+        List<Temperature> data = InfluxService.getDataForSensor(mail, sensorId);
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
             return ResponseEntity.notFound().build();

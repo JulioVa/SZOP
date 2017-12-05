@@ -559,7 +559,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
             var sensId = response.data.sensorId;
             console.log(systemId);
 
-            $http.get('/sensors/' + sensId + '/user/' + userId + '/system/' + systemId + '/data').then(function (response) {
+            $http.get('/sensors/' + sensId + '/user/' + userId + '/data').then(function (response) {
                 data = Object.entries(response.data);
 
                 data.forEach(function (entry) {
