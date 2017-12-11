@@ -2,8 +2,6 @@ package com.database.service;
 
 import com.database.model.*;
 import com.database.model.System;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
@@ -18,7 +16,7 @@ import static com.database.util.InfluxUtils.influxDB;
 
 public class InfluxService {
 
-    private static final Logger LOGGER = LogManager.getLogger("InfluxService");
+    private static final String[] tableNames = new String[]{"measurements","measurements_1h","measurements_1d"};
 
     public static void writeData(String userId, String sysName, List<TemperatureData> temps) {
 
@@ -41,10 +39,11 @@ public class InfluxService {
 
         for (TemperatureData temp : temps) {
 
-            Point point = Point.measurement("user_" + user.getEmail())
+            Point point = Point.measurement(tableNames[0])
                     .tag("type", temp.getType())
                     .tag("sensor", temp.getSensorId())
                     .tag("system", sys.getName())
+                    .tag("user", user.getEmail())
                     .time(Long.parseLong(temp.getDate()), TimeUnit.MILLISECONDS)
                     .addField("value", temp.getValue())
                     .build();
@@ -62,7 +61,7 @@ public class InfluxService {
     public static List<Temperature> getDataForSensor(String mail, String sensorId) {
         List<Temperature> results = new ArrayList<>();
 
-        Query query = new Query("SELECT * FROM \"user_" + mail + "\" WHERE sensor='" + sensorId + "' GROUP BY * ORDER BY time", DB_NAME);
+        Query query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE sensor='" + sensorId + "' AND user='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         QueryResult queryResult = influxDB.query(query, TimeUnit.MILLISECONDS);
         if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
             for (List<Object> qResult : queryResult.getResults().get(0).getSeries().get(0).getValues()) {
@@ -74,7 +73,7 @@ public class InfluxService {
 
     public static List<SensorTempData> getDataForUser(String mail, String type) {
         List<SensorTempData> results = new ArrayList<>();
-        Query query = new Query("SELECT * FROM \"user_" + mail + "\" WHERE type = '" + type + "' GROUP BY * ORDER BY time", DB_NAME);
+        Query query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE type = '" + type + "' AND user='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         QueryResult queryResult = influxDB.query(query, TimeUnit.MILLISECONDS);
         if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
             for (QueryResult.Series sensor : queryResult.getResults().get(0).getSeries()) {
@@ -84,7 +83,6 @@ public class InfluxService {
                 }
                 results.add(new SensorTempData(sensor.getTags().get("sensor"), temperatures));
             }
-        LOGGER.info(queryResult);
         return results;
     }
 }

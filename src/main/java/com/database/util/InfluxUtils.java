@@ -28,18 +28,18 @@ public class InfluxUtils {
             String address = properties.getProperty("influx.address");
 
             influxDB = InfluxDBFactory.connect(address, userName, password);
-        boolean influxDBstarted = false;
+        boolean influxDBStarted = false;
         do {
             Pong response;
             try {
                 response = influxDB.ping();
                 if (!response.getVersion().equalsIgnoreCase("unknown")) {
-                    influxDBstarted = true;
+                    influxDBStarted = true;
                 }
             } catch (Exception e) {
                 LOGGER.error(e  );
             }
-        } while (!influxDBstarted);
+        } while (!influxDBStarted);
         influxDB.createDatabase(DB_NAME);
         influxDB.setDatabase(DB_NAME);
 
