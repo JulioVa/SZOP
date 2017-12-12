@@ -1,6 +1,7 @@
 package com.database.util;
 
 import com.database.dto.AlertDto;
+import com.database.dto.AlertIdLevelDto;
 import com.database.model.Alert;
 import com.database.model.Sensor;
 import com.database.model.User;
@@ -42,10 +43,28 @@ public class AlertUtil {
         return alertDto;
     }
 
+    public static AlertIdLevelDto convertToDtoId(Alert alert) {
+        AlertIdLevelDto alertDto = new AlertIdLevelDto();
+        alertDto.setValue(alert.getValue());
+        alertDto.setGreaterLower(alert.getGreaterLower());
+        alertDto.setSensorId(alert.getSensor().getId());
+        alertDto.setUserId(alert.getUser().getId());
+        alertDto.setId(alert.getId());
+        return alertDto;
+    }
+
     public static List<AlertDto> convertToDtos(List<Alert> alerts) {
         List<AlertDto> alertDtos = new ArrayList<>();
         for (Alert alert : alerts) {
             alertDtos.add(convertToDto(alert));
+        }
+        return alertDtos;
+    }
+
+    public static List<AlertIdLevelDto> convertToDtosId(List<Alert> alerts) {
+        List<AlertIdLevelDto> alertDtos = new ArrayList<>();
+        for (Alert alert : alerts) {
+            alertDtos.add(convertToDtoId(alert));
         }
         return alertDtos;
     }

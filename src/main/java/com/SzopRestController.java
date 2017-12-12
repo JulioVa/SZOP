@@ -58,6 +58,16 @@ public class SzopRestController {
         return ResponseEntity.ok().body(sensorDtos);
     }
 
+    @RequestMapping(value = "/user/{userId}/sensors/id", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorIdLevelDto>> getSensorsIdByUserId(@PathVariable int userId) {
+        List<Sensor> sensors = SensorService.findAllByUser(userId);
+        List<SensorIdLevelDto> sensorDtos = SensorUtil.convertToDtosId(sensors);
+        if (sensors.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(sensorDtos);
+    }
+
     @RequestMapping(value = "/schema/{schemaId}/sensors", method = RequestMethod.GET)
     public ResponseEntity<List<SensorIdLevelDto>> getSensorsBySchemaId(@PathVariable int schemaId) {
         List<Sensor> sensors = SensorService.findAllBySchema(schemaId);
@@ -281,9 +291,20 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/user/{userId}/alerts", method = RequestMethod.GET)
-    public ResponseEntity<List<AlertDto>> getAlertsByUserId(@PathVariable int userId) {
+    public ResponseEntity<List<AlertIdLevelDto>> getAlertsByUserId(@PathVariable int userId) {
         List<Alert> alerts = AlertService.findAllForUser(userId);
-        List<AlertDto> alertDtos = AlertUtil.convertToDtos(alerts);
+        List<AlertIdLevelDto> alertDtos = AlertUtil.convertToDtosId(alerts);
+        if (alerts.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(alertDtos);
+    }
+
+    @RequestMapping(value = "/alerts/all", method = RequestMethod.GET)
+    public ResponseEntity<List<AlertIdLevelDto>> getAlerts() {
+        String mail = (String)httpSession.getAttribute("UserId");
+        List<Alert> alerts = AlertService.findAllForUserByMail(mail);
+        List<AlertIdLevelDto> alertDtos = AlertUtil.convertToDtosId(alerts);
         if (alerts.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -399,7 +420,7 @@ public class SzopRestController {
     @RequestMapping(value = "/sensors/data", method = RequestMethod.POST)
     ResponseEntity<?> addData(@RequestBody Map<String, Object> data) {
         if (data != null) {
-            LOGGER.error(data.toString());
+            LOGGER.info(data.toString());
             String userId = (String) data.get("user_id");
             String systemName = (String) data.get("system_id");
             List<TemperatureData> temps = TemperatureDataUtil.convertToDtos((List<Map<String, Object>>) data.get("sensors"));
