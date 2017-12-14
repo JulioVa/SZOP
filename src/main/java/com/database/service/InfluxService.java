@@ -61,7 +61,7 @@ public class InfluxService {
     public static List<Temperature> getDataForSensor(String mail, String sensorId) {
         List<Temperature> results = new ArrayList<>();
 
-        Query query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE sensor='" + sensorId + "' AND user='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
+        Query query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         QueryResult queryResult = influxDB.query(query, TimeUnit.MILLISECONDS);
         if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
             for (List<Object> qResult : queryResult.getResults().get(0).getSeries().get(0).getValues()) {
@@ -73,7 +73,7 @@ public class InfluxService {
 
     public static Double getDataForSensorLastValue(String mail, String sensorId) {
         Double result = null;
-        Query query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE sensor='" + sensorId + "' AND user='" + mail + "' GROUP BY * ORDER BY time DESC", DB_NAME);
+        Query query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time DESC", DB_NAME);
         QueryResult queryResult = influxDB.query(query, TimeUnit.MILLISECONDS);
         if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null) {
             result = (Double) queryResult.getResults().get(0).getSeries().get(0).getValues().get(0).get(1);
@@ -83,7 +83,7 @@ public class InfluxService {
 
     public static List<SensorTempData> getDataForUser(String mail, String type) {
         List<SensorTempData> results = new ArrayList<>();
-        Query query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE type = '" + type + "' AND user='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
+        Query query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE type = '" + type + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         QueryResult queryResult = influxDB.query(query, TimeUnit.MILLISECONDS);
         if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
             for (QueryResult.Series sensor : queryResult.getResults().get(0).getSeries()) {
