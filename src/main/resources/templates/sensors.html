@@ -56,7 +56,8 @@
             <ul class="collection">
                 <li class="collection-item avatar" ng-repeat="sensor in sensorsList">
                     <i class="material-icons circle {{sensor.iconColor}}"><div class="{{sensor.icon}}"></div></i>
-                    <span class="title">{{sensor.name}}</span>
+                    <span class="title sensor-name-noteditable" id="sensor-noteditable-{{sensor.id}}">{{sensor.name}}</span>
+                    <input value="{{sensor.name}}" type="text" class="validate sensor-name-editable" id="sensor-editable-{{sensor.id}}" style="width: 400px; padding-top: -2px; padding-bottom: -2px;" />
                     <p style="display: block">{{sensor.type}}</p>
                     <p style="display: block">{{sensor.lastUpdate}}</p>
                     <a href="#!" class="secondary-content"><div class="switch">

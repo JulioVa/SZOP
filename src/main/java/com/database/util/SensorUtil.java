@@ -26,6 +26,7 @@ public class SensorUtil {
             sensor.setSchemaY(sensorDto.getSchemaY());
             sensor.setSchema(schema);
             sensor.setSystem(system);
+            sensor.setColor(sensorDto.getColor());
             return sensor;
         } else {
             return null;
@@ -40,6 +41,7 @@ public class SensorUtil {
         sensor.setActive(NotNullUtil.setNotNull(sensor.isActive(), sensorUpdate.isActive()));
         sensor.setSchemaX(NotNullUtil.setNotNull(sensor.getSchemaX(), sensorUpdate.getSchemaX()));
         sensor.setSchemaY(NotNullUtil.setNotNull(sensor.getSchemaY(), sensorUpdate.getSchemaY()));
+        sensor.setColor(NotNullUtil.setNotNull(sensor.getColor(), sensorUpdate.getColor()));
         if (sensorUpdate.getSchemaId() != null) {
             sensor.setSchema(SchemaService.findSchemaById(sensorUpdate.getSchemaId()));
         }
@@ -55,6 +57,7 @@ public class SensorUtil {
         sensorDto.setActive(sensor.isActive());
         sensorDto.setSchemaX(sensor.getSchemaX());
         sensorDto.setSchemaY(sensor.getSchemaY());
+        sensorDto.setColor(sensor.getColor());
         if (sensor.getSchema() != null) {
             sensorDto.setSchemaId(sensor.getSchema().getId());
         }
@@ -71,6 +74,7 @@ public class SensorUtil {
         sensorDto.setActive(sensor.isActive());
         sensorDto.setSchemaX(sensor.getSchemaX());
         sensorDto.setSchemaY(sensor.getSchemaY());
+        sensorDto.setColor(sensor.getColor());
         if (sensor.getSchema() != null) {
             sensorDto.setSchemaId(sensor.getSchema().getId());
         }

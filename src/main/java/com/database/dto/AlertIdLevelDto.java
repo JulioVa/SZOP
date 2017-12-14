@@ -1,16 +1,14 @@
 package com.database.dto;
 
-import java.util.Date;
+public class AlertIdLevelDto extends AlertDto {
 
-public class SensorIdLevelDto extends SensorDto {
 
     private int id;
 
-    public SensorIdLevelDto() {}
+    public AlertIdLevelDto() {}
 
-    public SensorIdLevelDto(String sensorId, String name, int type, Date lastUpdate, boolean isActive, int schemaId, int systemId,
-                            int schemaX, int schemaY, int id, String color) {
-        super(sensorId, name, type, lastUpdate, isActive, schemaId, systemId, schemaX, schemaY, color);
+    public AlertIdLevelDto(Integer userId, Integer sensorId, String greaterLower, Double value, int id, Boolean isActive) {
+        super(userId, sensorId, greaterLower, value, isActive);
         this.id = id;
     }
 
@@ -28,7 +26,7 @@ public class SensorIdLevelDto extends SensorDto {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        SensorIdLevelDto that = (SensorIdLevelDto) o;
+        AlertIdLevelDto that = (AlertIdLevelDto) o;
 
         return id == that.id;
     }

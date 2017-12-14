@@ -31,6 +31,14 @@ public class AlertService {
         return alerts;
     }
 
+    public static List<Alert> findAllForUserByMail(String email){
+        Session session = HibernateUtils.getSession();
+        session.beginTransaction();
+        List<Alert> alerts = session.createQuery("SELECT a FROM Alert a WHERE a.user.email = :email",Alert.class).setParameter("email", email).getResultList();
+        session.getTransaction().commit();
+        return alerts;
+    }
+
     public static int save(Alert alert) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();

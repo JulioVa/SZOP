@@ -7,13 +7,15 @@ public class UserDto implements Serializable {
     private String name;
     private String profilePic;
     private String email;
+    private String city;
 
     public UserDto() {}
 
-    public UserDto(String userId, String name, String profilePic, String email) {
+    public UserDto(String userId, String name, String profilePic, String email, String city) {
         this.name = name;
         this.profilePic = profilePic;
         this.email = email;
+        this.city = city;
     }
 
     public String getName() {
@@ -40,6 +42,14 @@ public class UserDto implements Serializable {
         this.email = email;
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,7 +59,8 @@ public class UserDto implements Serializable {
 
         if (name != null ? !name.equals(userDto.name) : userDto.name != null) return false;
         if (profilePic != null ? !profilePic.equals(userDto.profilePic) : userDto.profilePic != null) return false;
-        return email != null ? email.equals(userDto.email) : userDto.email == null;
+        if (email != null ? !email.equals(userDto.email) : userDto.email != null) return false;
+        return city != null ? city.equals(userDto.city) : userDto.city == null;
     }
 
     @Override
@@ -57,6 +68,7 @@ public class UserDto implements Serializable {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (profilePic != null ? profilePic.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (city != null ? city.hashCode() : 0);
         return result;
     }
 
@@ -64,8 +76,9 @@ public class UserDto implements Serializable {
     public String toString() {
         return "UserDto{" +
                 "name='" + name + '\'' +
-                ", profile_pic='" + profilePic + '\'' +
+                ", profilePic='" + profilePic + '\'' +
                 ", email='" + email + '\'' +
+                ", city='" + city + '\'' +
                 '}';
     }
 }

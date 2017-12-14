@@ -20,6 +20,9 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "city")
+    private String city;
+
     public User() {
     }
 
@@ -55,6 +58,14 @@ public class User {
         this.email = email;
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,7 +76,8 @@ public class User {
         if (id != user.id) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
         if (profilePic != null ? !profilePic.equals(user.profilePic) : user.profilePic != null) return false;
-        return email.equals(user.email);
+        if (email != null ? !email.equals(user.email) : user.email != null) return false;
+        return city != null ? city.equals(user.city) : user.city == null;
     }
 
     @Override
@@ -73,7 +85,8 @@ public class User {
         int result = id;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (profilePic != null ? profilePic.hashCode() : 0);
-        result = 31 * result + email.hashCode();
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (city != null ? city.hashCode() : 0);
         return result;
     }
 
@@ -84,6 +97,7 @@ public class User {
                 ", name='" + name + '\'' +
                 ", profilePic='" + profilePic + '\'' +
                 ", email='" + email + '\'' +
+                ", city='" + city + '\'' +
                 '}';
     }
 }

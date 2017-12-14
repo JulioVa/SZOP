@@ -15,10 +15,12 @@ public class SensorDto implements Serializable {
     private Integer systemId;
     private Integer schemaX;
     private Integer schemaY;
+    private String color;
 
     public SensorDto() {}
 
-    public SensorDto(String sensorId, String name, int type, Date lastUpdate, boolean isActive, int schemaId, int systemId, int schemaX, int schemaY) {
+    public SensorDto(String sensorId, String name, int type, Date lastUpdate, boolean isActive, int schemaId, int systemId,
+                     int schemaX, int schemaY, String color) {
         this.sensorId = sensorId;
         this.name = name;
         this.type = type;
@@ -28,6 +30,7 @@ public class SensorDto implements Serializable {
         this.systemId = systemId;
         this.schemaX = schemaX;
         this.schemaY = schemaY;
+        this.color = color;
     }
 
     public String getSensorId() {
@@ -102,6 +105,14 @@ public class SensorDto implements Serializable {
         this.schemaY = schemaY;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -109,15 +120,16 @@ public class SensorDto implements Serializable {
 
         SensorDto sensorDto = (SensorDto) o;
 
-        if (isActive != sensorDto.isActive) return false;
         if (sensorId != null ? !sensorId.equals(sensorDto.sensorId) : sensorDto.sensorId != null) return false;
         if (name != null ? !name.equals(sensorDto.name) : sensorDto.name != null) return false;
         if (type != null ? !type.equals(sensorDto.type) : sensorDto.type != null) return false;
         if (lastUpdate != null ? !lastUpdate.equals(sensorDto.lastUpdate) : sensorDto.lastUpdate != null) return false;
+        if (isActive != null ? !isActive.equals(sensorDto.isActive) : sensorDto.isActive != null) return false;
         if (schemaId != null ? !schemaId.equals(sensorDto.schemaId) : sensorDto.schemaId != null) return false;
         if (systemId != null ? !systemId.equals(sensorDto.systemId) : sensorDto.systemId != null) return false;
         if (schemaX != null ? !schemaX.equals(sensorDto.schemaX) : sensorDto.schemaX != null) return false;
-        return schemaY != null ? schemaY.equals(sensorDto.schemaY) : sensorDto.schemaY == null;
+        if (schemaY != null ? !schemaY.equals(sensorDto.schemaY) : sensorDto.schemaY != null) return false;
+        return color != null ? color.equals(sensorDto.color) : sensorDto.color == null;
     }
 
     @Override
@@ -126,18 +138,19 @@ public class SensorDto implements Serializable {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (lastUpdate != null ? lastUpdate.hashCode() : 0);
-        result = 31 * result + (isActive ? 1 : 0);
+        result = 31 * result + (isActive != null ? isActive.hashCode() : 0);
         result = 31 * result + (schemaId != null ? schemaId.hashCode() : 0);
         result = 31 * result + (systemId != null ? systemId.hashCode() : 0);
         result = 31 * result + (schemaX != null ? schemaX.hashCode() : 0);
         result = 31 * result + (schemaY != null ? schemaY.hashCode() : 0);
+        result = 31 * result + (color != null ? color.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "SensorDto{" +
-                "sensorId=" + sensorId +
+                "sensorId='" + sensorId + '\'' +
                 ", name='" + name + '\'' +
                 ", type=" + type +
                 ", lastUpdate=" + lastUpdate +
@@ -146,6 +159,7 @@ public class SensorDto implements Serializable {
                 ", systemId=" + systemId +
                 ", schemaX=" + schemaX +
                 ", schemaY=" + schemaY +
+                ", color='" + color + '\'' +
                 '}';
     }
 }

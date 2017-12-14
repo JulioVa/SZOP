@@ -58,6 +58,17 @@ public class SzopRestController {
         return ResponseEntity.ok().body(sensorDtos);
     }
 
+    @RequestMapping(value = "/user/{userId}/sensors/id", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorIdLevelDto>> getSensorsIdByUserId(@PathVariable int userId) {
+        List<Sensor> sensors = SensorService.findAllByUser(userId);
+        List<SensorIdLevelDto> sensorDtos = SensorUtil.convertToDtosId(sensors);
+        sensorDtos.sort(sensorComparator);
+        if (sensors.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(sensorDtos);
+    }
+
     @RequestMapping(value = "/schema/{schemaId}/sensors", method = RequestMethod.GET)
     public ResponseEntity<List<SensorIdLevelDto>> getSensorsBySchemaId(@PathVariable int schemaId) {
         List<Sensor> sensors = SensorService.findAllBySchema(schemaId);
@@ -144,13 +155,12 @@ public class SzopRestController {
 
     @RequestMapping(value = "/system/{systemId}/sensors/{sensorId}", method = RequestMethod.PUT)
     public ResponseEntity<SensorDto> updateSensor(@PathVariable int systemId, @PathVariable int sensorId, @RequestBody SensorDto sensorDto) {
-        Sensor sensor = SensorService.findSensorById(sensorId);
-        if (sensor == null) {
-            return ResponseEntity.notFound().build();
-        }
-        sensor = SensorUtil.updateSensor(sensor, sensorDto);
-        SensorService.update(sensor);
-        return ResponseEntity.ok().build();
+        return updateSensorId(sensorId, sensorDto);
+    }
+
+    @RequestMapping(value = "/sensor/{sensorId}", method = RequestMethod.PUT)
+    public ResponseEntity<SensorDto> updateSensorById(@PathVariable int sensorId, @RequestBody SensorDto sensorDto) {
+        return updateSensorId(sensorId, sensorDto);
     }
 
     // schema
@@ -281,9 +291,21 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/user/{userId}/alerts", method = RequestMethod.GET)
-    public ResponseEntity<List<AlertDto>> getAlertsByUserId(@PathVariable int userId) {
+    public ResponseEntity<List<AlertIdLevelDto>> getAlertsByUserId(@PathVariable int userId) {
         List<Alert> alerts = AlertService.findAllForUser(userId);
-        List<AlertDto> alertDtos = AlertUtil.convertToDtos(alerts);
+        List<AlertIdLevelDto> alertDtos = AlertUtil.convertToDtosId(alerts);
+        if (alerts.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(alertDtos);
+    }
+
+    @RequestMapping(value = "/alerts/all", method = RequestMethod.GET)
+    public ResponseEntity<List<AlertIdLevelDto>> getAlerts() {
+        String mail = (String)httpSession.getAttribute("UserId");
+        List<Alert> alerts = AlertService.findAllForUserByMail(mail);
+        List<AlertIdLevelDto> alertDtos = AlertUtil.convertToDtosId(alerts);
+        alertDtos.sort(alertComparator);
         if (alerts.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -297,6 +319,17 @@ public class SzopRestController {
             return ResponseEntity.notFound().build();
         }
         alert = AlertUtil.updateAlert(alert, alertDto);
+        AlertService.update(alert);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/alert/{alertId}/active", method = RequestMethod.PUT)
+    public ResponseEntity<AlertDto> updateAlertActive(@PathVariable int alertId) {
+        Alert alert = AlertService.findAlertById(alertId);
+        if (alert == null) {
+            return ResponseEntity.notFound().build();
+        }
+        alert = AlertUtil.updateAlertActive(alert);
         AlertService.update(alert);
         return ResponseEntity.ok().build();
     }
@@ -374,6 +407,22 @@ public class SzopRestController {
         return ResponseEntity.ok().body(data);
     }
 
+    @RequestMapping(value = "/sensors/{sensorId}/user/{userId}/data/value", method = RequestMethod.GET)
+    public ResponseEntity<Double> getSensorsDataLastValue(@PathVariable int userId, @PathVariable int sensorId) {
+        String mail = (String)httpSession.getAttribute("UserId");
+        Sensor sensor = SensorService.findSensorById(sensorId);
+        Double data = InfluxService.getDataForSensorLastValue(mail, sensor.getSensorId());
+        String unit;
+        if (sensor.getType().equals(1)) {
+            unit = "C";
+        } else {
+            unit = "%";
+        }
+        String value = String.valueOf(data) + unit;
+        LOGGER.info("data from sensor: " + value);
+        return ResponseEntity.ok().body(data);
+    }
+
     @RequestMapping(value = "/sensors/user/{userId}/data/temp", method = RequestMethod.GET)
     public ResponseEntity<List<SensorTempData>> getSensorsDataTemp(@PathVariable int userId) {
         String mail = (String)httpSession.getAttribute("UserId");
@@ -399,7 +448,7 @@ public class SzopRestController {
     @RequestMapping(value = "/sensors/data", method = RequestMethod.POST)
     ResponseEntity<?> addData(@RequestBody Map<String, Object> data) {
         if (data != null) {
-            LOGGER.error(data.toString());
+            LOGGER.info(data.toString());
             String userId = (String) data.get("user_id");
             String systemName = (String) data.get("system_id");
             List<TemperatureData> temps = TemperatureDataUtil.convertToDtos((List<Map<String, Object>>) data.get("sensors"));
@@ -427,4 +476,17 @@ public class SzopRestController {
         User user = UserService.findUserByEmail(email);
         return ResponseEntity.ok().body(user.getId());
     }
+
+    private ResponseEntity<SensorDto> updateSensorId(int sensorId, SensorDto sensorDto) {
+        Sensor sensor = SensorService.findSensorById(sensorId);
+        if (sensor == null) {
+            return ResponseEntity.notFound().build();
+        }
+        sensor = SensorUtil.updateSensor(sensor, sensorDto);
+        SensorService.update(sensor);
+        return ResponseEntity.ok().build();
+    }
+
+    private static Comparator<SensorIdLevelDto> sensorComparator = (o1, o2) -> new Integer(o1.getId()).compareTo(o2.getId());
+    private static Comparator<AlertIdLevelDto> alertComparator = (o1, o2) -> new Integer(o1.getId()).compareTo(o2.getId());
 }
