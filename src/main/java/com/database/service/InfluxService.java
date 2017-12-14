@@ -73,7 +73,7 @@ public class InfluxService {
 
     public static Double getDataForSensorLastValue(String mail, String sensorId) {
         Double result = null;
-        Query query = new Query("SELECT * FROM \"user_" + mail + "\" WHERE sensor='" + sensorId + "' GROUP BY * ORDER BY time DESC", DB_NAME);
+        Query query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE sensor='" + sensorId + "' AND user='" + mail + "' GROUP BY * ORDER BY time DESC", DB_NAME);
         QueryResult queryResult = influxDB.query(query, TimeUnit.MILLISECONDS);
         if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null) {
             result = (Double) queryResult.getResults().get(0).getSeries().get(0).getValues().get(0).get(1);
