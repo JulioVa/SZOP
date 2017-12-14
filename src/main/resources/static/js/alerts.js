@@ -35,7 +35,8 @@ angular.module('szop', []).controller('alerts', ['$scope', '$http', '$window', f
                         iconColor: iconColor,
                         sensorName: sensorResponse.data.name,
                         sensorId: entry.sensorId,
-                        alertId: entry.id
+                        alertId: entry.id,
+                        active: entry.active
                     };
 
                     console.log(formattedAlert);
@@ -109,6 +110,7 @@ angular.module('szop', []).controller('alerts', ['$scope', '$http', '$window', f
                 getAllAlerts();
                 setTimeout(function() {
                     removeAlert();
+                    changeIsActive();
                 }, 2000);
             }, 2000);
         }
@@ -134,8 +136,20 @@ angular.module('szop', []).controller('alerts', ['$scope', '$http', '$window', f
         })
     }
 
+    function changeIsActive() {
+        $(".is-active").click(function () {
+            var alertId = this.id;
+            alertId = alertId.substring(10);
+            console.log(alertId);
+            $http.put('/alert/' + alertId + '/active').then(function () {
+                console.log("updated");
+            })
+        })
+    }
+
     setTimeout(function() {
         removeAlert();
+        changeIsActive();
     }, 2000);
 
 }]);

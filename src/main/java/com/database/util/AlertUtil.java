@@ -22,7 +22,7 @@ public class AlertUtil {
             alert.setSensor(sensor);
             alert.setGreaterLower(alertDto.getGreaterLower());
             alert.setValue(alertDto.getValue());
-            alert.setActive(alertDto.getActive());
+            alert.setActive(true);
             return alert;
         } else {
             return null;
@@ -33,6 +33,11 @@ public class AlertUtil {
         alert.setGreaterLower(NotNullUtil.setNotNull(alert.getGreaterLower(), alertUpdate.getGreaterLower()));
         alert.setValue(NotNullUtil.setNotNull(alert.getValue(), alertUpdate.getValue()));
         alert.setActive(NotNullUtil.setNotNull(alert.getActive(), alertUpdate.getActive()));
+        return alert;
+    }
+
+    public static Alert updateAlertActive(Alert alert) {
+        alert.setActive(!alert.getActive());
         return alert;
     }
 

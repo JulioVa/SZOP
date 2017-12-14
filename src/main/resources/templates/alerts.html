@@ -71,7 +71,7 @@
             </div>
             <div class=" col s1 than-text" style="padding-top: 25px; padding-left: 12px;">than</div>
             <div class="input-field col s5">
-                <input type="text" onkeypress='return (event.charCode >= 48 &amp;&amp; event.charCode &lt;= 57) || event.charCode == 46 || event.charCode == 8 || event.charCode == 127 || event.charCode == 0' id="alert-value" class="validate" placeholder="Value" style="color: white"></input>
+                <input type="text" onkeypress='return (event.charCode >= 48 &amp;&amp; event.charCode &lt;= 57) || event.charCode == 46 || event.charCode == 8 || event.charCode == 127 || event.charCode == 0 || event.charCode == 45' id="alert-value" class="validate" placeholder="Value" style="color: white"></input>
             </div>
         </div>
         <div class="row" style="padding-left: 40px;">
@@ -87,9 +87,9 @@
                     <span class="title">{{alert.sensorName}} Alert</span>
                     <p style="display: block">{{alert.type}}</p>
                     <p style="display: block">{{alert.greaterLower}}</p>
-                    <a href="#!" class="secondary-content" style="right:80px;"><div class="switch">
+                    <a href="#!" class="secondary-content is-active" id="is-active-{{alert.alertId}}" style="right:80px;"><div class="switch">
                         <label>
-                            <input type="checkbox"></input>
+                            <input type="checkbox" ng-model="alert.active"></input>
                             <span class="lever"></span>
                         </label>
                     </div></a>

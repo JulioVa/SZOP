@@ -322,6 +322,17 @@ public class SzopRestController {
         return ResponseEntity.ok().build();
     }
 
+    @RequestMapping(value = "/alert/{alertId}/active", method = RequestMethod.PUT)
+    public ResponseEntity<AlertDto> updateAlertActive(@PathVariable int alertId) {
+        Alert alert = AlertService.findAlertById(alertId);
+        if (alert == null) {
+            return ResponseEntity.notFound().build();
+        }
+        alert = AlertUtil.updateAlertActive(alert);
+        AlertService.update(alert);
+        return ResponseEntity.ok().build();
+    }
+
     @RequestMapping(value = "/alert/{alertId}", method = RequestMethod.DELETE)
     public ResponseEntity<AlertDto> deleteAlert(@PathVariable int alertId) {
         Alert alert = AlertService.findAlertById(alertId);
