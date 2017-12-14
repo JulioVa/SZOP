@@ -16,7 +16,7 @@ angular.module('szop', []).controller('sensors', ['$scope', '$http', '$window', 
     }
 
     function getSensors() {
-        $http.get('/user/' + userId + '/sensors').
+        $http.get('/user/' + userId + '/sensors/id').
         then(function (response) {
             var sensorsList = response.data;
             var type;
@@ -54,7 +54,8 @@ angular.module('szop', []).controller('sensors', ['$scope', '$http', '$window', 
                     active: entry.active,
                     checkboxId: entry.sensorId,
                     icon: sensorIcon,
-                    iconColor: iconColor
+                    iconColor: iconColor,
+                    id: entry.id
                 };
 
                 counter++;
@@ -75,5 +76,35 @@ angular.module('szop', []).controller('sensors', ['$scope', '$http', '$window', 
         });
     }
 
+    function editSensorName() {
+        $(".sensor-name-noteditable").click(function () {
+            var noteditableId = this.id;
+            $('#' + noteditableId).css("display", "none");
+            var sensorId = noteditableId.substring(19);
+            var editableId = "#sensor-editable-" + sensorId;
+            $(editableId).css("display", "block");
+
+            $(".sensor-name-editable").blur(function () {
+                $(editableId).css("display", "none");
+                $('#' + noteditableId).css("display", "block");
+                var data = {
+                    "name": $(editableId).val()
+                };
+                console.log(data);
+
+                $http.put('/sensor/' + sensorId, data).then(function () {
+                    console.log("updated" + data);
+                    getSensors();
+                    setTimeout(function() {
+                        editSensorName();
+                    }, 2000);
+                });
+            })
+        })
+    }
+
+    setTimeout(function() {
+        editSensorName();
+    }, 2000);
 
 }]);

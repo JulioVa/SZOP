@@ -131,6 +131,7 @@ angular.module('szop', []).controller('alerts', ['$scope', '$http', '$window', f
                 getAllAlerts();
                 setTimeout(function() {
                     removeAlert();
+                    changeIsActive();
                 }, 2000);
             })
         })
