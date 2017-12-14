@@ -407,6 +407,22 @@ public class SzopRestController {
         return ResponseEntity.ok().body(data);
     }
 
+    @RequestMapping(value = "/sensors/{sensorId}/user/{userId}/data/value", method = RequestMethod.GET)
+    public ResponseEntity<Double> getSensorsDataLastValue(@PathVariable int userId, @PathVariable int sensorId) {
+        String mail = (String)httpSession.getAttribute("UserId");
+        Sensor sensor = SensorService.findSensorById(sensorId);
+        Double data = InfluxService.getDataForSensorLastValue(mail, sensor.getSensorId());
+        String unit;
+        if (sensor.getType().equals(1)) {
+            unit = "C";
+        } else {
+            unit = "%";
+        }
+        String value = String.valueOf(data) + unit;
+        LOGGER.info("data from sensor: " + value);
+        return ResponseEntity.ok().body(data);
+    }
+
     @RequestMapping(value = "/sensors/user/{userId}/data/temp", method = RequestMethod.GET)
     public ResponseEntity<List<SensorTempData>> getSensorsDataTemp(@PathVariable int userId) {
         String mail = (String)httpSession.getAttribute("UserId");

@@ -72,6 +72,16 @@ public class InfluxService {
         return results;
     }
 
+    public static Double getDataForSensorLastValue(String mail, String sensorId) {
+        Double result = null;
+        Query query = new Query("SELECT * FROM \"user_" + mail + "\" WHERE sensor='" + sensorId + "' GROUP BY * ORDER BY time DESC", DB_NAME);
+        QueryResult queryResult = influxDB.query(query, TimeUnit.MILLISECONDS);
+        if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null) {
+            result = (Double) queryResult.getResults().get(0).getSeries().get(0).getValues().get(0).get(1);
+        }
+        return result;
+    }
+
     public static List<SensorTempData> getDataForUser(String mail, String type) {
         List<SensorTempData> results = new ArrayList<>();
         Query query = new Query("SELECT * FROM \"user_" + mail + "\" WHERE type = '" + type + "' GROUP BY * ORDER BY time", DB_NAME);

@@ -114,6 +114,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
                         "margin-left": sensorX - $('#schema-container').offset().left - 15 + "px"
                     });
                 }
+                getLastValue(userId, entry.id);
             });
         });
     }
@@ -296,6 +297,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     });
 
     function moveSensor( event ) {
+        $("#last-value-" + currentSensorId).remove();
         $("#sensor-details").css("visibility", "hidden");
         $("#save-sensor").css("visibility", "hidden");
         $("#sensorpoint" + sensorCounter).css({"margin-top": event.pageY - $('#schema-container').offset().top - 15 + "px", "margin-left": event.pageX - $('#schema-container').offset().left - 15 + "px"});
@@ -491,6 +493,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     $("#remove-sensor").click(function () {
         $http.put('/sensors/' + currentSensorId + '/unbind').then(function () {
             console.log("removed");
+            $("#last-value-" + currentSensorId).remove();
         });
         setTimeout(function() {
             $(".sensor-point").css("visibility", "hidden");
@@ -501,6 +504,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
     });
 
     $("#move-sensor").click(function () {
+        $("#last-value-" + currentSensorId).remove();
         $("#move-remove").css("visibility", "hidden");
         $("#sensor-details").css("visibility", "hidden");
         sensorCounter = currentSensorId;
@@ -527,6 +531,8 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
 
                 $http.put('/system/' + systemId + '/sensors/' + currentSensorId, data).then(function () {
                     console.log("updated" + data);
+                    getLastValue(userId, currentSensorId);
+                    $("#last-value-" + currentSensorId).css("display", "block");
                 });
 
                 //$("#sensorpoint" + sensorCounter).unbind("click");
@@ -571,6 +577,16 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
                 $scope.model.data = data;
                 createChart()
             });
+        });
+    }
+
+    function getLastValue(userId, id) {
+        $http.get('/sensors/' + id + '/user/' + userId + '/data/value').then(function (response) {
+            console.log("value " + id + " " + response.data);
+            var marginTop = $('#sensorpoint' + id).offset().top - $('#schema-container').offset().top - 20;
+            var marginLeft = $('#sensorpoint' + id).offset().left - $('#schema-container').offset().left;
+            console.log("margin" + marginTop + " " + marginLeft);
+            $("#schema-container").prepend("<p id='last-value-" + id + "' style='margin-top:" + marginTop + "px; margin-left: " + marginLeft + "px; position: absolute; z-index: 103; text-shadow: 0px 0px 5px white'><strong>" + response.data + "</strong></p>");
         });
     }
 
