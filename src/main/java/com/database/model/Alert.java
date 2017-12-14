@@ -25,6 +25,9 @@ public class Alert {
     @Column(name = "value")
     private Double value;
 
+    @Column(name = "is_active")
+    private Boolean isActive;
+
     public Alert() {
     }
 
@@ -68,6 +71,14 @@ public class Alert {
         this.value = value;
     }
 
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -78,7 +89,8 @@ public class Alert {
         if (Double.compare(alert.value, value) != 0) return false;
         if (user != null ? !user.equals(alert.user) : alert.user != null) return false;
         if (sensor != null ? !sensor.equals(alert.sensor) : alert.sensor != null) return false;
-        return greaterLower != null ? greaterLower.equals(alert.greaterLower) : alert.greaterLower == null;
+        if (greaterLower != null ? !greaterLower.equals(alert.greaterLower) : alert.greaterLower != null) return false;
+        return isActive != null ? isActive.equals(alert.isActive) : alert.isActive == null;
     }
 
     @Override
@@ -90,6 +102,7 @@ public class Alert {
         result = 31 * result + (greaterLower != null ? greaterLower.hashCode() : 0);
         temp = Double.doubleToLongBits(value);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (isActive != null ? isActive.hashCode() : 0);
         return result;
     }
 
@@ -100,6 +113,7 @@ public class Alert {
                 ", sensor=" + sensor +
                 ", greaterLower='" + greaterLower + '\'' +
                 ", value=" + value +
+                ", isActive=" + isActive +
                 '}';
     }
 }

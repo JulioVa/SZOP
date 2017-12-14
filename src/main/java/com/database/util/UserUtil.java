@@ -10,6 +10,7 @@ public class UserUtil {
         user.setName(userDto.getName());
         user.setProfilePic(userDto.getProfilePic());
         user.setEmail(userDto.getEmail());
+        user.setCity(userDto.getCity());
         return user;
     }
 
@@ -17,6 +18,7 @@ public class UserUtil {
         user.setName(NotNullUtil.setNotNull(user.getName(), userUpdate.getName()));
         user.setProfilePic(NotNullUtil.setNotNull(user.getProfilePic(), userUpdate.getProfilePic()));
         user.setEmail(NotNullUtil.setNotNull(user.getEmail(), userUpdate.getEmail()));
+        user.setCity(NotNullUtil.setNotNull(user.getCity(), userUpdate.getCity()));
         return user;
     }
 
@@ -25,6 +27,7 @@ public class UserUtil {
         userDto.setName(user.getName());
         userDto.setProfilePic(user.getProfilePic());
         userDto.setEmail(user.getEmail());
+        userDto.setCity(user.getCity());
         return userDto;
     }
 }
