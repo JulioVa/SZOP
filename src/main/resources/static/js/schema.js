@@ -586,7 +586,8 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
             var marginTop = $('#sensorpoint' + id).offset().top - $('#schema-container').offset().top - 20;
             var marginLeft = $('#sensorpoint' + id).offset().left - $('#schema-container').offset().left;
             console.log("margin" + marginTop + " " + marginLeft);
-            $("#schema-container").prepend("<p id='last-value-" + id + "' style='margin-top:" + marginTop + "px; margin-left: " + marginLeft + "px; position: absolute; z-index: 103; text-shadow: 0px 0px 5px white'><strong>" + response.data + "</strong></p>");
+            var result = response.data.value + response.data.unit;
+            $("#schema-container").prepend("<p id='last-value-" + id + "' style='margin-top:" + marginTop + "px; margin-left: " + marginLeft + "px; position: absolute; z-index: 103; text-shadow: -1px -1px 1px white, 1px -1px 1px white, -1px 1px 1px white, 1px 1px 1px white;'><strong>" + result + "</strong></p>");
         });
     }
 
