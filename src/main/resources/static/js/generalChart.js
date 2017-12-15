@@ -206,4 +206,9 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
         getData("humid");
     }, 2000);
 
+    setInterval(function(){
+        getData("temp");
+        getData("humid");
+    }, 315000);
+
 }]);
