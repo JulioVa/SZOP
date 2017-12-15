@@ -55,7 +55,8 @@ angular.module('szop', []).controller('sensors', ['$scope', '$http', '$window', 
                     checkboxId: entry.sensorId,
                     icon: sensorIcon,
                     iconColor: iconColor,
-                    id: entry.id
+                    id: entry.id,
+                    color: entry.color
                 };
 
                 counter++;
@@ -103,8 +104,21 @@ angular.module('szop', []).controller('sensors', ['$scope', '$http', '$window', 
         })
     }
 
+    $scope.update = function(jscolor, sensorId) {
+        console.log(jscolor);
+        var data = {
+            "color": jscolor
+        };
+
+        $http.put('/sensor/' + sensorId, data).then(function () {
+            console.log("updated" + data);
+        });
+    };
+
     setTimeout(function() {
         editSensorName();
+        jscolor.installByClassName("jscolor");
+        jscolor.init();
     }, 2000);
 
 }]);

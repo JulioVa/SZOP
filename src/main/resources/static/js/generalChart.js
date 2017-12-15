@@ -168,9 +168,7 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                 series: []
             };
 
-            var i = 0, tempColorsCounter = 0, humidColorsCounter = 0;
-            var tempColors = ['#F44C36', '#F78C31', '#F3478C', '#DF5353'];
-            var humidColors = ['#7cb5ec', '#7798BF', '#aaeeee', '#8971B7'];
+            var i = 0;
             var seriesOptions = [];
             $scope.model.dataTemp.forEach(function (entry) {
                 console.log(entry[1].temps);
@@ -180,9 +178,8 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                     yAxis: 0,
                     turboThreshold: Number.MAX_VALUE,
                     stack: 'Temperature',
-                    color: tempColors[tempColorsCounter%4]
+                    color: entry[1].color
                 };
-                tempColorsCounter++;
                 options.series.push(seriesOptions[i]);
             });
 
@@ -194,9 +191,8 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
                 yAxis: 1,
                 turboThreshold: Number.MAX_VALUE,
                 stack: 'Humidity',
-                color: humidColors[humidColorsCounter%4]
+                color: entry[1].color
             };
-            humidColorsCounter++;
             options.series.push(seriesOptions[i]);
         });
 

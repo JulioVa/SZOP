@@ -430,9 +430,9 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/sensors/user/{userId}/data/temp", method = RequestMethod.GET)
-    public ResponseEntity<List<SensorTempData>> getSensorsDataTemp(@PathVariable int userId) {
+    public ResponseEntity<List<SensorTempDataColorLevel>> getSensorsDataTemp(@PathVariable int userId) {
         String mail = (String)httpSession.getAttribute("UserId");
-        List<SensorTempData> data = InfluxService.getDataForUser(mail, "temp");
+        List<SensorTempDataColorLevel> data = InfluxService.getDataForUserWithColor(mail, "temp");
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -441,9 +441,9 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/sensors/user/{userId}/data/humid", method = RequestMethod.GET)
-    public ResponseEntity<List<SensorTempData>> getSensorsDataHumid(@PathVariable int userId) {
+    public ResponseEntity<List<SensorTempDataColorLevel>> getSensorsDataHumid(@PathVariable int userId) {
         String mail = (String)httpSession.getAttribute("UserId");
-        List<SensorTempData> data = InfluxService.getDataForUser(mail, "humid");
+        List<SensorTempDataColorLevel> data = InfluxService.getDataForUserWithColor(mail, "humid");
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
             return ResponseEntity.notFound().build();

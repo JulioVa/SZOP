@@ -2,6 +2,8 @@ package com.database.service;
 
 import com.database.model.*;
 import com.database.model.System;
+import com.database.util.ColorUtil;
+import org.apache.log4j.LogManager;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
@@ -15,6 +17,9 @@ import static com.database.util.InfluxUtils.DB_NAME;
 import static com.database.util.InfluxUtils.influxDB;
 
 public class InfluxService {
+
+    private static final org.apache.log4j.Logger LOGGER = LogManager.getLogger(InfluxService.class);
+
 
     private static final String[] tableNames = new String[]{"measurements","measurements_1h","measurements_1d"};
 
@@ -50,7 +55,7 @@ public class InfluxService {
 
             int type = temp.getType().equals("temp") ? 1 : 2;
             if (sensors.add(temp.getSensorId()) && (SensorService.findBySensorIdAndSystemIdAndType(temp.getSensorId(), sys.getId(), type) == null)) {
-                SensorService.save(new Sensor(temp.getSensorId(), "new sensor", type, new Date(Long.parseLong(temp.getDate())), true, null, sys, null, null, null));
+                SensorService.save(new Sensor(temp.getSensorId(), "new sensor", type, new Date(Long.parseLong(temp.getDate())), true, null, sys, null, null, ColorUtil.generateColor()));
             }
             batchPoints.point(point);
         }
@@ -93,6 +98,22 @@ public class InfluxService {
                 }
                 results.add(new SensorTempData(sensor.getTags().get("sensor"), temperatures));
             }
+        return results;
+    }
+
+    public static List<SensorTempDataColorLevel> getDataForUserWithColor(String mail, String type) {
+        List<SensorTempDataColorLevel> results = new ArrayList<>();
+        Query query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE type = '" + type + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
+        QueryResult queryResult = influxDB.query(query, TimeUnit.MILLISECONDS);
+        if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
+            for (QueryResult.Series sensor : queryResult.getResults().get(0).getSeries()) {
+                List<Temperature> temperatures = new ArrayList<>();
+                for (List<Object> tmps : sensor.getValues()) {
+                    temperatures.add(new Temperature((Double) tmps.get(1), ((Double) tmps.get(0)).longValue()));
+                }
+                LOGGER.info(sensor.getTags().get("system"));
+                results.add(new SensorTempDataColorLevel(sensor.getTags().get("sensor"), temperatures, SensorService.findColorBySensorIdSystemNameAndMail(sensor.getTags().get("sensor"), sensor.getTags().get("system"), mail)));
+        }
         return results;
     }
 }
