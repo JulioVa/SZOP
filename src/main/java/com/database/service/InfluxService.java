@@ -56,6 +56,10 @@ public class InfluxService {
             int type = temp.getType().equals("temp") ? 1 : 2;
             if (sensors.add(temp.getSensorId()) && (SensorService.findBySensorIdAndSystemIdAndType(temp.getSensorId(), sys.getId(), type) == null)) {
                 SensorService.save(new Sensor(temp.getSensorId(), "new sensor", type, new Date(Long.parseLong(temp.getDate())), true, null, sys, null, null, ColorUtil.generateColor()));
+            } else {
+                Sensor sensor = SensorService.findBySensorIdSystemNameAndMail(temp.getSensorId(), sysName, userId);
+                sensor.setLastUpdate(new Date(Long.parseLong(temp.getDate())));
+                SensorService.update(sensor);
             }
             batchPoints.point(point);
         }
@@ -112,7 +116,8 @@ public class InfluxService {
                     temperatures.add(new Temperature((Double) tmps.get(1), ((Double) tmps.get(0)).longValue()));
                 }
                 LOGGER.info(sensor.getTags().get("system"));
-                results.add(new SensorTempDataColorLevel(sensor.getTags().get("sensor"), temperatures, SensorService.findColorBySensorIdSystemNameAndMail(sensor.getTags().get("sensor"), sensor.getTags().get("system"), mail)));
+                Sensor sens = SensorService.findBySensorIdSystemNameAndMail(sensor.getTags().get("sensor"), sensor.getTags().get("system"), mail);
+                results.add(new SensorTempDataColorLevel(sensor.getTags().get("sensor"), temperatures, sens.getColor(), sens.getName()));
         }
         return results;
     }

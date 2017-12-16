@@ -5,14 +5,15 @@ import java.util.List;
 public class SensorTempDataColorLevel extends SensorTempData {
 
     private String color;
+    private String name;
 
-    public SensorTempDataColorLevel(String sensorID, List<Temperature> temps, String color) {
+    public SensorTempDataColorLevel(String sensorID, List<Temperature> temps, String color, String name) {
         super(sensorID, temps);
         this.color = color;
+        this.name = name;
     }
 
-    public SensorTempDataColorLevel(String color) {
-        this.color = color;
+    public SensorTempDataColorLevel() {
     }
 
     public String getColor() {
@@ -23,6 +24,14 @@ public class SensorTempDataColorLevel extends SensorTempData {
         this.color = color;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -31,13 +40,15 @@ public class SensorTempDataColorLevel extends SensorTempData {
 
         SensorTempDataColorLevel that = (SensorTempDataColorLevel) o;
 
-        return color != null ? color.equals(that.color) : that.color == null;
+        if (color != null ? !color.equals(that.color) : that.color != null) return false;
+        return name != null ? name.equals(that.name) : that.name == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (color != null ? color.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
 
@@ -45,6 +56,7 @@ public class SensorTempDataColorLevel extends SensorTempData {
     public String toString() {
         return "SensorTempDataColorLevel{" +
                 "color='" + color + '\'' +
+                "name='" + name + '\'' +
                 super.toString() +
                 '}';
     }

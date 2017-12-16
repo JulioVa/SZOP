@@ -83,7 +83,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
         $http.get('/schema/' + schemaId + '/sensors').then(function (response) {
             var tempSensorsList = response.data;
             tempSensorsList.forEach(function (entry) {
-                sensorsMap.set(entry.id, entry.sensorId);
+                sensorsMap.set(entry.id, entry.name);
                 var sensorX = entry.schemaX;
                 var sensorY = entry.schemaY;
                 if (entry.type == 1) {

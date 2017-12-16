@@ -173,7 +173,7 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
             $scope.model.dataTemp.forEach(function (entry) {
                 console.log(entry[1].temps);
                 seriesOptions[i] = {
-                    name: entry[1].sensorID,
+                    name: entry[1].name,
                     data: entry[1].temps,
                     yAxis: 0,
                     turboThreshold: Number.MAX_VALUE,
@@ -186,7 +186,7 @@ angular.module('szop', []).controller('diagrams', ['$scope', '$http', '$window',
         $scope.model.dataHumid.forEach(function (entry) {
             console.log(entry[1].temps);
             seriesOptions[i] = {
-                name: entry[1].sensorID,
+                name: entry[1].name,
                 data: entry[1].temps,
                 yAxis: 1,
                 turboThreshold: Number.MAX_VALUE,

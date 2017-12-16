@@ -98,6 +98,8 @@ angular.module('szop', []).controller('sensors', ['$scope', '$http', '$window', 
                     getSensors();
                     setTimeout(function() {
                         editSensorName();
+                        $('.secondary-content').removeClass('jscolor');
+                        jscolor.installByClassName("jscolor");
                     }, 2000);
                 });
             })
