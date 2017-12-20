@@ -69,13 +69,13 @@ public class InfluxService {
     public static List<Temperature> getDataForSensor(String mail, String sensorId) {
         List<Temperature> results = new ArrayList<>();
 
-        Query query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE time > now() - 1d AND sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
+        Query  query = new Query("SELECT * FROM \"" + tableNames[2] + "\" WHERE time < now() - 7d AND sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         addResult(influxDB.query(query, TimeUnit.MILLISECONDS), results);
 
          query = new Query("SELECT * FROM \"" + tableNames[1] + "\" WHERE time < now() - 1d AND time > now() - 7d AND sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         addResult(influxDB.query(query, TimeUnit.MILLISECONDS), results);
 
-         query = new Query("SELECT * FROM \"" + tableNames[2] + "\" WHERE time < now() - 7d AND sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
+        query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE time > now() - 1d AND sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         addResult(influxDB.query(query, TimeUnit.MILLISECONDS), results);
 
         return results;
@@ -101,13 +101,13 @@ public class InfluxService {
     public static List<SensorTempDataColorLevel> getDataForUserWithColor(String mail, String type) {
         List<SensorTempDataColorLevel> results = new ArrayList<>();
 
-        Query query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE time > now() - 1d AND type = '" + type + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
+        Query query = new Query("SELECT * FROM \"" + tableNames[2] + "\" WHERE time < now() - 7d AND type = '" + type + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         addTempAndColorResult(influxDB.query(query, TimeUnit.MILLISECONDS), results, mail);
 
         query = new Query("SELECT * FROM \"" + tableNames[1] + "\" WHERE time < now() - 1d AND time > now() - 7d AND type = '" + type + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         addTempAndColorResult(influxDB.query(query, TimeUnit.MILLISECONDS), results, mail);
 
-        query = new Query("SELECT * FROM \"" + tableNames[2] + "\" WHERE time < now() - 7d AND type = '" + type + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
+        query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE time > now() - 1d AND type = '" + type + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         addTempAndColorResult(influxDB.query(query, TimeUnit.MILLISECONDS), results, mail);
 
         return results;
@@ -121,9 +121,19 @@ public class InfluxService {
                 for (List<Object> tmps : sensor.getValues()) {
                     temperatures.add(new Temperature((Double) tmps.get(1), ((Double) tmps.get(0)).longValue()));
                 }
-                LOGGER.info(sensor.getTags().get("system"));
-                Sensor sens = SensorService.findBySensorIdSystemNameAndMail(sensor.getTags().get("sensor"), sensor.getTags().get("system"), mail);
-                results.add(new SensorTempDataColorLevel(sensor.getTags().get("sensor"), temperatures, sens.getColor(), sens.getName()));
+
+                boolean contains = false;
+                for(SensorTempData sensorTempData: results){
+                    if(sensorTempData.getSensorID().equals(sensor.getTags().get("sensor"))){
+                        sensorTempData.getTemps().addAll(temperatures);
+                        contains = true;
+                    }
+                }
+                if(!contains) {
+                    LOGGER.info(sensor.getTags().get("system"));
+                    Sensor sens = SensorService.findBySensorIdSystemNameAndMail(sensor.getTags().get("sensor"), sensor.getTags().get("system"), mail);
+                    results.add(new SensorTempDataColorLevel(sensor.getTags().get("sensor"), temperatures, sens.getColor(), sens.getName()));
+                }
             }
         }
     }
