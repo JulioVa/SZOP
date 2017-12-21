@@ -37,6 +37,7 @@ public class InfluxService {
         Set<String> sensors = new HashSet<>();
         BatchPoints batchPoints = BatchPoints
                 .database(DB_NAME)
+                .retentionPolicy("two_days")
                 .tag("async", "true")
                 .consistency(InfluxDB.ConsistencyLevel.ALL)
                 .build();
