@@ -76,7 +76,7 @@ public class InfluxService {
         query = new Query("SELECT * FROM " + DB_NAME + ".two_weeks.\"" + tableNames[1] + "\" WHERE time < now() - 1d AND time > now() - 7d AND sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         addResult(influxDB.query(query, TimeUnit.MILLISECONDS), results);
 
-        query = new Query("SELECT * FROM " + DB_NAME + ".two_days.\"" + tableNames[0] +"\" GROUP BY *" ,DB_NAME);//+ "\" WHERE time > now() - 1d AND sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
+        query = new Query("SELECT * FROM " + DB_NAME + ".two_days.\"" + tableNames[0] + "\" WHERE time > now() - 1d AND sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         addResult(influxDB.query(query, TimeUnit.MILLISECONDS), results);
 
         return results;
