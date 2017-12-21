@@ -70,13 +70,13 @@ public class InfluxService {
     public static List<Temperature> getDataForSensor(String mail, String sensorId) {
         List<Temperature> results = new ArrayList<>();
 
-        Query  query = new Query("SELECT * FROM \"" + tableNames[2] + "\" WHERE time < now() - 7d AND sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
+        Query  query = new Query("SELECT * FROM " + DB_NAME + ".\"autogen\".\"" + tableNames[2] + "\" WHERE time < now() - 7d AND sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         addResult(influxDB.query(query, TimeUnit.MILLISECONDS), results);
 
-         query = new Query("SELECT * FROM \"" + tableNames[1] + "\" WHERE time < now() - 1d AND time > now() - 7d AND sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
+        query = new Query("SELECT * FROM " + DB_NAME + ".two_weeks.\"" + tableNames[1] + "\" WHERE time < now() - 1d AND time > now() - 7d AND sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         addResult(influxDB.query(query, TimeUnit.MILLISECONDS), results);
 
-        query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE time > now() - 1d AND sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
+        query = new Query("SELECT * FROM " + DB_NAME + ".two_days.\"" + tableNames[0] +"\" GROUP BY *" ,DB_NAME);//+ "\" WHERE time > now() - 1d AND sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         addResult(influxDB.query(query, TimeUnit.MILLISECONDS), results);
 
         return results;
@@ -91,7 +91,7 @@ public class InfluxService {
 
     public static Double getDataForSensorLastValue(String mail, String sensorId) {
         Double result = null;
-        Query query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time DESC LIMIT 1", DB_NAME);
+        Query query = new Query("SELECT * FROM " + DB_NAME + ".two_days.\"" + tableNames[0] + "\" WHERE sensor='" + sensorId + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time DESC LIMIT 1", DB_NAME);
         QueryResult queryResult = influxDB.query(query, TimeUnit.MILLISECONDS);
         if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null) {
             result = (Double) queryResult.getResults().get(0).getSeries().get(0).getValues().get(0).get(1);
@@ -102,13 +102,13 @@ public class InfluxService {
     public static List<SensorTempDataColorLevel> getDataForUserWithColor(String mail, String type) {
         List<SensorTempDataColorLevel> results = new ArrayList<>();
 
-        Query query = new Query("SELECT * FROM \"" + tableNames[2] + "\" WHERE time < now() - 7d AND type = '" + type + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
+        Query query = new Query("SELECT * FROM " + DB_NAME + ".\"autogen\".\"" + tableNames[2] + "\" WHERE time < now() - 7d AND type = '" + type + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         addTempAndColorResult(influxDB.query(query, TimeUnit.MILLISECONDS), results, mail);
 
-        query = new Query("SELECT * FROM \"" + tableNames[1] + "\" WHERE time < now() - 1d AND time > now() - 7d AND type = '" + type + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
+        query = new Query("SELECT * FROM " + DB_NAME + ".two_weeks.\"" + tableNames[1] + "\" WHERE time < now() - 1d AND time > now() - 7d AND type = '" + type + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         addTempAndColorResult(influxDB.query(query, TimeUnit.MILLISECONDS), results, mail);
 
-        query = new Query("SELECT * FROM \"" + tableNames[0] + "\" WHERE time > now() - 1d AND type = '" + type + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
+        query = new Query("SELECT * FROM " + DB_NAME + ".two_days.\"" + tableNames[0] + "\" WHERE time > now() - 1d AND type = '" + type + "' AND \"user\"='" + mail + "' GROUP BY * ORDER BY time", DB_NAME);
         addTempAndColorResult(influxDB.query(query, TimeUnit.MILLISECONDS), results, mail);
 
         return results;
