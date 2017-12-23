@@ -60,34 +60,38 @@ def delete_last_line():
 
 
 def save_ds18b20_value(sensor, file, date):
-    data = {
-        'id': sensor.split("/")[-1],
-        'type': 'temp',
-        'date': str(date),
-        'value': read_ds18b20(sensor + '/w1_slave')
-    }
-    file.write('\n\t' + json.dumps(data) + '\n\t,')
+    temp = read_ds18b20(sensor + '/w1_slave')
+    if temp is not None:
+        data = {
+            'id': sensor.split("/")[-1],
+            'type': 'temp',
+            'date': str(date),
+            'value': temp
+        }
+        file.write('\n\t' + json.dumps(data) + '\n\t,')
+    else:
+        print 'Failed to read ds18b20 sensor with name = ' + str(sensor)
 
 
 def save_dht11_value(sensor_type, sensor, file, date):
     humid, temp = Adafruit_DHT.read_retry(sensor_type, sensor)
     if humid is not None and temp is not None:
         temp_data = {
-            'id': str(sensor) + '/temp',
+            'id': str(sensor) + '_temp',
             'type': 'temp',
             'date': str(date),
             'value': float(temp)
         }
         file.write('\n\t' + json.dumps(temp_data) + '\n\t,')
         humid_data = {
-            'id': str(sensor) + '/humid',
+            'id': str(sensor) + '_humid',
             'type': 'humid',
             'date': str(date),
             'value': float(humid)
         }
         file.write('\n\t' + json.dumps(humid_data) + '\n\t,')
     else:
-        print 'Failed to read dht11 sensor for pin= ' + str(sensor)
+        print 'Failed to read dht11 sensor for pin = ' + str(sensor)
 
 
 def prepare_new_file(file):
@@ -132,7 +136,7 @@ while True:
     file.close()
     with open('data.json', 'rb') as f:
         try:
-            r = requests.post(url, data=f, headers=headers)
+            r = requests.post(url, data=f, headers=headers, verify=False)
             if r.status_code != 200:
                 config.set('connection', 'connection', 'False')
             else:
