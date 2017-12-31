@@ -7,8 +7,8 @@ public class AlertIdLevelDto extends AlertDto {
 
     public AlertIdLevelDto() {}
 
-    public AlertIdLevelDto(Integer userId, Integer sensorId, String greaterLower, Double value, int id) {
-        super(userId, sensorId, greaterLower, value);
+    public AlertIdLevelDto(Integer userId, Integer sensorId, String greaterLower, Double value, int id, Boolean isActive) {
+        super(userId, sensorId, greaterLower, value, isActive);
         this.id = id;
     }
 

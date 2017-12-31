@@ -8,14 +8,16 @@ public class AlertDto implements Serializable {
     private Integer sensorId;
     private String greaterLower;
     private Double value;
+    private Boolean isActive;
 
     public AlertDto() {}
 
-    public AlertDto(Integer userId, Integer sensorId, String greaterLower, Double value) {
+    public AlertDto(Integer userId, Integer sensorId, String greaterLower, Double value, Boolean isActive) {
         this.userId = userId;
         this.sensorId = sensorId;
         this.greaterLower = greaterLower;
         this.value = value;
+        this.isActive = isActive;
     }
 
     public Integer getUserId() {
@@ -50,6 +52,14 @@ public class AlertDto implements Serializable {
         this.value = value;
     }
 
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,7 +71,8 @@ public class AlertDto implements Serializable {
         if (sensorId != null ? !sensorId.equals(alertDto.sensorId) : alertDto.sensorId != null) return false;
         if (greaterLower != null ? !greaterLower.equals(alertDto.greaterLower) : alertDto.greaterLower != null)
             return false;
-        return value != null ? value.equals(alertDto.value) : alertDto.value == null;
+        if (value != null ? !value.equals(alertDto.value) : alertDto.value != null) return false;
+        return isActive != null ? isActive.equals(alertDto.isActive) : alertDto.isActive == null;
     }
 
     @Override
@@ -70,6 +81,7 @@ public class AlertDto implements Serializable {
         result = 31 * result + (sensorId != null ? sensorId.hashCode() : 0);
         result = 31 * result + (greaterLower != null ? greaterLower.hashCode() : 0);
         result = 31 * result + (value != null ? value.hashCode() : 0);
+        result = 31 * result + (isActive != null ? isActive.hashCode() : 0);
         return result;
     }
 
@@ -80,6 +92,7 @@ public class AlertDto implements Serializable {
                 ", sensorId=" + sensorId +
                 ", greaterLower='" + greaterLower + '\'' +
                 ", value=" + value +
+                ", isActive=" + isActive +
                 '}';
     }
 }

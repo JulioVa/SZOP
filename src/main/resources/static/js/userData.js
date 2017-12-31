@@ -31,9 +31,9 @@ window.onLoadCallback = function() {
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '/user/token');
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                /*xhr.onload = function() {
+                xhr.onload = function() {
                     console.log('Signed in as: ' + xhr.responseText);
-                };*/
+                };
                 xhr.send(id_token);
                 var image = document.createElement("img");
                 image.src = profile.getImageUrl();

@@ -5,6 +5,8 @@ import com.database.model.*;
 import com.database.model.System;
 import com.database.service.*;
 import com.database.util.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +64,7 @@ public class SzopRestController {
     public ResponseEntity<List<SensorIdLevelDto>> getSensorsIdByUserId(@PathVariable int userId) {
         List<Sensor> sensors = SensorService.findAllByUser(userId);
         List<SensorIdLevelDto> sensorDtos = SensorUtil.convertToDtosId(sensors);
+        sensorDtos.sort(sensorComparator);
         if (sensors.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -154,13 +157,12 @@ public class SzopRestController {
 
     @RequestMapping(value = "/system/{systemId}/sensors/{sensorId}", method = RequestMethod.PUT)
     public ResponseEntity<SensorDto> updateSensor(@PathVariable int systemId, @PathVariable int sensorId, @RequestBody SensorDto sensorDto) {
-        Sensor sensor = SensorService.findSensorById(sensorId);
-        if (sensor == null) {
-            return ResponseEntity.notFound().build();
-        }
-        sensor = SensorUtil.updateSensor(sensor, sensorDto);
-        SensorService.update(sensor);
-        return ResponseEntity.ok().build();
+        return updateSensorId(sensorId, sensorDto);
+    }
+
+    @RequestMapping(value = "/sensor/{sensorId}", method = RequestMethod.PUT)
+    public ResponseEntity<SensorDto> updateSensorById(@PathVariable int sensorId, @RequestBody SensorDto sensorDto) {
+        return updateSensorId(sensorId, sensorDto);
     }
 
     // schema
@@ -305,6 +307,7 @@ public class SzopRestController {
         String mail = (String)httpSession.getAttribute("UserId");
         List<Alert> alerts = AlertService.findAllForUserByMail(mail);
         List<AlertIdLevelDto> alertDtos = AlertUtil.convertToDtosId(alerts);
+        alertDtos.sort(alertComparator);
         if (alerts.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -318,6 +321,17 @@ public class SzopRestController {
             return ResponseEntity.notFound().build();
         }
         alert = AlertUtil.updateAlert(alert, alertDto);
+        AlertService.update(alert);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/alert/{alertId}/active", method = RequestMethod.PUT)
+    public ResponseEntity<AlertDto> updateAlertActive(@PathVariable int alertId) {
+        Alert alert = AlertService.findAlertById(alertId);
+        if (alert == null) {
+            return ResponseEntity.notFound().build();
+        }
+        alert = AlertUtil.updateAlertActive(alert);
         AlertService.update(alert);
         return ResponseEntity.ok().build();
     }
@@ -395,10 +409,30 @@ public class SzopRestController {
         return ResponseEntity.ok().body(data);
     }
 
-    @RequestMapping(value = "/sensors/user/{userId}/data/temp", method = RequestMethod.GET)
-    public ResponseEntity<List<SensorTempData>> getSensorsDataTemp(@PathVariable int userId) {
+    @RequestMapping(value = "/sensors/{sensorId}/user/{userId}/data/value", method = RequestMethod.GET)
+    public ResponseEntity<String> getSensorsDataLastValue(@PathVariable int userId, @PathVariable int sensorId) throws JsonProcessingException {
         String mail = (String)httpSession.getAttribute("UserId");
-        List<SensorTempData> data = InfluxService.getDataForUser(mail, "temp");
+        Sensor sensor = SensorService.findSensorById(sensorId);
+        Double data = InfluxService.getDataForSensorLastValue(mail, sensor.getSensorId());
+        String unit;
+        if (sensor.getType().equals(1)) {
+            unit = "\u00b0C";
+        } else {
+            unit = "%";
+        }
+        Map<String,String> map = new HashMap<>();
+        map.put("value", String.valueOf(data));
+        map.put("unit", unit);
+        String json = new ObjectMapper().writeValueAsString(map);
+        String value = String.valueOf(data) + unit;
+        LOGGER.info("data from sensor: " + value);
+        return ResponseEntity.ok().body(json);
+    }
+
+    @RequestMapping(value = "/sensors/user/{userId}/data/temp", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorTempDataColorLevel>> getSensorsDataTemp(@PathVariable int userId) {
+        String mail = (String)httpSession.getAttribute("UserId");
+        List<SensorTempDataColorLevel> data = InfluxService.getDataForUserWithColor(mail, "temp");
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -407,9 +441,9 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/sensors/user/{userId}/data/humid", method = RequestMethod.GET)
-    public ResponseEntity<List<SensorTempData>> getSensorsDataHumid(@PathVariable int userId) {
+    public ResponseEntity<List<SensorTempDataColorLevel>> getSensorsDataHumid(@PathVariable int userId) {
         String mail = (String)httpSession.getAttribute("UserId");
-        List<SensorTempData> data = InfluxService.getDataForUser(mail, "humid");
+        List<SensorTempDataColorLevel> data = InfluxService.getDataForUserWithColor(mail, "humid");
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -448,4 +482,17 @@ public class SzopRestController {
         User user = UserService.findUserByEmail(email);
         return ResponseEntity.ok().body(user.getId());
     }
+
+    private ResponseEntity<SensorDto> updateSensorId(int sensorId, SensorDto sensorDto) {
+        Sensor sensor = SensorService.findSensorById(sensorId);
+        if (sensor == null) {
+            return ResponseEntity.notFound().build();
+        }
+        sensor = SensorUtil.updateSensor(sensor, sensorDto);
+        SensorService.update(sensor);
+        return ResponseEntity.ok().build();
+    }
+
+    private static Comparator<SensorIdLevelDto> sensorComparator = (o1, o2) -> new Integer(o1.getId()).compareTo(o2.getId());
+    private static Comparator<AlertIdLevelDto> alertComparator = (o1, o2) -> new Integer(o1.getId()).compareTo(o2.getId());
 }

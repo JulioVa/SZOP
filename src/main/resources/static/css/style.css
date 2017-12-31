@@ -133,3 +133,12 @@ nav ul li:hover {
     background-color: #ff9800;
     left: 24px;
 }
+
+.sensor-name-editable {
+    display: none;
+    width: 400px;
+}
+
+.sensor-name-noteditable {
+    display: block;
+}

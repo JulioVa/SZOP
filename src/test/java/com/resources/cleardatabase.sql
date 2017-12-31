@@ -11,7 +11,8 @@ create table "user"(
     primary key,
   name varchar(50),
   profile_pic varchar(250),
-  email varchar(50) not null
+  email varchar(50) not null,
+  city varchar(50)
 );
 create unique index user_mail_uindex on "user" (email);
 --CREATE SYSTEM
@@ -59,7 +60,8 @@ create table sensor(
     constraint sensor_schema_id_fk
     references schema,
   schema_x integer,
-  schema_y integer
+  schema_y integer,
+  color varchar(50)
 );
 create unique index sensor_id_uindex on sensor (id);
 --CREATE ALERT
@@ -76,7 +78,8 @@ create table alert(
     references sensor
     on update cascade on delete cascade,
   greater_lower varchar(50),
-  value double precision
+  value double precision,
+  is_active boolean not null
 );
 create unique index alert_id_uindex on alert (id);
 

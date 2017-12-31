@@ -43,10 +43,14 @@ public class Sensor implements Serializable {
     @Column(name = "schema_y")
     private Integer schemaY;
 
+    @Column(name = "color")
+    private String color;
+
     public Sensor() {
     }
 
-    public Sensor(String sensorId, String name, Integer type, Date lastUpdate, Boolean isActive, Schema schema, System system, Integer schemaX, Integer schemaY) {
+    public Sensor(String sensorId, String name, Integer type, Date lastUpdate, Boolean isActive, Schema schema, System system,
+                  Integer schemaX, Integer schemaY, String color) {
         this.sensorId = sensorId;
         this.name = name;
         this.type = type;
@@ -56,6 +60,7 @@ public class Sensor implements Serializable {
         this.system = system;
         this.schemaX = schemaX;
         this.schemaY = schemaY;
+        this.color = color;
     }
 
     public Integer getId() {
@@ -138,6 +143,14 @@ public class Sensor implements Serializable {
         this.schemaY = schemaY;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -153,7 +166,8 @@ public class Sensor implements Serializable {
         if (name != null ? !name.equals(sensor.name) : sensor.name != null) return false;
         if (lastUpdate != null ? !lastUpdate.equals(sensor.lastUpdate) : sensor.lastUpdate != null) return false;
         if (schema != null ? !schema.equals(sensor.schema) : sensor.schema != null) return false;
-        return system != null ? system.equals(sensor.system) : sensor.system == null;
+        if (system != null ? !system.equals(sensor.system) : sensor.system != null) return false;
+        return color != null ? color.equals(sensor.color) : sensor.color == null;
     }
 
     @Override
@@ -165,15 +179,16 @@ public class Sensor implements Serializable {
         result = 31 * result + (isActive ? 1 : 0);
         result = 31 * result + (schema != null ? schema.hashCode() : 0);
         result = 31 * result + (system != null ? system.hashCode() : 0);
-        result = 31 * result + schemaX;
-        result = 31 * result + schemaY;
+        result = 31 * result + (schemaX != null ? schemaX.hashCode() : 0);
+        result = 31 * result + (schemaY != null ? schemaY.hashCode() : 0);
+        result = 31 * result + (color != null ? color.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Sensor{" +
-                "sensorId=" + sensorId +
+                "sensorId='" + sensorId + '\'' +
                 ", name='" + name + '\'' +
                 ", type=" + type +
                 ", lastUpdate=" + lastUpdate +
@@ -182,6 +197,7 @@ public class Sensor implements Serializable {
                 ", system=" + system +
                 ", schemaX=" + schemaX +
                 ", schemaY=" + schemaY +
+                ", color='" + color + '\'' +
                 '}';
     }
 }

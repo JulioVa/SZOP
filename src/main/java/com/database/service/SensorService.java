@@ -27,6 +27,14 @@ public class SensorService {
         return sensor;
     }
 
+    public static Sensor findBySensorIdSystemNameAndMail(String sensorId, String systemName, String mail){
+        Session session = HibernateUtils.getSession();
+        session.beginTransaction();
+        Sensor sensor = session.createQuery("FROM Sensor s WHERE s.sensorId = :sensorId AND s.system.name = :systemName AND s.system.user.email = :mail", Sensor.class).setParameter("sensorId", sensorId).setParameter("systemName", systemName).setParameter("mail", mail).getSingleResult();
+        session.getTransaction().commit();
+        return sensor;
+    }
+
     public static List<Sensor> findAll(){
         Session session = HibernateUtils.getSession();
         session.beginTransaction();

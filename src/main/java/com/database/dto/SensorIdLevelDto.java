@@ -8,8 +8,9 @@ public class SensorIdLevelDto extends SensorDto {
 
     public SensorIdLevelDto() {}
 
-    public SensorIdLevelDto(String sensorId, String name, int type, Date lastUpdate, boolean isActive, int schemaId, int systemId, int schemaX, int schemaY, int id) {
-        super(sensorId, name, type, lastUpdate, isActive, schemaId, systemId, schemaX, schemaY);
+    public SensorIdLevelDto(String sensorId, String name, int type, Date lastUpdate, boolean isActive, int schemaId, int systemId,
+                            int schemaX, int schemaY, int id, String color) {
+        super(sensorId, name, type, lastUpdate, isActive, schemaId, systemId, schemaX, schemaY, color);
         this.id = id;
     }
 
