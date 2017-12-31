@@ -41,16 +41,16 @@ public class InfluxService {
 
         for (TemperatureData temp : temps) {
 
-            Point point = Point.measurement("user_" + user.getId())
+            Point point = Point.measurement("user_" + user.getEmail())
                     .tag("type", temp.getType())
                     .tag("sensor", temp.getSensorId())
-                    .tag("system", Integer.valueOf(sys.getId()).toString())
+                    .tag("system", sys.getName())
                     .time(Long.parseLong(temp.getDate()), TimeUnit.MILLISECONDS)
                     .addField("value", temp.getValue())
                     .build();
 
-            if (sensors.add(temp.getSensorId()) && (SensorService.findBySensorIdAndSystemId(temp.getSensorId(), sys.getId()) == null)) {
-                int type = temp.getType().equals("temp") ? 1 : 2;
+            int type = temp.getType().equals("temp") ? 1 : 2;
+            if (sensors.add(temp.getSensorId()) && (SensorService.findBySensorIdAndSystemIdAndType(temp.getSensorId(), sys.getId(), type) == null)) {
                 SensorService.save(new Sensor(temp.getSensorId(), "new sensor", type, new Date(Long.parseLong(temp.getDate())), true, null, sys, null, null));
             }
             batchPoints.point(point);
@@ -59,10 +59,10 @@ public class InfluxService {
         influxDB.write(batchPoints);
     }
 
-    public static List<Temperature> getDataForSensor(int userId, int systemId, String sensorId) {
+    public static List<Temperature> getDataForSensor(String mail, String sensorId) {
         List<Temperature> results = new ArrayList<>();
 
-        Query query = new Query("SELECT * FROM user_" + userId + " WHERE system='" + systemId + "' AND sensor='" + sensorId + "' GROUP BY * ORDER BY time", DB_NAME);
+        Query query = new Query("SELECT * FROM \"user_" + mail + "\" WHERE sensor='" + sensorId + "' GROUP BY * ORDER BY time", DB_NAME);
         QueryResult queryResult = influxDB.query(query, TimeUnit.MILLISECONDS);
         if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
             for (List<Object> qResult : queryResult.getResults().get(0).getSeries().get(0).getValues()) {
@@ -72,9 +72,9 @@ public class InfluxService {
         return results;
     }
 
-    public static List<SensorTempData> getDataForUser(int userId, String type) {
+    public static List<SensorTempData> getDataForUser(String mail, String type) {
         List<SensorTempData> results = new ArrayList<>();
-        Query query = new Query("SELECT * FROM user_" + userId + " WHERE type = '" + type + "' GROUP BY * ORDER BY time", DB_NAME);
+        Query query = new Query("SELECT * FROM \"user_" + mail + "\" WHERE type = '" + type + "' GROUP BY * ORDER BY time", DB_NAME);
         QueryResult queryResult = influxDB.query(query, TimeUnit.MILLISECONDS);
         if (queryResult.getError() == null && queryResult.getResults().get(0).getSeries() != null)
             for (QueryResult.Series sensor : queryResult.getResults().get(0).getSeries()) {

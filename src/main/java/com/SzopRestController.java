@@ -58,6 +58,16 @@ public class SzopRestController {
         return ResponseEntity.ok().body(sensorDtos);
     }
 
+    @RequestMapping(value = "/user/{userId}/sensors/id", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorIdLevelDto>> getSensorsIdByUserId(@PathVariable int userId) {
+        List<Sensor> sensors = SensorService.findAllByUser(userId);
+        List<SensorIdLevelDto> sensorDtos = SensorUtil.convertToDtosId(sensors);
+        if (sensors.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(sensorDtos);
+    }
+
     @RequestMapping(value = "/schema/{schemaId}/sensors", method = RequestMethod.GET)
     public ResponseEntity<List<SensorIdLevelDto>> getSensorsBySchemaId(@PathVariable int schemaId) {
         List<Sensor> sensors = SensorService.findAllBySchema(schemaId);
@@ -101,10 +111,10 @@ public class SzopRestController {
     @RequestMapping(value = "/sensors/humidity/user/{userId}", method = RequestMethod.GET)
     public ResponseEntity<List<SensorIdLevelDto>> getHumiditySensorsForUser(@PathVariable int userId) {
         List<Sensor> sensors = SensorService.findAllByTypeForUser(2, userId);
-        List<SensorIdLevelDto> sensorDtos = SensorUtil.convertToDtosId(sensors);
         if (sensors.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok().body(new ArrayList<SensorIdLevelDto>());
         }
+        List<SensorIdLevelDto> sensorDtos = SensorUtil.convertToDtosId(sensors);
         return ResponseEntity.ok().body(sensorDtos);
     }
 
@@ -229,6 +239,15 @@ public class SzopRestController {
         return ResponseEntity.ok().body(UserUtil.convertToDto(user));
     }
 
+    @RequestMapping(value = "/user/loggedin", method = RequestMethod.GET)
+    public ResponseEntity<UserDto> getCurrentlyLoggedInUser(@PathVariable int userId) {
+        User user = UserService.findUserByEmail((String) httpSession.getAttribute("UserId"));
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(UserUtil.convertToDto(user));
+    }
+
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.PUT)
     public ResponseEntity<UserDto> updateUser(@PathVariable int userId, @RequestBody UserDto userDto) {
         User user = UserService.findUserById(userId);
@@ -272,9 +291,20 @@ public class SzopRestController {
     }
 
     @RequestMapping(value = "/user/{userId}/alerts", method = RequestMethod.GET)
-    public ResponseEntity<List<AlertDto>> getAlertsByUserId(@PathVariable int userId) {
+    public ResponseEntity<List<AlertIdLevelDto>> getAlertsByUserId(@PathVariable int userId) {
         List<Alert> alerts = AlertService.findAllForUser(userId);
-        List<AlertDto> alertDtos = AlertUtil.convertToDtos(alerts);
+        List<AlertIdLevelDto> alertDtos = AlertUtil.convertToDtosId(alerts);
+        if (alerts.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(alertDtos);
+    }
+
+    @RequestMapping(value = "/alerts/all", method = RequestMethod.GET)
+    public ResponseEntity<List<AlertIdLevelDto>> getAlerts() {
+        String mail = (String)httpSession.getAttribute("UserId");
+        List<Alert> alerts = AlertService.findAllForUserByMail(mail);
+        List<AlertIdLevelDto> alertDtos = AlertUtil.convertToDtosId(alerts);
         if (alerts.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -354,9 +384,10 @@ public class SzopRestController {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/sensors/{sensorId}/user/{userId}/system/{systemId}/data", method = RequestMethod.GET)
-    public ResponseEntity<List<Temperature>> getSensorsData(@PathVariable int userId, @PathVariable int systemId, @PathVariable String sensorId) {
-        List<Temperature> data = InfluxService.getDataForSensor(userId, systemId, sensorId);
+    @RequestMapping(value = "/sensors/{sensorId}/user/{userId}/data", method = RequestMethod.GET)
+    public ResponseEntity<List<Temperature>> getSensorsData(@PathVariable int userId, @PathVariable String sensorId) {
+        String mail = (String)httpSession.getAttribute("UserId");
+        List<Temperature> data = InfluxService.getDataForSensor(mail, sensorId);
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -366,7 +397,8 @@ public class SzopRestController {
 
     @RequestMapping(value = "/sensors/user/{userId}/data/temp", method = RequestMethod.GET)
     public ResponseEntity<List<SensorTempData>> getSensorsDataTemp(@PathVariable int userId) {
-        List<SensorTempData> data = InfluxService.getDataForUser(userId, "temp");
+        String mail = (String)httpSession.getAttribute("UserId");
+        List<SensorTempData> data = InfluxService.getDataForUser(mail, "temp");
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -376,7 +408,8 @@ public class SzopRestController {
 
     @RequestMapping(value = "/sensors/user/{userId}/data/humid", method = RequestMethod.GET)
     public ResponseEntity<List<SensorTempData>> getSensorsDataHumid(@PathVariable int userId) {
-        List<SensorTempData> data = InfluxService.getDataForUser(userId, "humid");
+        String mail = (String)httpSession.getAttribute("UserId");
+        List<SensorTempData> data = InfluxService.getDataForUser(mail, "humid");
         LOGGER.info("data from sensor: " + data);
         if (data.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -387,7 +420,7 @@ public class SzopRestController {
     @RequestMapping(value = "/sensors/data", method = RequestMethod.POST)
     ResponseEntity<?> addData(@RequestBody Map<String, Object> data) {
         if (data != null) {
-            LOGGER.error(data.toString());
+            LOGGER.info(data.toString());
             String userId = (String) data.get("user_id");
             String systemName = (String) data.get("system_id");
             List<TemperatureData> temps = TemperatureDataUtil.convertToDtos((List<Map<String, Object>>) data.get("sensors"));

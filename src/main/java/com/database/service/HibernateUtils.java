@@ -13,7 +13,7 @@ public class HibernateUtils {
     {
         if (sessionFactory == null)
         {
-            sessionFactory = new Configuration().configure(new File("src/main/resources/hibernate.cfg.xml")).buildSessionFactory();
+            sessionFactory = new Configuration().configure(new File("hibernate.cfg.xml")).buildSessionFactory();
         }
         return sessionFactory;
     }

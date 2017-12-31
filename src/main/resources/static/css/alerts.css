@@ -1,0 +1,45 @@
+#new-alert {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-top:200px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #455a64;
+    width: 700px;
+    height: 340px;
+    z-index: 105;
+    box-shadow: 2px 2px 5px #989898;
+    visibility: hidden;
+}
+
+#cancel-alert {
+    position: relative;
+    float: right;
+    margin-right: 30px;
+}
+
+#save-alert {
+    position: relative;
+    float: right;
+    margin-right: 20px;
+}
+
+.dropdown-sensor {
+    width: 300px;
+    padding-left: 40px;
+    color: white;
+}
+
+.than-text {
+    display: inline;
+    color: white;
+    padding-top: 50px;
+}
+
+#alert-value:focus {
+    border-bottom: 1px solid orange;
+    box-shadow: 0 1px 0 0 orange;
+}
