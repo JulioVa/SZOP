@@ -288,6 +288,22 @@ public class SzopRestController {
         Alert alert = AlertUtil.addAlert(alertDto);
         if (alert != null) {
             AlertService.save(alert);
+            String greaterLower;
+            StringBuilder condition = new StringBuilder();
+            if (alert.getGreaterLower().contains("greater")) {
+                condition.append("> ");
+                greaterLower = "przekroczyła ";
+            } else {
+                condition.append("< ");
+                greaterLower = "jest poniżej ";
+            }
+            condition.append(alert.getValue());
+            String createCommand = KapacitorUtils.createAlertCommand(alert.getId(), alert.getUser().getEmail(), alert.getSensor().getSensorId(), alert.getSensor().getSystem().getName(), condition.toString(), "Alert " + alert.getSensor().getSensorId(), "Wartość czujnika " + alert.getSensor().getName() + greaterLower + alert.getValue());
+            String defineCommand = KapacitorUtils.defineNewTaskCommand(alert.getId());
+            String enableCommand = KapacitorUtils.enableTaskCommand(alert.getId());
+            KapacitorUtils.executeCommand(createCommand);
+            KapacitorUtils.executeCommand(defineCommand);
+            KapacitorUtils.executeCommand(enableCommand);
             return ResponseEntity.ok().body(alertDto);
         } else {
             return ResponseEntity.badRequest().build();
