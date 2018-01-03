@@ -373,6 +373,7 @@ public class SzopRestController {
             return ResponseEntity.notFound().build();
         }
         AlertService.delete(alert);
+        KapacitorUtils.executeCommand(KapacitorUtils.disableTaskCommand(alert.getId()));
         return ResponseEntity.ok().build();
     }
 

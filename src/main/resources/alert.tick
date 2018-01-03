@@ -1,8 +1,8 @@
 stream
     |from().measurement('measurements')
-        .where("user" = '%%USER%%')
-        .where("sensor" = '%%SENSOR%%')
-        .where("system" = '%%SYSTEM%%')
+        .where(lambda: "user" == '%%USER%%')
+        .where(lambda: "sensor" == '%%SENSOR%%')
+        .where(lambda: "system" == '%%SYSTEM%%')
     |alert()
         .crit(lambda: "value" %%CONDITION%%)
         .stateChangesOnly(60m)
