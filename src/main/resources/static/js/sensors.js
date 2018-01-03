@@ -85,11 +85,11 @@ angular.module('szop', []).controller('sensors', ['$scope', '$http', '$window', 
             $('#' + noteditableId).css("display", "none");
             var sensorId = noteditableId.substring(19);
             var editableId = "#sensor-editable-" + sensorId;
-            $(editableId).css("display", "block");
+            $(editableId).css("display", "inline");
 
             $(".sensor-name-editable").blur(function () {
                 $(editableId).css("display", "none");
-                $('#' + noteditableId).css("display", "block");
+                $('#' + noteditableId).css("display", "inline");
                 var data = {
                     "name": $(editableId).val()
                 };
