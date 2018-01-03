@@ -11,13 +11,13 @@ public class KapacitorUtils {
         StringBuilder replaceCommand = new StringBuilder();
         replaceCommand.append("cp ./alerts/alert.tick ./alerts/");
         replaceCommand.append(alertId);
-        replaceCommand.append(".tick && sed -i -e 's/%%USER%%/" + user + "/g' ./alerts/" + alertId + ".tick'\"");
-        replaceCommand.append(" && sed -i -e 's/%%SENSOR%%/" + sensor + "/g' ./alerts/" + alertId + ".tick'\"");
-        replaceCommand.append(" && sed -i -e 's/%%SYSTEM%%/" + system + "/g' ./alerts/" + alertId + ".tick'\"");
-        replaceCommand.append(" && sed -i -e 's/%%CONDITION%%/" + condition + "/g' ./alerts/" + alertId + ".tick'\"");
-        replaceCommand.append(" && sed -i -e 's/%%TITLE%%/" + title + "/g' ./alerts/" + alertId + ".tick'\"");
-        replaceCommand.append(" && sed -i -e 's/%%MESSAGE%%/" + message + "/g' ./alerts/" + alertId + ".tick'\"");
-        replaceCommand.append(" && sed -i -e 's/%%EMAIL%%/" + user + "/g' ./alerts/" + alertId + ".tick'\"");
+        replaceCommand.append(".tick && sed -i -e 's/%%USER%%/" + user + "/g' ./alerts/" + alertId + ".tick");
+        replaceCommand.append(" && sed -i -e 's/%%SENSOR%%/" + sensor + "/g' ./alerts/" + alertId + ".tick");
+        replaceCommand.append(" && sed -i -e 's/%%SYSTEM%%/" + system + "/g' ./alerts/" + alertId + ".tick");
+        replaceCommand.append(" && sed -i -e 's/%%CONDITION%%/" + condition + "/g' ./alerts/" + alertId + ".tick");
+        replaceCommand.append(" && sed -i -e 's/%%TITLE%%/" + title + "/g' ./alerts/" + alertId + ".tick");
+        replaceCommand.append(" && sed -i -e 's/%%MESSAGE%%/" + message + "/g' ./alerts/" + alertId + ".tick");
+        replaceCommand.append(" && sed -i -e 's/%%EMAIL%%/" + user + "/g' ./alerts/" + alertId + ".tick");
         return replaceCommand.toString();
     }
 

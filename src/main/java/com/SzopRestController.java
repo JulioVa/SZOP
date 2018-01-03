@@ -301,9 +301,12 @@ public class SzopRestController {
             String createCommand = KapacitorUtils.createAlertCommand(alert.getId(), alert.getUser().getEmail(), alert.getSensor().getSensorId(), alert.getSensor().getSystem().getName(), condition.toString(), "Alert " + alert.getSensor().getSensorId(), "Wartość czujnika " + alert.getSensor().getName() + greaterLower + alert.getValue());
             String defineCommand = KapacitorUtils.defineNewTaskCommand(alert.getId());
             String enableCommand = KapacitorUtils.enableTaskCommand(alert.getId());
-            KapacitorUtils.executeCommand(createCommand);
-            KapacitorUtils.executeCommand(defineCommand);
-            KapacitorUtils.executeCommand(enableCommand);
+            String result = KapacitorUtils.executeCommand(createCommand);
+            LOGGER.info("create alert " + result);
+            result = KapacitorUtils.executeCommand(defineCommand);
+            LOGGER.info("define alert " + result);
+            result = KapacitorUtils.executeCommand(enableCommand);
+            LOGGER.info("enable alert " + result);
             return ResponseEntity.ok().body(alertDto);
         } else {
             return ResponseEntity.badRequest().build();
