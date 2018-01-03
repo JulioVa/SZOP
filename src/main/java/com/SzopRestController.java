@@ -71,6 +71,17 @@ public class SzopRestController {
         return ResponseEntity.ok().body(sensorDtos);
     }
 
+    @RequestMapping(value = "/user/{userId}/sensors/details", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorDetailsDto>> getSensorsIdByUserDetails(@PathVariable int userId) {
+        List<Sensor> sensors = SensorService.findAllByUser(userId);
+        List<SensorDetailsDto> sensorDtos = SensorUtil.convertToDetailsDtos(sensors);
+        sensorDtos.sort(sensorComparator);
+        if (sensors.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(sensorDtos);
+    }
+
     @RequestMapping(value = "/schema/{schemaId}/sensors", method = RequestMethod.GET)
     public ResponseEntity<List<SensorIdLevelDto>> getSensorsBySchemaId(@PathVariable int schemaId) {
         List<Sensor> sensors = SensorService.findAllBySchema(schemaId);

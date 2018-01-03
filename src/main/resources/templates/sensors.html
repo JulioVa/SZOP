@@ -61,6 +61,9 @@
                     <input value="{{sensor.name}}" type="text" class="validate sensor-name-editable" id="sensor-editable-{{sensor.id}}" style="width: 400px; padding-top: -2px; padding-bottom: -2px;" />
                     <p style="display: block">{{sensor.type}}</p>
                     <p style="display: block">{{sensor.lastUpdate}}</p>
+                    <p style="display: block">{{sensor.checkboxId}}</p>
+                    <p style="display: block">{{sensor.systemId}}</p>
+                    <p style="display: block">{{sensor.value}}</p>
                     <a href="#!" class="secondary-content">
                         <button class="jscolor {onFineChange:'update(this)', value:'{{sensor.color}}', sensId:'{{sensor.id}}'}" style="border: none" id="color-{{sensor.id}}"></button>
                     </a>
