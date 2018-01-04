@@ -8,6 +8,19 @@ if ("geolocation" in navigator) {
 function geolocationYourCity() {
     navigator.geolocation.getCurrentPosition(function(position) {
         loadWeather(position.coords.latitude+','+position.coords.longitude); //load weather using your lat/lng coordinates
+        setTimeout(function(){
+            var actualCity = document.getElementById("weatherCity").innerHTML;
+            actualCity = actualCity.split(", ");
+            actualCity = actualCity[0]
+            //console.log(actualCity);
+            /*$http.put('/user/city', actualCity).then(function () {
+                console.log("city updated: " + actualCity);
+            });*/
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('PUT', '/user/city');
+            xhr.send(actualCity);
+        }, 1000);
     });
 }
 
