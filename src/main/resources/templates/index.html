@@ -63,19 +63,16 @@
                 <button class="js-geolocation" onclick="geolocationYourCity()">Use Your Location</button>
                 <script src="autocomplete/jquery.city-autocomplete.js" type="text/javascript"></script>
                 <script>
-                    loadWeather('Warsaw, PL');
                     var currentCity = '';
-                    var xhr = new XMLHttpRequest();
-                    xhr.onreadystatechange = function() {
-                        if (xhr.readyState == XMLHttpRequest.DONE) {
-                            currentCity = xhr.responseText;
+                    $.get('/user/city', function(responseText) {
+                        currentCity = responseText;
+                        if (currentCity === '') {
+                            loadWeather('Warsaw, PL');
+                        } else {
+                            loadWeather(currentCity);
                         }
-                    }
-                    xhr.open('GET', '/user/city');
-                    xhr.onload = function () {
-                        // Request finished. Do processing here.
-                        loadWeather(currentCity);
-                    };
+                        console.log(currentCity);
+                    });
 
                     //$http.get('/user/city');
                     /*putCityInDatabase(document.getElementById("weatherCity").value);*/
@@ -99,10 +96,11 @@
                                     /*$http.put('/user/city', actualCity).then(function () {
                                         console.log("city updated: " + actualCity);
                                     });*/
-
-                                    var xhr = new XMLHttpRequest();
-                                    xhr.open('PUT', '/user/city');
-                                    xhr.send(actualCity);
+                                    setTimeout(function(){
+                                        var xhr = new XMLHttpRequest();
+                                        xhr.open('PUT', '/user/city');
+                                        xhr.send(actualCity);
+                                    }, 1000);
                                 }, 1000);
                             }
                          })
