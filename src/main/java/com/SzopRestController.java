@@ -261,6 +261,24 @@ public class SzopRestController {
         return ResponseEntity.ok().build();
     }
 
+    @RequestMapping(value = "/user/city", method = RequestMethod.PUT)
+    public ResponseEntity<UserDto> updateUser(@RequestBody String city) {
+        User user = UserService.findUserByEmail((String) httpSession.getAttribute("UserId"));
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        user.setCity(city);
+        UserService.update(user);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/user/city", method = RequestMethod.GET)
+    public ResponseEntity<String> getUserCity() {
+        User user = UserService.findUserByEmail((String) httpSession.getAttribute("UserId"));
+        LOGGER.info(user.getCity());
+        return ResponseEntity.ok().body(user.getCity());
+    }
+
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.DELETE)
     public ResponseEntity<UserDto> deleteUser(@PathVariable int userId) {
         User user = UserService.findUserById(userId);
