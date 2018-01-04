@@ -71,6 +71,28 @@ public class SzopRestController {
         return ResponseEntity.ok().body(sensorDtos);
     }
 
+    @RequestMapping(value = "/user/{userId}/sensors/id", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorIdLevelDto>> getSensorsIdByUserId(@PathVariable int userId) {
+        List<Sensor> sensors = SensorService.findAllByUser(userId);
+        List<SensorIdLevelDto> sensorDtos = SensorUtil.convertToDtosId(sensors);
+        sensorDtos.sort(sensorComparator);
+        if (sensors.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(sensorDtos);
+    }
+
+    @RequestMapping(value = "/user/{userId}/sensors/details", method = RequestMethod.GET)
+    public ResponseEntity<List<SensorDetailsDto>> getSensorsIdByUserDetails(@PathVariable int userId) {
+        List<Sensor> sensors = SensorService.findAllByUser(userId);
+        List<SensorDetailsDto> sensorDtos = SensorUtil.convertToDetailsDtos(sensors);
+        sensorDtos.sort(sensorComparator);
+        if (sensors.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(sensorDtos);
+    }
+
     @RequestMapping(value = "/schema/{schemaId}/sensors", method = RequestMethod.GET)
     public ResponseEntity<List<SensorIdLevelDto>> getSensorsBySchemaId(@PathVariable int schemaId) {
         List<Sensor> sensors = SensorService.findAllBySchema(schemaId);
@@ -295,6 +317,25 @@ public class SzopRestController {
         Alert alert = AlertUtil.addAlert(alertDto);
         if (alert != null) {
             AlertService.save(alert);
+            String greaterLower;
+            StringBuilder condition = new StringBuilder();
+            if (alert.getGreaterLower().contains("greater")) {
+                condition.append("> ");
+                greaterLower = " przekroczyła ";
+            } else {
+                condition.append("< ");
+                greaterLower = " jest poniżej ";
+            }
+            condition.append(alert.getValue());
+            String createCommand = KapacitorUtils.createAlertCommand(alert.getId(), alert.getUser().getEmail(), alert.getSensor().getSensorId(), alert.getSensor().getSystem().getName(), condition.toString(), "Alert " + alert.getSensor().getSensorId(), "Wartość czujnika " + alert.getSensor().getName() + greaterLower + alert.getValue());
+            String defineCommand = KapacitorUtils.defineNewTaskCommand(alert.getId());
+            String enableCommand = KapacitorUtils.enableTaskCommand(alert.getId());
+            String result = KapacitorUtils.executeCommand(createCommand);
+            LOGGER.info("create alert " + result);
+            result = KapacitorUtils.executeCommand(defineCommand);
+            LOGGER.info("define alert " + result);
+            result = KapacitorUtils.executeCommand(enableCommand);
+            LOGGER.info("enable alert " + result);
             return ResponseEntity.ok().body(alertDto);
         } else {
             return ResponseEntity.badRequest().build();
@@ -361,6 +402,7 @@ public class SzopRestController {
             return ResponseEntity.notFound().build();
         }
         AlertService.delete(alert);
+        KapacitorUtils.executeCommand(KapacitorUtils.disableTaskCommand(alert.getId()));
         return ResponseEntity.ok().build();
     }
 

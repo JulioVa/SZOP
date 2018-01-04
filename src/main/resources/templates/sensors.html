@@ -57,10 +57,11 @@
             <ul class="collection">
                 <li class="collection-item avatar" ng-repeat="sensor in sensorsList">
                     <i class="material-icons circle {{sensor.iconColor}}"><div class="{{sensor.icon}}"></div></i>
-                    <span class="title sensor-name-noteditable" id="sensor-noteditable-{{sensor.id}}">{{sensor.name}}</span>
-                    <input value="{{sensor.name}}" type="text" class="validate sensor-name-editable" id="sensor-editable-{{sensor.id}}" style="width: 400px; padding-top: -2px; padding-bottom: -2px;" />
-                    <p style="display: block">{{sensor.type}}</p>
-                    <p style="display: block">{{sensor.lastUpdate}}</p>
+                    <div style="width: 65px; display: inline-block;"><p style="font-size: 20px; margin-top: 10px;">{{sensor.value}}</p></div>
+                    <span style="margin-left: 50px; position: relative; display: inline; padding-top: -2px;" class="title sensor-name-noteditable" id="sensor-noteditable-{{sensor.id}}">{{sensor.name}}</span>
+                    <input value="{{sensor.name}}" type="text" class="validate sensor-name-editable" id="sensor-editable-{{sensor.id}}" style="width: 400px; padding-top: -2px; padding-bottom: -2px; margin-left: 50px; position: relative;" />
+                    <p style="display: block; margin-left: 117px;">{{sensor.lastUpdate}}</p>
+                    <p style="display: block; margin-left: 117px; margin-bottom: 8px;">{{sensor.checkboxId}}@{{sensor.systemId}}</p>
                     <a href="#!" class="secondary-content">
                         <button class="jscolor {onFineChange:'update(this)', value:'{{sensor.color}}', sensId:'{{sensor.id}}'}" style="border: none" id="color-{{sensor.id}}"></button>
                     </a>

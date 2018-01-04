@@ -1,10 +1,12 @@
 package com.database.util;
 
+import com.database.dto.SensorDetailsDto;
 import com.database.dto.SensorDto;
 import com.database.dto.SensorIdLevelDto;
 import com.database.model.Schema;
 import com.database.model.Sensor;
 import com.database.model.System;
+import com.database.service.InfluxService;
 import com.database.service.SchemaService;
 import com.database.service.SensorService;
 import com.database.service.SystemService;
@@ -83,6 +85,33 @@ public class SensorUtil {
         return sensorDto;
     }
 
+    public static SensorDetailsDto convertToDetailsDto(Sensor sensor) {
+        SensorDetailsDto sensorDto = new SensorDetailsDto();
+        sensorDto.setSensorId(sensor.getSensorId());
+        sensorDto.setName(sensor.getName());
+        sensorDto.setType(sensor.getType());
+        sensorDto.setLastUpdate(sensor.getLastUpdate());
+        sensorDto.setActive(sensor.isActive());
+        sensorDto.setSchemaX(sensor.getSchemaX());
+        sensorDto.setSchemaY(sensor.getSchemaY());
+        sensorDto.setColor(sensor.getColor());
+        if (sensor.getSchema() != null) {
+            sensorDto.setSchemaId(sensor.getSchema().getId());
+        }
+        sensorDto.setSystemId(sensor.getSystem().getId());
+        sensorDto.setId(sensor.getId());
+        sensorDto.setSystemName(sensor.getSystem().getName());
+        Double value = InfluxService.getDataForSensorLastValue(sensor.getSystem().getUserId().getEmail(), sensor.getSensorId());
+        String unit;
+        if (sensor.getType().equals(1)) {
+            unit = "\u00b0C";
+        } else {
+            unit = "%";
+        }
+        sensorDto.setValue(String.valueOf(value) + unit);
+        return sensorDto;
+    }
+
     public static List<SensorDto> convertToDtos(List<Sensor> sensors) {
         List<SensorDto> sensorDtos = new ArrayList<>();
         for (Sensor sensor : sensors) {
@@ -95,6 +124,14 @@ public class SensorUtil {
         List<SensorIdLevelDto> sensorDtos = new ArrayList<>();
         for (Sensor sensor : sensors) {
             sensorDtos.add(convertToDtoId(sensor));
+        }
+        return sensorDtos;
+    }
+
+    public static List<SensorDetailsDto> convertToDetailsDtos(List<Sensor> sensors) {
+        List<SensorDetailsDto> sensorDtos = new ArrayList<>();
+        for (Sensor sensor : sensors) {
+            sensorDtos.add(convertToDetailsDto(sensor));
         }
         return sensorDtos;
     }

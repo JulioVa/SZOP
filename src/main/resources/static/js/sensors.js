@@ -16,7 +16,7 @@ angular.module('szop', []).controller('sensors', ['$scope', '$http', '$window', 
     }
 
     function getSensors() {
-        $http.get('/user/' + userId + '/sensors/id').
+        $http.get('/user/' + userId + '/sensors/details').
         then(function (response) {
             var sensorsList = response.data;
             var type;
@@ -56,7 +56,9 @@ angular.module('szop', []).controller('sensors', ['$scope', '$http', '$window', 
                     icon: sensorIcon,
                     iconColor: iconColor,
                     id: entry.id,
-                    color: entry.color
+                    color: entry.color,
+                    systemId: entry.systemName,
+                    value: entry.value
                 };
 
                 counter++;
@@ -83,11 +85,11 @@ angular.module('szop', []).controller('sensors', ['$scope', '$http', '$window', 
             $('#' + noteditableId).css("display", "none");
             var sensorId = noteditableId.substring(19);
             var editableId = "#sensor-editable-" + sensorId;
-            $(editableId).css("display", "block");
+            $(editableId).css("display", "inline");
 
             $(".sensor-name-editable").blur(function () {
                 $(editableId).css("display", "none");
-                $('#' + noteditableId).css("display", "block");
+                $('#' + noteditableId).css("display", "inline");
                 var data = {
                     "name": $(editableId).val()
                 };

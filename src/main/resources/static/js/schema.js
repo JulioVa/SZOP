@@ -92,7 +92,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
                     $("#sensorpoint" + entry.id).css({
                         "width": "30px",
                         "height": "30px",
-                        "background-color": "#f44336",
+                        "background-color": entry.color,
                         "background-image": "url('../img/temp2.png')",
                         "border-radius": "90px",
                         "position": "absolute",
@@ -105,7 +105,7 @@ angular.module('szop', []).controller('schema', ['$scope', '$http', '$window', f
                     $("#sensorpoint" + entry.id).css({
                         "width": "30px",
                         "height": "30px",
-                        "background-color": "#2196f3",
+                        "background-color": entry.color,
                         "background-image": "url('../img/humidity2.png')",
                         "border-radius": "90px",
                         "position": "absolute",

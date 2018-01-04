@@ -1,0 +1,12 @@
+stream
+    |from().measurement('measurements')
+        .where(lambda: "user" == '%%USER%%')
+        .where(lambda: "sensor" == '%%SENSOR%%')
+        .where(lambda: "system" == '%%SYSTEM%%')
+    |alert()
+        .crit(lambda: "value" %%CONDITION%%)
+        .stateChangesOnly(60m)
+        .message('%%TITLE%%')
+        .details('%%MESSAGE%%')
+        .log('/tmp/alerts.log')
+        .email('%%EMAIL%%')

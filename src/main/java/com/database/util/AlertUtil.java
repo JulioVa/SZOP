@@ -38,6 +38,11 @@ public class AlertUtil {
 
     public static Alert updateAlertActive(Alert alert) {
         alert.setActive(!alert.getActive());
+        if (!alert.getActive()) {
+            KapacitorUtils.executeCommand(KapacitorUtils.disableTaskCommand(alert.getId()));
+        } else {
+            KapacitorUtils.executeCommand(KapacitorUtils.enableTaskCommand(alert.getId()));
+        }
         return alert;
     }
 
